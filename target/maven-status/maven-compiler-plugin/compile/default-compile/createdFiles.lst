@@ -1,0 +1,6 @@
+controllers\ListeEvenementsController.class
+controllers\AjouterProgrammeController.class
+interfaces\DataReceiver.class
+controllers\SceneUtil.class
+controllers\DetailsEvenementController.class
+controllers\ModifierEvenementController.class
