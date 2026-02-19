@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.EventSponsorViewController"
+      styleClass="content-card"
+      spacing="0">
+
+    <!-- Barre titre section -->
+    <HBox styleClass="section-header" alignment="CENTER_LEFT">
+        <padding>
+            <Insets top="10" right="15" bottom="10" left="15"/>
+        </padding>
+        <Label text="🔗 Association Événement - Sponsor" styleClass="section-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="" style="-fx-text-fill: white; -fx-font-size: 12px;"/>
+    </HBox>
+
+    <VBox spacing="15" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+
+        <!-- Boutons et formulaire -->
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Button text="+ Associer" onAction="#associerSponsor" styleClass="btn-add"/>
+            <Button text="Actualiser" onAction="#actualiser" styleClass="btn-refresh"/>
+        </HBox>
+
+        <!-- Formulaire -->
+        <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-background-color: #f8f9fa; -fx-padding: 12; -fx-background-radius: 4;">
+            <Label text="Événement :" style="-fx-min-width: 80;"/>
+            <ComboBox fx:id="cboEvenement" promptText="Choisir événement" prefWidth="250"/>
+            <Label text="Sponsor :" style="-fx-min-width: 60;"/>
+            <ComboBox fx:id="cboSponsor" promptText="Choisir sponsor" prefWidth="250"/>
+            <Label text="Niveau :" style="-fx-min-width: 55;"/>
+            <ComboBox fx:id="cboNiveau" promptText="Niveau" prefWidth="120"/>
+            <Label text="Montant (DT) :" style="-fx-min-width: 90;"/>
+            <TextField fx:id="txtMontant" promptText="0.00" prefWidth="100"/>
+        </HBox>
+
+        <!-- Boutons d'action -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button text="Associer" onAction="#associerSponsor" styleClass="btn-add"/>
+            <Button text="Modifier" onAction="#modifierAssociation" styleClass="btn-modify"/>
+            <Button text="Supprimer" onAction="#supprimerAssociation" styleClass="btn-delete"/>
+        </HBox>
+
+        <!-- Liste des associations (format cartes) -->
+        <Label text="📋 Liste des associations" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+        <ListView fx:id="listAssociations" VBox.vgrow="ALWAYS" styleClass="list-sponsors" prefHeight="300"/>
+    </VBox>
+
+</VBox>

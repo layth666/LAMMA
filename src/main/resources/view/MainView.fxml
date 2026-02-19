@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.MainController"
+            prefHeight="750" prefWidth="1200"
+            stylesheets="@../css/style.css">
+
+    <top>
+        <VBox styleClass="header-panel">
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <padding>
+                    <Insets top="10" right="20" bottom="10" left="20"/>
+                </padding>
+                <!-- Logo LAMMA -->
+                <HBox alignment="CENTER_LEFT" spacing="12" fx:id="headerBox">
+                    <ImageView fitHeight="40" fitWidth="40" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/lammalogo.jpg"/>
+                        </image>
+                    </ImageView>
+                    <Label text="LAMMA" styleClass="header-title" style="-fx-font-size: 24px;"/>
+                </HBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Gestion Sponsors &amp; Partenariats" styleClass="header-title" style="-fx-font-size: 14px; -fx-opacity: 0.95;"/>
+                <Separator orientation="VERTICAL" style="-fx-background-color: white; -fx-opacity: 0.5;"/>
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button text="Sponsors" fx:id="btnSponsors" styleClass="nav-button"/>
+                    <Button text="Événements - Sponsors" fx:id="btnEventSponsor" styleClass="nav-button"/>
+                </HBox>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <StackPane fx:id="contentPane" styleClass="content-panel">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+        </StackPane>
+    </center>
+
+    <bottom>
+        <HBox styleClass="footer-panel" alignment="CENTER_LEFT" spacing="20">
+            <padding>
+                <Insets top="8" right="15" bottom="8" left="15"/>
+            </padding>
+            <Label text="LAMMA - Gestion des sponsors" styleClass="footer-label"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="Liste actualisée" styleClass="footer-label"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
