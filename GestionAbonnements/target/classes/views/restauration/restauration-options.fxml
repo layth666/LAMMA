@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.gestion.ui.restauration.RestaurationOptionsController"
+            fitToWidth="true" fitToHeight="true" styleClass="modern-scroll-pane"
+            vbarPolicy="AS_NEEDED" hbarPolicy="NEVER"
+            stylesheets="@../../styles/card-view.css">
+    
+    <VBox spacing="20" styleClass="modern-panel" prefWidth="1000">
+        <padding>
+            <Insets top="24" right="24" bottom="24" left="24"/>
+        </padding>
+
+        <HBox spacing="16" alignment="CENTER_LEFT">
+            <Label text="⚙️ Options de Restauration" styleClass="modern-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="statusInfoLabel" text="Prêt" styleClass="status-info"/>
+        </HBox>
+
+        <HBox spacing="12" alignment="CENTER_LEFT" styleClass="action-bar">
+            <Button text="➕ Nouvelle" onAction="#onNouvelleOption" styleClass="btn-primary"/>
+            <Button text="🔄 Actualiser" onAction="#onActualiser" styleClass="btn-secondary"/>
+            <Button text="✏️ Modifier" onAction="#onModifier" styleClass="btn-warning" disable="true" fx:id="btnModifier"/>
+            <Button text="🗑️ Supprimer" onAction="#onSupprimer" styleClass="btn-danger" disable="true" fx:id="btnSupprimer"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="Type événement:"/>
+            <TextField fx:id="filterTypeField" promptText="SOIREE, RANDONNEE..." prefWidth="150" onKeyReleased="#onFiltrer"/>
+            <Button text="🔍 Filtrer" onAction="#onFiltrer" styleClass="btn-secondary"/>
+        </HBox>
+
+        <VBox spacing="8" VBox.vgrow="ALWAYS">
+            <HBox spacing="8" alignment="CENTER_LEFT">
+                <Label text="📊 Liste des Options" styleClass="section-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="countLabel" text="0 options" styleClass="count-label"/>
+            </HBox>
+            <ListView fx:id="listView" VBox.vgrow="ALWAYS" minHeight="350" prefHeight="400" 
+                       styleClass="modern-list-view" onMouseClicked="#onListClick">
+                <placeholder>
+                    <VBox alignment="CENTER" spacing="12">
+                        <Label text="📭 Aucune donnée disponible" styleClass="placeholder-text"/>
+                    </VBox>
+                </placeholder>
+            </ListView>
+        </VBox>
+
+        <VBox spacing="12" styleClass="form-section">
+            <Label text="✏️ Formulaire" styleClass="section-title"/>
+            <GridPane hgap="12" vgap="12">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="100" prefWidth="120"/>
+                    <ColumnConstraints minWidth="200" prefWidth="300" hgrow="ALWAYS"/>
+                    <ColumnConstraints minWidth="100" prefWidth="120"/>
+                    <ColumnConstraints minWidth="150" prefWidth="200" hgrow="ALWAYS"/>
+                </columnConstraints>
+                
+                <Label text="Libellé *:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <TextField fx:id="inputLibelle" promptText="Libellé de l'option" 
+                           styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                
+                <Label text="Type Événement:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                <TextField fx:id="inputTypeEvenement" promptText="SOIREE, RANDONNEE..." 
+                           styleClass="input-field" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+                
+                <Label text="Actif:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <CheckBox fx:id="inputActif" text="Option active" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            </GridPane>
+            
+            <Label fx:id="validationMessage" text="" styleClass="validation-message" visible="false" managed="false"/>
+            
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Button text="💾 Enregistrer" onAction="#onEnregistrer" styleClass="btn-success" fx:id="btnEnregistrer"/>
+                <Button text="✏️ Modifier" onAction="#onModifier" styleClass="btn-warning" fx:id="btnModifierForm" disable="true"/>
+                <Button text="❌ Annuler" onAction="#onAnnuler" styleClass="btn-secondary"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="🔄 Réinitialiser" onAction="#onNouvelleOption" styleClass="btn-secondary"/>
+            </HBox>
+        </VBox>
+    </VBox>
+</ScrollPane>

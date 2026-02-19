@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.gestion.ui.abonnement.AbonnementViewController"
+            fitToWidth="true" fitToHeight="true" styleClass="modern-scroll-pane"
+            vbarPolicy="AS_NEEDED" hbarPolicy="NEVER"
+            stylesheets="@../../styles/card-view.css">
+
+    <VBox spacing="20" styleClass="modern-panel" prefWidth="1000">
+        <padding>
+            <Insets top="24" right="24" bottom="24" left="24"/>
+        </padding>
+
+        <!-- Header -->
+        <HBox spacing="16" alignment="CENTER_LEFT">
+            <ImageView fitHeight="32" preserveRatio="true">
+                <image>
+                    <Image url="@../images/lamma-logo.png" />
+                </image>
+            </ImageView>
+            <Label text="📋 Gestion des Abonnements" styleClass="modern-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="statusInfoLabel" text="Prêt" styleClass="status-info"/>
+        </HBox>
+
+        <!-- Barre d'actions principales -->
+        <HBox spacing="12" alignment="CENTER_LEFT" styleClass="action-bar">
+            <Button text="➕ Nouveau" onAction="#onNouveau" styleClass="btn-primary"/>
+            <Button text="🔄 Actualiser" onAction="#onActualiser" styleClass="btn-secondary"/>
+            <Button text="✏️ Modifier" onAction="#onModifier" styleClass="btn-warning" disable="true" fx:id="btnModifier"/>
+            <Button text="🗑️ Supprimer" onAction="#onSupprimer" styleClass="btn-danger" disable="true" fx:id="btnSupprimer"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="📊 Statistiques" onAction="#onStatistiques" styleClass="btn-info"/>
+        </HBox>
+
+        <!-- Section Recherche et Filtres -->
+        <VBox spacing="12" styleClass="filter-section">
+            <Label text="🔍 Recherche et Filtres" styleClass="section-title"/>
+            <GridPane hgap="12" vgap="12">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="100" prefWidth="120"/>
+                    <ColumnConstraints minWidth="150" prefWidth="200" hgrow="ALWAYS"/>
+                    <ColumnConstraints minWidth="100" prefWidth="120"/>
+                    <ColumnConstraints minWidth="150" prefWidth="200" hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <Label text="Statut:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <ComboBox fx:id="filterStatut" prefWidth="200" promptText="Tous les statuts"
+                          onAction="#onFiltrer" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                <Label text="Type:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                <ComboBox fx:id="filterType" prefWidth="200" promptText="Tous les types"
+                          onAction="#onFiltrer" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+
+                <Label text="User ID:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <TextField fx:id="filterUserId" promptText="ID utilisateur"
+                           onKeyReleased="#onFiltrer" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                <Label text="Recherche:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                <TextField fx:id="searchField" promptText="Rechercher..."
+                           onKeyReleased="#onRechercher" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+            </GridPane>
+            <HBox spacing="8">
+                <Button text="🔍 Rechercher" onAction="#onRechercher" styleClass="btn-primary"/>
+                <Button text="❌ Réinitialiser" onAction="#onReinitialiserFiltres" styleClass="btn-secondary"/>
+            </HBox>
+        </VBox>
+
+        <!-- ListView avec Cards -->
+        <VBox spacing="8" VBox.vgrow="ALWAYS">
+            <HBox spacing="8" alignment="CENTER_LEFT">
+                <Label text="📊 Liste des Abonnements" styleClass="section-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="countLabel" text="0 abonnements" styleClass="count-label"/>
+            </HBox>
+            <ListView fx:id="listView" VBox.vgrow="ALWAYS" minHeight="350" prefHeight="400"
+                       styleClass="modern-list-view" onMouseClicked="#onListClick">
+                <placeholder>
+                    <VBox alignment="CENTER" spacing="12">
+                        <Label text="📭 Aucune donnée disponible" styleClass="placeholder-text"/>
+                        <Label text="Cliquez sur 'Actualiser' pour charger les données" styleClass="placeholder-hint"/>
+                    </VBox>
+                </placeholder>
+            </ListView>
+        </VBox>
+
+        <!-- Section Formulaire -->
+        <VBox spacing="12" styleClass="form-section">
+            <Label text="✏️ Formulaire" styleClass="section-title"/>
+            <GridPane hgap="12" vgap="12">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="100" prefWidth="120"/>
+                    <ColumnConstraints minWidth="150" prefWidth="200" hgrow="ALWAYS"/>
+                    <ColumnConstraints minWidth="100" prefWidth="120"/>
+                    <ColumnConstraints minWidth="150" prefWidth="200" hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <Label text="User ID *:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <TextField fx:id="inputUserId" promptText="ID utilisateur"
+                           styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                <Label text="Type *:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                <ComboBox fx:id="inputType" prefWidth="200"
+                          styleClass="input-field" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+
+                <Label text="Date Début *:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <DatePicker fx:id="inputDateDebut" prefWidth="200"
+                            styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                <Label text="Date Fin:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                <DatePicker fx:id="inputDateFin" prefWidth="200"
+                            styleClass="input-field" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+
+                <Label text="Prix *:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                <TextField fx:id="inputPrix" promptText="29.99"
+                           styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                <Label text="Statut:" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                <ComboBox fx:id="inputStatut" prefWidth="200"
+                          styleClass="input-field" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+
+                <Label text="AutoRenew:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                <CheckBox fx:id="inputAutoRenew" text="Renouvellement automatique"
+                          selected="true" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+            </GridPane>
+
+            <!-- Messages de validation -->
+            <Label fx:id="validationMessage" text="" styleClass="validation-message" visible="false" managed="false"/>
+
+            <!-- Boutons d'action formulaire -->
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Button text="💾 Enregistrer" onAction="#onEnregistrer" styleClass="btn-success" fx:id="btnEnregistrer"/>
+                <Button text="✏️ Modifier" onAction="#onModifier" styleClass="btn-warning" fx:id="btnModifierForm" disable="true"/>
+                <Button text="❌ Annuler" onAction="#onAnnuler" styleClass="btn-secondary"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="🔄 Réinitialiser" onAction="#onNouveau" styleClass="btn-secondary"/>
+            </HBox>
+        </VBox>
+    </VBox>
+</ScrollPane>
