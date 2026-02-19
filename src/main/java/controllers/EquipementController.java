@@ -1,0 +1,571 @@
+package controllers;
+
+import entities.Equipement;
+import Services.EquipementService;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.geometry.Pos;
+
+import java.math.BigDecimal;
+import java.net.URL;
+import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+public class EquipementController implements Initializable {
+
+    @FXML private TableView<Equipement> equipementTable;
+    @FXML private TableColumn<Equipement, Long> colId;
+    @FXML private TableColumn<Equipement, String> colNom;
+    @FXML private TableColumn<Equipement, String> colDescription;
+    @FXML private TableColumn<Equipement, String> colCategorie;
+    @FXML private TableColumn<Equipement, String> colType;
+    @FXML private TableColumn<Equipement, BigDecimal> colPrix;
+    @FXML private TableColumn<Equipement, String> colVille;
+    @FXML private TableColumn<Equipement, String> colStatut;
+    @FXML private TableColumn<Equipement, Timestamp> colDateAjout;
+    @FXML private TableColumn<Equipement, String> colActions;
+
+    @FXML private TextField searchField;
+    @FXML private ComboBox<String> filterCategorie;
+    @FXML private ComboBox<String> filterType;
+    @FXML private ComboBox<String> filterStatut;
+    @FXML private ComboBox<String> sortCombo;
+
+    @FXML private TextField nomField;
+    @FXML private TextArea descriptionField;
+    @FXML private TextField categorieField;
+    @FXML private ComboBox<String> typeCombo;
+    @FXML private TextField prixField;
+    @FXML private TextField villeField;
+    @FXML private ComboBox<String> statutCombo;
+
+    @FXML private Button btnAjouter;
+    @FXML private Button btnModifier;
+    @FXML private Button btnSupprimer;
+    @FXML private Button btnActualiser;
+    @FXML private Button btnReset;
+
+    @FXML private Label countLabel;
+
+    private EquipementService service;
+    private ObservableList<Equipement> equipementList;
+    private Equipement selectedEquipement;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        service = new EquipementService();
+        equipementList = FXCollections.observableArrayList();
+
+        // Configuration des colonnes
+        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+        colCategorie.setCellValueFactory(new PropertyValueFactory<>("categorie"));
+        colType.setCellValueFactory(new PropertyValueFactory<>("type"));
+        colPrix.setCellValueFactory(new PropertyValueFactory<>("prix"));
+        colVille.setCellValueFactory(new PropertyValueFactory<>("ville"));
+        colStatut.setCellValueFactory(new PropertyValueFactory<>("statut"));
+        colDateAjout.setCellValueFactory(new PropertyValueFactory<>("dateAjout"));
+
+        // Formatage des colonnes
+        colPrix.setCellFactory(column -> new TableCell<Equipement, BigDecimal>() {
+            @Override
+            protected void updateItem(BigDecimal prix, boolean empty) {
+                super.updateItem(prix, empty);
+                if (empty || prix == null) {
+                    setText(null);
+                } else {
+                    DecimalFormat df = new DecimalFormat("#,##0.00");
+                    setText(df.format(prix) + " €");
+                }
+            }
+        });
+
+        colDateAjout.setCellFactory(column -> new TableCell<Equipement, Timestamp>() {
+            @Override
+            protected void updateItem(Timestamp date, boolean empty) {
+                super.updateItem(date, empty);
+                if (empty || date == null) {
+                    setText(null);
+                } else {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                    setText(sdf.format(date));
+                }
+            }
+        });
+
+        // Colonne Actions avec boutons
+        colActions.setCellFactory(column -> new TableCell<Equipement, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    Equipement e = getTableView().getItems().get(getIndex());
+                    
+                    Button btnEdit = new Button("✏️");
+                    btnEdit.getStyleClass().add("action-btn-edit");
+                    btnEdit.setOnAction(event -> modifierEquipement(e));
+
+                    Button btnDelete = new Button("🗑️");
+                    btnDelete.getStyleClass().add("action-btn-delete");
+                    btnDelete.setOnAction(event -> supprimerEquipement(e));
+
+                    Button btnDetails = new Button("ℹ️");
+                    btnDetails.getStyleClass().add("action-btn-details");
+                    btnDetails.setOnAction(event -> afficherDetails(e));
+
+                    HBox hbox = new HBox(5, btnEdit, btnDelete, btnDetails);
+                    hbox.setAlignment(Pos.CENTER);
+                    setGraphic(hbox);
+                }
+            }
+        });
+
+        // Configuration des ComboBox
+        typeCombo.getItems().addAll("VENTE", "LOCATION");
+        statutCombo.getItems().addAll("DISPONIBLE", "VENDU", "LOUE");
+        
+        filterCategorie.getItems().add("Tous");
+        filterType.getItems().addAll("Tous", "VENTE", "LOCATION");
+        filterStatut.getItems().addAll("Tous", "DISPONIBLE", "VENDU", "LOUE");
+        
+        sortCombo.getItems().addAll(
+            "Date (récent)", 
+            "Date (ancien)", 
+            "Prix (croissant)", 
+            "Prix (décroissant)", 
+            "Nom (A-Z)", 
+            "Nom (Z-A)"
+        );
+        sortCombo.setValue("Date (récent)");
+
+        // Écouteurs pour recherche et filtres
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> appliquerFiltres());
+        filterCategorie.valueProperty().addListener((obs, oldVal, newVal) -> appliquerFiltres());
+        filterType.valueProperty().addListener((obs, oldVal, newVal) -> appliquerFiltres());
+        filterStatut.valueProperty().addListener((obs, oldVal, newVal) -> appliquerFiltres());
+        sortCombo.valueProperty().addListener((obs, oldVal, newVal) -> appliquerFiltres());
+
+        // Sélection dans la table
+        equipementTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            selectedEquipement = newVal;
+            if (newVal != null) {
+                chargerEquipementDansFormulaire(newVal);
+            }
+        });
+
+        // Charger les données (ne pas bloquer l'affichage si la DB échoue)
+        try {
+            actualiser();
+        } catch (Exception e) {
+            System.err.println("Chargement équipements: " + e.getMessage());
+            countLabel.setText("0 équipement(s)");
+        }
+    }
+
+    @FXML
+    private void actualiser() {
+        List<Equipement> all = service.afficher();
+        equipementList.clear();
+        equipementList.addAll(all);
+        
+        // Mettre à jour les catégories disponibles
+        List<String> categories = all.stream()
+                .map(Equipement::getCategorie)
+                .filter(c -> c != null && !c.trim().isEmpty())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+        
+        filterCategorie.getItems().clear();
+        filterCategorie.getItems().add("Tous");
+        filterCategorie.getItems().addAll(categories);
+        filterCategorie.setValue("Tous");
+        
+        appliquerFiltres();
+    }
+
+    @FXML
+    private void appliquerFiltres() {
+        // Filtrer d'abord
+        List<Equipement> filteredList = equipementList.stream()
+                .filter(creerPredicatFiltre())
+                .collect(Collectors.toList());
+
+        // Appliquer le tri - utiliser une variable finale
+        final List<Equipement> baseList = filteredList;
+        String tri = sortCombo.getValue();
+        List<Equipement> sortedList;
+        
+        if (tri != null) {
+            switch (tri) {
+                case "Date (récent)" -> {
+                    sortedList = baseList.stream()
+                            .sorted((a, b) -> {
+                                Timestamp da = a.getDateAjout();
+                                Timestamp db = b.getDateAjout();
+                                if (da == null && db == null) return 0;
+                                if (da == null) return 1;
+                                if (db == null) return -1;
+                                return db.compareTo(da);
+                            })
+                            .collect(Collectors.toList());
+                }
+                case "Date (ancien)" -> {
+                    sortedList = baseList.stream()
+                            .sorted((a, b) -> {
+                                Timestamp da = a.getDateAjout();
+                                Timestamp db = b.getDateAjout();
+                                if (da == null && db == null) return 0;
+                                if (da == null) return -1;
+                                if (db == null) return 1;
+                                return da.compareTo(db);
+                            })
+                            .collect(Collectors.toList());
+                }
+                case "Prix (croissant)" -> {
+                    sortedList = baseList.stream()
+                            .sorted((a, b) -> {
+                                BigDecimal pa = a.getPrix() != null ? a.getPrix() : BigDecimal.ZERO;
+                                BigDecimal pb = b.getPrix() != null ? b.getPrix() : BigDecimal.ZERO;
+                                return pa.compareTo(pb);
+                            })
+                            .collect(Collectors.toList());
+                }
+                case "Prix (décroissant)" -> {
+                    sortedList = baseList.stream()
+                            .sorted((a, b) -> {
+                                BigDecimal pa = a.getPrix() != null ? a.getPrix() : BigDecimal.ZERO;
+                                BigDecimal pb = b.getPrix() != null ? b.getPrix() : BigDecimal.ZERO;
+                                return pb.compareTo(pa);
+                            })
+                            .collect(Collectors.toList());
+                }
+                case "Nom (A-Z)" -> {
+                    sortedList = baseList.stream()
+                            .sorted((a, b) -> {
+                                String na = a.getNom() != null ? a.getNom().toLowerCase() : "";
+                                String nb = b.getNom() != null ? b.getNom().toLowerCase() : "";
+                                return na.compareTo(nb);
+                            })
+                            .collect(Collectors.toList());
+                }
+                case "Nom (Z-A)" -> {
+                    sortedList = baseList.stream()
+                            .sorted((a, b) -> {
+                                String na = a.getNom() != null ? a.getNom().toLowerCase() : "";
+                                String nb = b.getNom() != null ? b.getNom().toLowerCase() : "";
+                                return nb.compareTo(na);
+                            })
+                            .collect(Collectors.toList());
+                }
+                default -> sortedList = baseList;
+            }
+        } else {
+            sortedList = baseList;
+        }
+
+        equipementTable.setItems(FXCollections.observableArrayList(sortedList));
+        countLabel.setText(sortedList.size() + " équipement(s)");
+    }
+
+    private Predicate<Equipement> creerPredicatFiltre() {
+        String search = searchField.getText() != null ? searchField.getText().trim().toLowerCase() : "";
+        String cat = filterCategorie.getValue();
+        String type = filterType.getValue();
+        String statut = filterStatut.getValue();
+
+        return e -> {
+            // Recherche globale
+            boolean matchSearch = search.isEmpty() ||
+                    (e.getNom() != null && e.getNom().toLowerCase().contains(search)) ||
+                    (e.getDescription() != null && e.getDescription().toLowerCase().contains(search)) ||
+                    (e.getCategorie() != null && e.getCategorie().toLowerCase().contains(search)) ||
+                    (e.getVille() != null && e.getVille().toLowerCase().contains(search));
+
+            // Filtre catégorie
+            boolean matchCat = cat == null || cat.equals("Tous") ||
+                    (e.getCategorie() != null && e.getCategorie().equals(cat));
+
+            // Filtre type
+            boolean matchType = type == null || type.equals("Tous") ||
+                    (e.getType() != null && e.getType().equals(type));
+
+            // Filtre statut
+            boolean matchStatut = statut == null || statut.equals("Tous") ||
+                    (e.getStatut() != null && e.getStatut().equals(statut));
+
+            return matchSearch && matchCat && matchType && matchStatut;
+        };
+    }
+
+    @FXML
+    private void ajouterEquipement() {
+        if (!validerFormulaire()) return;
+
+        try {
+            Equipement e = new Equipement(
+                    nomField.getText().trim(),
+                    descriptionField.getText().trim(),
+                    categorieField.getText().trim(),
+                    typeCombo.getValue(),
+                    new BigDecimal(prixField.getText().trim()),
+                    villeField.getText().trim(),
+                    statutCombo.getValue()
+            );
+
+            service.ajouter(e);
+            viderFormulaire();
+            actualiser();
+            afficherMessage("✅ Équipement ajouté avec succès !", Alert.AlertType.INFORMATION);
+        } catch (Exception e) {
+            afficherMessage("❌ Erreur lors de l'ajout : " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    // Méthode wrapper pour appels depuis FXML (sans paramètre)
+    @FXML
+    private void modifierEquipement() {
+        modifierEquipement(null);
+    }
+
+    // Méthode avec paramètre pour appels depuis le code
+    private void modifierEquipement(Equipement e) {
+        Equipement equipementAModifier = e;
+        if (equipementAModifier == null) {
+            equipementAModifier = selectedEquipement;
+        }
+        if (equipementAModifier == null) {
+            afficherMessage("⚠️ Veuillez sélectionner un équipement", Alert.AlertType.WARNING);
+            return;
+        }
+
+        chargerEquipementDansFormulaire(equipementAModifier);
+    }
+
+    @FXML
+    private void enregistrerModification() {
+        if (selectedEquipement == null) {
+            afficherMessage("⚠️ Aucun équipement sélectionné", Alert.AlertType.WARNING);
+            return;
+        }
+
+        if (!validerFormulaire()) return;
+
+        try {
+            selectedEquipement.setNom(nomField.getText().trim());
+            selectedEquipement.setDescription(descriptionField.getText().trim());
+            selectedEquipement.setCategorie(categorieField.getText().trim());
+            selectedEquipement.setType(typeCombo.getValue());
+            selectedEquipement.setPrix(new BigDecimal(prixField.getText().trim()));
+            selectedEquipement.setVille(villeField.getText().trim());
+            selectedEquipement.setStatut(statutCombo.getValue());
+
+            service.modifier(selectedEquipement);
+            viderFormulaire();
+            selectedEquipement = null;
+            actualiser();
+            afficherMessage("✅ Équipement modifié avec succès !", Alert.AlertType.INFORMATION);
+        } catch (Exception e) {
+            afficherMessage("❌ Erreur lors de la modification : " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    // Méthode wrapper pour appels depuis FXML (sans paramètre)
+    @FXML
+    private void supprimerEquipement() {
+        supprimerEquipement(null);
+    }
+
+    // Méthode avec paramètre pour appels depuis le code
+    private void supprimerEquipement(Equipement e) {
+        Equipement equipementASupprimer = e;
+        if (equipementASupprimer == null) {
+            equipementASupprimer = selectedEquipement;
+        }
+        if (equipementASupprimer == null) {
+            afficherMessage("⚠️ Veuillez sélectionner un équipement", Alert.AlertType.WARNING);
+            return;
+        }
+
+        // Créer une référence finale pour la lambda
+        final Equipement equipementFinal = equipementASupprimer;
+        final Long equipementId = equipementFinal.getId();
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmation");
+        confirm.setHeaderText("Supprimer l'équipement");
+        confirm.setContentText("Êtes-vous sûr de vouloir supprimer : " + equipementFinal.getNom() + " ?");
+
+        confirm.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                service.supprimer(equipementId);
+                if (selectedEquipement != null && selectedEquipement.getId().equals(equipementId)) {
+                    viderFormulaire();
+                    selectedEquipement = null;
+                }
+                actualiser();
+                afficherMessage("✅ Équipement supprimé avec succès !", Alert.AlertType.INFORMATION);
+            }
+        });
+    }
+
+    // Méthode wrapper pour appels depuis FXML (sans paramètre)
+    @FXML
+    private void afficherDetails() {
+        afficherDetails(null);
+    }
+
+    // Méthode avec paramètre pour appels depuis le code
+    private void afficherDetails(Equipement e) {
+        Equipement equipementADetails = e;
+        if (equipementADetails == null) {
+            equipementADetails = selectedEquipement;
+        }
+        if (equipementADetails == null) {
+            afficherMessage("⚠️ Veuillez sélectionner un équipement", Alert.AlertType.WARNING);
+            return;
+        }
+
+        // Créer une référence finale pour éviter les problèmes de lambda
+        final Equipement equipementFinal = equipementADetails;
+
+        Alert details = new Alert(Alert.AlertType.INFORMATION);
+        details.setTitle("Détails de l'équipement");
+        details.setHeaderText(equipementFinal.getNom());
+        
+        String content = String.format(
+            "ID: %d\n" +
+            "Nom: %s\n" +
+            "Description: %s\n" +
+            "Catégorie: %s\n" +
+            "Type: %s\n" +
+            "Prix: %s €\n" +
+            "Ville: %s\n" +
+            "Statut: %s\n" +
+            "Date d'ajout: %s",
+            equipementFinal.getId(),
+            equipementFinal.getNom(),
+            equipementFinal.getDescription() != null ? equipementFinal.getDescription() : "N/A",
+            equipementFinal.getCategorie() != null ? equipementFinal.getCategorie() : "N/A",
+            equipementFinal.getType(),
+            new DecimalFormat("#,##0.00").format(equipementFinal.getPrix()),
+            equipementFinal.getVille() != null ? equipementFinal.getVille() : "N/A",
+            equipementFinal.getStatut(),
+            equipementFinal.getDateAjout() != null ? new SimpleDateFormat("yyyy-MM-dd HH:mm").format(equipementFinal.getDateAjout()) : "N/A"
+        );
+        
+        details.setContentText(content);
+        details.showAndWait();
+    }
+
+    @FXML
+    private void onRetourDashboard() {
+        // Navigation gérée par MainController (bouton Retour style LAMMA)
+    }
+
+    @FXML
+    private void resetFiltres() {
+        searchField.clear();
+        filterCategorie.setValue("Tous");
+        filterType.setValue("Tous");
+        filterStatut.setValue("Tous");
+        sortCombo.setValue("Date (récent)");
+    }
+
+    private void chargerEquipementDansFormulaire(Equipement e) {
+        nomField.setText(e.getNom());
+        descriptionField.setText(e.getDescription());
+        categorieField.setText(e.getCategorie());
+        typeCombo.setValue(e.getType());
+        prixField.setText(e.getPrix() != null ? e.getPrix().toString() : "");
+        villeField.setText(e.getVille());
+        statutCombo.setValue(e.getStatut());
+    }
+
+    private void viderFormulaire() {
+        nomField.clear();
+        descriptionField.clear();
+        categorieField.clear();
+        typeCombo.setValue(null);
+        prixField.clear();
+        villeField.clear();
+        statutCombo.setValue("DISPONIBLE");
+    }
+
+    // ✅ Contrôle de saisie (validation)
+    private boolean validerFormulaire() {
+        StringBuilder errors = new StringBuilder();
+
+        // Validation nom (obligatoire)
+        if (nomField.getText() == null || nomField.getText().trim().isEmpty()) {
+            errors.append("• Le nom est obligatoire\n");
+        } else if (nomField.getText().trim().length() > 100) {
+            errors.append("• Le nom ne doit pas dépasser 100 caractères\n");
+        }
+
+        // Validation type (obligatoire)
+        if (typeCombo.getValue() == null || typeCombo.getValue().trim().isEmpty()) {
+            errors.append("• Le type est obligatoire\n");
+        }
+
+        // Validation prix (obligatoire et numérique positif)
+        try {
+            String prixText = prixField.getText().trim();
+            if (prixText.isEmpty()) {
+                errors.append("• Le prix est obligatoire\n");
+            } else {
+                BigDecimal prix = new BigDecimal(prixText);
+                if (prix.compareTo(BigDecimal.ZERO) <= 0) {
+                    errors.append("• Le prix doit être supérieur à 0\n");
+                }
+            }
+        } catch (NumberFormatException e) {
+            errors.append("• Le prix doit être un nombre valide\n");
+        }
+
+        // Validation description (max TEXT)
+        if (descriptionField.getText() != null && descriptionField.getText().length() > 65535) {
+            errors.append("• La description est trop longue\n");
+        }
+
+        // Validation catégorie (max 50)
+        if (categorieField.getText() != null && categorieField.getText().trim().length() > 50) {
+            errors.append("• La catégorie ne doit pas dépasser 50 caractères\n");
+        }
+
+        // Validation ville (max 100)
+        if (villeField.getText() != null && villeField.getText().trim().length() > 100) {
+            errors.append("• La ville ne doit pas dépasser 100 caractères\n");
+        }
+
+        if (errors.length() > 0) {
+            afficherMessage("Erreurs de validation :\n" + errors.toString(), Alert.AlertType.ERROR);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void afficherMessage(String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(type == Alert.AlertType.ERROR ? "Erreur" : 
+                      type == Alert.AlertType.WARNING ? "Avertissement" : "Information");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+}

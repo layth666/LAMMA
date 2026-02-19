@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.ChatController"
+            stylesheets="@/css/chat.css"
+            prefWidth="1200" prefHeight="750" maxWidth="Infinity" maxHeight="Infinity">
+
+    <!-- LEFT: Liste des groupes -->
+    <left>
+        <VBox styleClass="chat-sidebar" prefWidth="380">
+            <!-- Header sidebar -->
+            <HBox styleClass="sidebar-header" spacing="15" alignment="CENTER_LEFT">
+                <Label text="💬 Messagerie" styleClass="sidebar-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="+" fx:id="btnNewGroup" styleClass="btn-new-group" onAction="#onNewGroup"/>
+            </HBox>
+
+            <!-- Recherche -->
+            <HBox styleClass="search-container" spacing="10">
+                <TextField fx:id="searchField" promptText="🔍 Rechercher un groupe..." styleClass="search-input"/>
+            </HBox>
+
+            <!-- Liste des groupes -->
+            <ListView fx:id="groupsList" styleClass="groups-list" VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </left>
+
+    <!-- CENTER: Zone de chat -->
+    <center>
+        <VBox styleClass="chat-container">
+            <!-- Header du chat -->
+            <HBox styleClass="chat-header" spacing="15" alignment="CENTER_LEFT">
+                <VBox spacing="2">
+                    <Label fx:id="activeGroupName" text="Sélectionnez un groupe" styleClass="chat-group-name"/>
+                    <Label fx:id="groupInfo" text="En ligne" styleClass="chat-group-status"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="⋮" fx:id="btnMenu" styleClass="btn-menu" onAction="#onMenu"/>
+            </HBox>
+
+            <!-- Zone des messages -->
+            <ScrollPane fx:id="messagesScroll" fitToWidth="true" styleClass="messages-scroll" VBox.vgrow="ALWAYS">
+                <VBox fx:id="messagesBox" spacing="8" styleClass="messages-box">
+                    <padding>
+                        <Insets top="15.0" right="15.0" bottom="15.0" left="15.0"/>
+                    </padding>
+                </VBox>
+            </ScrollPane>
+
+            <!-- Zone de saisie -->
+            <HBox styleClass="input-container" spacing="10">
+                <TextField fx:id="messageField" promptText="Tapez votre message..." styleClass="message-input" HBox.hgrow="ALWAYS"/>
+                <Button text="📤" fx:id="btnSend" styleClass="btn-send" onAction="#onSend"/>
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>

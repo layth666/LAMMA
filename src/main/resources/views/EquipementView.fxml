@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.EquipementController"
+            stylesheets="@/css/equipement.css"
+            prefWidth="1200" prefHeight="750" maxWidth="Infinity" maxHeight="Infinity">
+
+    <!-- TOP: Sous-header + Bannière style LAMMA -->
+    <top>
+        <VBox>
+            <!-- Barre Retour / Section -->
+            <HBox styleClass="sub-header" spacing="10" alignment="CENTER_LEFT">
+                <Button text="← Retour au dashboard" styleClass="back-btn" onAction="#onRetourDashboard"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Équipements" styleClass="nav-section-label"/>
+            </HBox>
+            <!-- Bannière bleue Gestion des Équipements -->
+            <HBox styleClass="section-banner" spacing="10" alignment="CENTER_LEFT">
+                <Label text="📋 Gestion des Équipements" styleClass="section-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Espace Administrateur" styleClass="admin-space-label"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- CENTER: Contenu principal (scrollable) -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="content-scroll" BorderPane.alignment="CENTER">
+            <VBox spacing="15">
+                <padding>
+                    <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+                </padding>
+                <!-- Barre d'actions -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Button text="+ Nouveau Équipement" fx:id="btnAjouter" styleClass="btn-new" onAction="#ajouterEquipement"/>
+                    <Button text="Actualiser" fx:id="btnActualiser" styleClass="btn-refresh" onAction="#actualiser"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <TextField fx:id="searchField" promptText="Rechercher un équipement..." styleClass="search-field" prefWidth="300"/>
+                </HBox>
+
+                <!-- Section Filtres -->
+                <VBox spacing="10" styleClass="filters-section">
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <Label text="Filtres:" styleClass="filter-label"/>
+                        <ComboBox fx:id="filterCategorie" promptText="Toutes les catégories" prefWidth="200"/>
+                        <ComboBox fx:id="filterType" promptText="Tous les types" prefWidth="150"/>
+                        <ComboBox fx:id="filterStatut" promptText="Tous les statuts" prefWidth="150"/>
+                        <ComboBox fx:id="sortCombo" promptText="Trier par..." prefWidth="180"/>
+                        <Label fx:id="countLabel" text="0 équipement(s)" styleClass="count-label"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="✕ Réinitialiser" fx:id="btnReset" styleClass="btn-reset" onAction="#resetFiltres"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Table des équipements (hauteur min pour scroll interne) -->
+                <VBox spacing="10">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="📋 Liste des Équipements" styleClass="table-title"/>
+                    </HBox>
+                    <TableView fx:id="equipementTable" styleClass="data-table" minHeight="280" prefHeight="320" VBox.vgrow="SOMETIMES">
+                        <columns>
+                            <TableColumn fx:id="colId" text="ID" minWidth="50" prefWidth="60"/>
+                            <TableColumn fx:id="colNom" text="Nom" minWidth="100" prefWidth="140"/>
+                            <TableColumn fx:id="colDescription" text="Description" minWidth="150" prefWidth="200"/>
+                            <TableColumn fx:id="colCategorie" text="Catégorie" minWidth="90" prefWidth="120"/>
+                            <TableColumn fx:id="colType" text="Type" minWidth="80" prefWidth="100"/>
+                            <TableColumn fx:id="colPrix" text="Prix (€)" minWidth="80" prefWidth="100"/>
+                            <TableColumn fx:id="colVille" text="Ville" minWidth="90" prefWidth="110"/>
+                            <TableColumn fx:id="colStatut" text="Statut" minWidth="90" prefWidth="110"/>
+                            <TableColumn fx:id="colDateAjout" text="Date d'ajout" minWidth="110" prefWidth="140"/>
+                            <TableColumn fx:id="colActions" text="Actions" minWidth="120" prefWidth="150"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+
+                <!-- Formulaire d'ajout/modification -->
+                <VBox spacing="15" styleClass="form-section">
+                <Label text="Formulaire" styleClass="form-title"/>
+                <GridPane hgap="15" vgap="15">
+                    <columnConstraints>
+                        <ColumnConstraints prefWidth="150"/>
+                        <ColumnConstraints prefWidth="300" hgrow="ALWAYS"/>
+                        <ColumnConstraints prefWidth="150"/>
+                        <ColumnConstraints prefWidth="300" hgrow="ALWAYS"/>
+                    </columnConstraints>
+
+                    <Label text="Nom *:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <TextField fx:id="nomField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                    <Label text="Catégorie:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                    <TextField fx:id="categorieField" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+
+                    <Label text="Type *:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <ComboBox fx:id="typeCombo" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                    <Label text="Prix (€) *:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                    <TextField fx:id="prixField" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+
+                    <Label text="Ville:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <TextField fx:id="villeField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                    <Label text="Statut:" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                    <ComboBox fx:id="statutCombo" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+
+                    <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                    <TextArea fx:id="descriptionField" prefRowCount="3" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3"/>
+                </GridPane>
+
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button text="Modifier" fx:id="btnModifier" styleClass="btn-modify" onAction="#enregistrerModification"/>
+                    <Button text="Supprimer" fx:id="btnSupprimer" styleClass="btn-delete" onAction="#supprimerEquipement"/>
+                    <Button text="Détails" styleClass="btn-details" onAction="#afficherDetails"/>
+                </HBox>
+                </VBox>
+
+                <!-- Footer -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Liste actualisée" styleClass="status-label"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.MainController"
+            stylesheets="@/css/main.css"
+            prefWidth="1200" prefHeight="750" maxWidth="Infinity" maxHeight="Infinity">
+
+    <!-- TOP: Header avec logo et navigation -->
+    <top>
+        <HBox styleClass="main-header" spacing="20" alignment="CENTER_LEFT">
+            <ImageView fx:id="logoView" fitWidth="45" fitHeight="45" preserveRatio="true"/>
+            <Label text="LAMMA Voyage" styleClass="brand-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            
+            <!-- Boutons de navigation -->
+            <Button text="📋 Équipements" fx:id="btnEquipements" styleClass="nav-btn active" onAction="#showEquipements"/>
+            <Button text="💬 Messagerie" fx:id="btnMessagerie" styleClass="nav-btn" onAction="#showMessagerie"/>
+            
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="Espace Administrateur" styleClass="admin-label"/>
+            <Button text="−" fx:id="btnMinimize" styleClass="window-btn" onAction="#minimizeWindow"/>
+            <Button text="☐" fx:id="btnMaximize" styleClass="window-btn" onAction="#toggleMaximize"/>
+            <Button text="✕" fx:id="btnQuitter" styleClass="window-btn window-btn-close" onAction="#quitter"/>
+        </HBox>
+    </top>
+
+    <!-- CENTER: Contenu dynamique -->
+    <center>
+        <StackPane fx:id="contentPane" styleClass="content-pane">
+            <!-- Les vues seront chargées dynamiquement ici -->
+        </StackPane>
+    </center>
+
+</BorderPane>
