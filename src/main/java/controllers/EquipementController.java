@@ -55,6 +55,8 @@ public class EquipementController implements Initializable {
     @FXML private Button btnSupprimer;
     @FXML private Button btnActualiser;
     @FXML private Button btnReset;
+    @FXML private Button btnFermerForm;
+    @FXML private VBox formSection;
 
     @FXML private Label countLabel;
 
@@ -87,7 +89,7 @@ public class EquipementController implements Initializable {
                     setText(null);
                 } else {
                     DecimalFormat df = new DecimalFormat("#,##0.00");
-                    setText(df.format(prix) + " €");
+                    setText(df.format(prix) + " TND");
                 }
             }
         });
@@ -137,20 +139,27 @@ public class EquipementController implements Initializable {
         // Configuration des ComboBox
         typeCombo.getItems().addAll("VENTE", "LOCATION");
         statutCombo.getItems().addAll("DISPONIBLE", "VENDU", "LOUE");
-        
-        filterCategorie.getItems().add("Tous");
-        filterType.getItems().addAll("Tous", "VENTE", "LOCATION");
-        filterStatut.getItems().addAll("Tous", "DISPONIBLE", "VENDU", "LOUE");
-        
+
+        // Filtres : Type et Statut uniquement (pas "public" - équipements = Vente/Location)
+        filterType.getItems().addAll("VENTE", "LOCATION");
+        filterStatut.getItems().addAll("DISPONIBLE", "VENDU", "LOUE");
         sortCombo.getItems().addAll(
-            "Date (récent)", 
-            "Date (ancien)", 
-            "Prix (croissant)", 
-            "Prix (décroissant)", 
-            "Nom (A-Z)", 
+            "Date (récent)",
+            "Date (ancien)",
+            "Prix (croissant)",
+            "Prix (décroissant)",
+            "Nom (A-Z)",
             "Nom (Z-A)"
         );
         sortCombo.setValue("Date (récent)");
+
+        // Tooltips pour une utilisation plus simple
+        btnAjouter.setTooltip(new Tooltip("Cliquez pour ajouter un nouvel équipement. Remplissez le formulaire en bas puis enregistrez."));
+        btnActualiser.setTooltip(new Tooltip("Recharge la liste depuis la base de données."));
+        btnModifier.setTooltip(new Tooltip("Enregistre les modifications sur l'équipement sélectionné."));
+        btnSupprimer.setTooltip(new Tooltip("Supprime l'équipement sélectionné (demande confirmation)."));
+        searchField.setTooltip(new Tooltip("Recherche par nom, description, catégorie ou ville."));
+        prixField.setTooltip(new Tooltip("Prix en dinars tunisiens (TND). Exemple: 150.500"));
 
         // Écouteurs pour recherche et filtres
         searchField.textProperty().addListener((obs, oldVal, newVal) -> appliquerFiltres());
@@ -167,12 +176,33 @@ public class EquipementController implements Initializable {
             }
         });
 
+        // Formulaire masqué au départ pour libérer l'espace
+        if (formSection != null) {
+            formSection.setVisible(false);
+            formSection.setManaged(false);
+        }
+
         // Charger les données (ne pas bloquer l'affichage si la DB échoue)
         try {
             actualiser();
         } catch (Exception e) {
             System.err.println("Chargement équipements: " + e.getMessage());
             countLabel.setText("0 équipement(s)");
+        }
+    }
+
+    private void montrerFormulaire() {
+        if (formSection != null) {
+            formSection.setVisible(true);
+            formSection.setManaged(true);
+        }
+    }
+
+    @FXML
+    private void masquerFormulaire() {
+        if (formSection != null) {
+            formSection.setVisible(false);
+            formSection.setManaged(false);
         }
     }
 
@@ -191,9 +221,8 @@ public class EquipementController implements Initializable {
                 .collect(Collectors.toList());
         
         filterCategorie.getItems().clear();
-        filterCategorie.getItems().add("Tous");
         filterCategorie.getItems().addAll(categories);
-        filterCategorie.setValue("Tous");
+        filterCategorie.setValue(null);
         
         appliquerFiltres();
     }
@@ -296,17 +325,14 @@ public class EquipementController implements Initializable {
                     (e.getCategorie() != null && e.getCategorie().toLowerCase().contains(search)) ||
                     (e.getVille() != null && e.getVille().toLowerCase().contains(search));
 
-            // Filtre catégorie
-            boolean matchCat = cat == null || cat.equals("Tous") ||
-                    (e.getCategorie() != null && e.getCategorie().equals(cat));
+            // Filtre catégorie (null = pas de filtre)
+            boolean matchCat = cat == null || (e.getCategorie() != null && e.getCategorie().equals(cat));
 
-            // Filtre type
-            boolean matchType = type == null || type.equals("Tous") ||
-                    (e.getType() != null && e.getType().equals(type));
+            // Filtre type (null = pas de filtre)
+            boolean matchType = type == null || (e.getType() != null && e.getType().equals(type));
 
-            // Filtre statut
-            boolean matchStatut = statut == null || statut.equals("Tous") ||
-                    (e.getStatut() != null && e.getStatut().equals(statut));
+            // Filtre statut (null = pas de filtre)
+            boolean matchStatut = statut == null || (e.getStatut() != null && e.getStatut().equals(statut));
 
             return matchSearch && matchCat && matchType && matchStatut;
         };
@@ -314,6 +340,13 @@ public class EquipementController implements Initializable {
 
     @FXML
     private void ajouterEquipement() {
+        // Si le formulaire est masqué, l'afficher et vider pour saisie (ne pas ajouter tout de suite)
+        if (formSection != null && !formSection.isVisible()) {
+            viderFormulaire();
+            selectedEquipement = null;
+            montrerFormulaire();
+            return;
+        }
         if (!validerFormulaire()) return;
 
         try {
@@ -330,6 +363,7 @@ public class EquipementController implements Initializable {
             service.ajouter(e);
             viderFormulaire();
             actualiser();
+            masquerFormulaire();
             afficherMessage("✅ Équipement ajouté avec succès !", Alert.AlertType.INFORMATION);
         } catch (Exception e) {
             afficherMessage("❌ Erreur lors de l'ajout : " + e.getMessage(), Alert.AlertType.ERROR);
@@ -349,10 +383,11 @@ public class EquipementController implements Initializable {
             equipementAModifier = selectedEquipement;
         }
         if (equipementAModifier == null) {
-            afficherMessage("⚠️ Veuillez sélectionner un équipement", Alert.AlertType.WARNING);
+            afficherMessage("⚠️ Veuillez sélectionner un équipement dans le tableau", Alert.AlertType.WARNING);
             return;
         }
 
+        montrerFormulaire();
         chargerEquipementDansFormulaire(equipementAModifier);
     }
 
@@ -378,6 +413,7 @@ public class EquipementController implements Initializable {
             viderFormulaire();
             selectedEquipement = null;
             actualiser();
+            masquerFormulaire();
             afficherMessage("✅ Équipement modifié avec succès !", Alert.AlertType.INFORMATION);
         } catch (Exception e) {
             afficherMessage("❌ Erreur lors de la modification : " + e.getMessage(), Alert.AlertType.ERROR);
@@ -416,6 +452,7 @@ public class EquipementController implements Initializable {
                 if (selectedEquipement != null && selectedEquipement.getId().equals(equipementId)) {
                     viderFormulaire();
                     selectedEquipement = null;
+                    masquerFormulaire();
                 }
                 actualiser();
                 afficherMessage("✅ Équipement supprimé avec succès !", Alert.AlertType.INFORMATION);
@@ -453,7 +490,7 @@ public class EquipementController implements Initializable {
             "Description: %s\n" +
             "Catégorie: %s\n" +
             "Type: %s\n" +
-            "Prix: %s €\n" +
+            "Prix: %s TND\n" +
             "Ville: %s\n" +
             "Statut: %s\n" +
             "Date d'ajout: %s",
@@ -462,7 +499,7 @@ public class EquipementController implements Initializable {
             equipementFinal.getDescription() != null ? equipementFinal.getDescription() : "N/A",
             equipementFinal.getCategorie() != null ? equipementFinal.getCategorie() : "N/A",
             equipementFinal.getType(),
-            new DecimalFormat("#,##0.00").format(equipementFinal.getPrix()),
+            equipementFinal.getPrix() != null ? new DecimalFormat("#,##0.00").format(equipementFinal.getPrix()) : "N/A",
             equipementFinal.getVille() != null ? equipementFinal.getVille() : "N/A",
             equipementFinal.getStatut(),
             equipementFinal.getDateAjout() != null ? new SimpleDateFormat("yyyy-MM-dd HH:mm").format(equipementFinal.getDateAjout()) : "N/A"
@@ -480,9 +517,9 @@ public class EquipementController implements Initializable {
     @FXML
     private void resetFiltres() {
         searchField.clear();
-        filterCategorie.setValue("Tous");
-        filterType.setValue("Tous");
-        filterStatut.setValue("Tous");
+        filterCategorie.setValue(null);
+        filterType.setValue(null);
+        filterStatut.setValue(null);
         sortCombo.setValue("Date (récent)");
     }
 
@@ -534,7 +571,7 @@ public class EquipementController implements Initializable {
                 }
             }
         } catch (NumberFormatException e) {
-            errors.append("• Le prix doit être un nombre valide\n");
+            errors.append("• Le prix doit être un nombre valide (en dinars tunisiens TND)\n");
         }
 
         // Validation description (max TEXT)
