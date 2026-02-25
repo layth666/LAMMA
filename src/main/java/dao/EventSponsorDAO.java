@@ -1,6 +1,7 @@
 package dao;
 
 import model.EventSponsor;
+import model.EventStats;
 import utils.DatabaseConnection;
 
 import java.sql.*;
@@ -202,6 +203,30 @@ public class EventSponsorDAO {
             }
         }
         return false;
+    }
+
+    // Statistiques : totaux par événement
+    public List<EventStats> getTotalsParEvenement() throws SQLException {
+        List<EventStats> stats = new ArrayList<>();
+        String query = "SELECT e.nom AS event_nom, SUM(es.montant) AS total_montant, COUNT(*) AS nb_assoc " +
+                "FROM EventSponsor es " +
+                "JOIN Evenement e ON es.event_id = e.id " +
+                "GROUP BY es.event_id, e.nom " +
+                "ORDER BY total_montant DESC";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                stats.add(new EventStats(
+                        rs.getString("event_nom"),
+                        rs.getDouble("total_montant"),
+                        rs.getInt("nb_assoc")
+                ));
+            }
+        }
+        return stats;
     }
 
     // Calculer le montant total des contributions par événement

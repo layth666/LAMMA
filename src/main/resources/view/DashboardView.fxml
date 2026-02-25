@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.DashboardController"
+      styleClass="content-card"
+      spacing="12">
+
+    <HBox styleClass="section-header" alignment="CENTER_LEFT">
+        <padding>
+            <Insets top="10" right="15" bottom="10" left="15"/>
+        </padding>
+        <Label text="📊 Dashboard Analytics" styleClass="section-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="lblLastUpdate" text="" style="-fx-text-fill: white; -fx-font-size: 11px;"/>
+    </HBox>
+
+    <VBox spacing="10" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets top="12" right="15" bottom="15" left="15"/>
+        </padding>
+
+        <HBox spacing="12" VBox.vgrow="ALWAYS">
+            <VBox styleClass="detail-panel" spacing="6" prefWidth="260">
+                <Label text="Vue générale" style="-fx-font-weight: bold; -fx-text-fill: #3498db;"/>
+                <Label fx:id="lblTotalMontant" style="-fx-font-size: 14px; -fx-text-fill: #ecf0f1;"/>
+                <Label fx:id="lblNbAssociations" style="-fx-font-size: 13px; -fx-text-fill: #bdc3c7;"/>
+                <Label fx:id="lblTopEvent" wrapText="true" style="-fx-font-size: 12px; -fx-text-fill: #f1c40f;"/>
+            </VBox>
+
+            <VBox spacing="6" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                <PieChart fx:id="pieParEvenement" VBox.vgrow="ALWAYS" styleClass="dashboard-pie"/>
+            </VBox>
+        </HBox>
+    </VBox>
+
+</VBox>
+

@@ -32,6 +32,7 @@
                 <HBox spacing="10" alignment="CENTER_RIGHT">
                     <Button text="Sponsors" fx:id="btnSponsors" styleClass="nav-button"/>
                     <Button text="Événements - Sponsors" fx:id="btnEventSponsor" styleClass="nav-button"/>
+                    <Button text="Dashboard" fx:id="btnDashboard" styleClass="nav-button"/>
                 </HBox>
             </HBox>
         </VBox>

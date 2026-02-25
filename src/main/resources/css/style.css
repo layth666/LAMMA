@@ -289,7 +289,7 @@
 
 /* Panneau détail (droite) - thème sombre */
 .detail-panel {
-    -fx-background-color: rgba(61, 66, 73, 0.95);
+    -fx-background-color: rgba(61, 66, 73, 0.78);
     -fx-padding: 15;
     -fx-background-radius: 8;
 }
@@ -318,6 +318,36 @@
 }
 
 /* ========== FORMULAIRES (dialogs) - thème "Nouveau Restaurant" ========== */
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.chart-title {
+    -fx-text-fill: #ecf0f1;
+    -fx-font-size: 13px;
+}
+
+.axis-label,
+.axis-tick-label {
+    -fx-text-fill: #ecf0f1;
+    -fx-font-size: 11px;
+}
+
+.chart-legend {
+    -fx-text-fill: #ecf0f1;
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-padding: 0;
+}
+
+.dashboard-pie .chart-legend {
+    -fx-background-color: transparent;
+}
+
+.chart-pie-label {
+    -fx-fill: #ecf0f1;
+    -fx-font-size: 11px;
+}
 .dialog-form-dark {
     -fx-background-color: #2C3038;
 }

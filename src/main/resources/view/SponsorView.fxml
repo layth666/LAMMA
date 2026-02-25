@@ -52,8 +52,8 @@
                     <!-- Placeholder quand rien sélectionné -->
                     <Label fx:id="lblPlaceholder" text="Sélectionnez un sponsor dans la liste" style="-fx-text-fill: #95a5a6; -fx-font-size: 14px;" StackPane.alignment="CENTER"/>
                     <!-- Contenu détail -->
-                    <VBox fx:id="boxDetail" visible="false" spacing="12">
-                        <ImageView fx:id="imgDetailLogo" fitHeight="80" fitWidth="80" preserveRatio="true"/>
+                    <VBox fx:id="boxDetail" visible="false" spacing="16">
+                        <ImageView fx:id="imgDetailLogo" fitHeight="140" fitWidth="140" preserveRatio="true"/>
                         <Label fx:id="lblDetailNom" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
                         <Label fx:id="lblDetailTel" style="-fx-font-size: 13px;"/>
                         <Label fx:id="lblDetailEmail" style="-fx-font-size: 13px;"/>
