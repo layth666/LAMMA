@@ -9,49 +9,52 @@
       styleClass="content-card"
       spacing="0">
 
-    <!-- Barre titre section -->
     <HBox styleClass="section-header" alignment="CENTER_LEFT">
         <padding>
             <Insets top="10" right="15" bottom="10" left="15"/>
         </padding>
         <Label text="🔗 Association Événement - Sponsor" styleClass="section-title"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Label text="" style="-fx-text-fill: white; -fx-font-size: 12px;"/>
+        <Label text="Espace Administrateur" style="-fx-text-fill: white; -fx-font-size: 12px;"/>
     </HBox>
 
-    <VBox spacing="15" VBox.vgrow="ALWAYS">
+    <VBox spacing="12" VBox.vgrow="ALWAYS">
         <padding>
-            <Insets top="20" right="20" bottom="20" left="20"/>
+            <Insets top="15" right="15" bottom="15" left="15"/>
         </padding>
 
-        <!-- Boutons et formulaire -->
-        <HBox spacing="15" alignment="CENTER_LEFT">
-            <Button text="+ Associer" onAction="#associerSponsor" styleClass="btn-add"/>
-            <Button text="Actualiser" onAction="#actualiser" styleClass="btn-refresh"/>
+        <HBox spacing="12" alignment="CENTER_LEFT">
+            <Button text="+ NEW" onAction="#ouvrirFormulaireAjout" styleClass="btn-new"/>
+            <Button text="SYNC" onAction="#actualiser" styleClass="btn-sync"/>
+            <Button text="PDF" onAction="#exporterPdf" styleClass="btn-sync"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="lblCount" text="0 associations" styleClass="lbl-count"/>
         </HBox>
 
-        <!-- Formulaire -->
-        <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-background-color: #f8f9fa; -fx-padding: 12; -fx-background-radius: 4;">
-            <Label text="Événement :" style="-fx-min-width: 80;"/>
-            <ComboBox fx:id="cboEvenement" promptText="Choisir événement" prefWidth="250"/>
-            <Label text="Sponsor :" style="-fx-min-width: 60;"/>
-            <ComboBox fx:id="cboSponsor" promptText="Choisir sponsor" prefWidth="250"/>
-            <Label text="Niveau :" style="-fx-min-width: 55;"/>
-            <ComboBox fx:id="cboNiveau" promptText="Niveau" prefWidth="120"/>
-            <Label text="Montant (DT) :" style="-fx-min-width: 90;"/>
-            <TextField fx:id="txtMontant" promptText="0.00" prefWidth="100"/>
-        </HBox>
+        <HBox spacing="15" HBox.hgrow="ALWAYS">
+            <VBox HBox.hgrow="ALWAYS" maxWidth="400" minWidth="280">
+                <Label text="Associations disponibles" style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-padding: 0 0 5 0; -fx-text-fill: #ecf0f1;"/>
+                <ListView fx:id="listAssociations" VBox.vgrow="ALWAYS" styleClass="list-sponsors-compact"/>
+            </VBox>
 
-        <!-- Boutons d'action -->
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <Button text="Associer" onAction="#associerSponsor" styleClass="btn-add"/>
-            <Button text="Modifier" onAction="#modifierAssociation" styleClass="btn-modify"/>
-            <Button text="Supprimer" onAction="#supprimerAssociation" styleClass="btn-delete"/>
+            <VBox styleClass="detail-panel" HBox.hgrow="ALWAYS" minWidth="350">
+                <Label text="DÉTAILS DE L'ASSOCIATION" style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #3498db; -fx-padding: 0 0 10 0;"/>
+                <StackPane VBox.vgrow="ALWAYS">
+                    <Label fx:id="lblPlaceholder" text="Sélectionnez une association dans la liste" style="-fx-text-fill: #95a5a6; -fx-font-size: 14px;" StackPane.alignment="CENTER"/>
+                    <VBox fx:id="boxDetail" visible="false" spacing="10">
+                        <Label fx:id="lblDetailEvent" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblDetailSponsor" style="-fx-font-size: 13px;"/>
+                        <Label fx:id="lblDetailNiveau" style="-fx-font-size: 13px;"/>
+                        <Label fx:id="lblDetailMontant" style="-fx-font-size: 13px;"/>
+                        <Region VBox.vgrow="ALWAYS"/>
+                        <HBox spacing="10">
+                            <Button text="Edit" onAction="#ouvrirFormulaireModification" styleClass="btn-edit"/>
+                            <Button text="Drop" onAction="#supprimerAssociation" styleClass="btn-drop"/>
+                        </HBox>
+                    </VBox>
+                </StackPane>
+            </VBox>
         </HBox>
-
-        <!-- Liste des associations (format cartes) -->
-        <Label text="📋 Liste des associations" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
-        <ListView fx:id="listAssociations" VBox.vgrow="ALWAYS" styleClass="list-sponsors" prefHeight="300"/>
     </VBox>
 
 </VBox>

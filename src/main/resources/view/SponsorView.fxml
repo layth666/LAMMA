@@ -10,65 +10,63 @@
       styleClass="content-card"
       spacing="0">
 
-    <!-- Barre titre section -->
     <HBox styleClass="section-header" alignment="CENTER_LEFT">
         <padding>
             <Insets top="10" right="15" bottom="10" left="15"/>
         </padding>
         <Label text="📋 Gestion des Sponsors" styleClass="section-title"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Label text="" style="-fx-text-fill: white; -fx-font-size: 12px;"/>
+        <Label text="Espace Administrateur" style="-fx-text-fill: white; -fx-font-size: 12px;"/>
     </HBox>
 
-    <VBox spacing="15" VBox.vgrow="ALWAYS">
+    <VBox spacing="12" VBox.vgrow="ALWAYS">
         <padding>
-            <Insets top="20" right="20" bottom="20" left="20"/>
+            <Insets top="15" right="15" bottom="15" left="15"/>
         </padding>
 
-        <!-- Boutons et recherche -->
-        <HBox spacing="15" alignment="CENTER_LEFT">
-            <Button text="+ Nouveau Sponsor" onAction="#ajouterSponsor" styleClass="btn-add"/>
-            <Button text="Actualiser" onAction="#actualiser" styleClass="btn-refresh"/>
+        <!-- Barre: + NEW, SYNC, Filtres, Recherche, count, RESET -->
+        <HBox spacing="12" alignment="CENTER_LEFT">
+            <Button text="+ NEW" onAction="#ouvrirFormulaireAjout" styleClass="btn-new"/>
+            <Button text="SYNC" onAction="#actualiser" styleClass="btn-sync"/>
+            <Label text="Filtres:" style="-fx-text-fill: #ecf0f1; -fx-font-weight: bold;"/>
+            <ComboBox fx:id="cboFiltreStatut" styleClass="combo-box" prefWidth="100"/>
+            <ComboBox fx:id="cboTri" styleClass="combo-box" prefWidth="130"/>
             <Region HBox.hgrow="ALWAYS"/>
-            <TextField fx:id="txtRecherche" promptText="Rechercher un sponsor..." styleClass="search-field" prefWidth="250"/>
+            <TextField fx:id="txtRecherche" promptText="Rechercher un sponsor..." styleClass="search-field" prefWidth="220"/>
+            <Label fx:id="lblCount" text="0 sponsors" styleClass="lbl-count"/>
+            <Button text="RESET" onAction="#reinitialiserFiltres" styleClass="btn-reset"/>
         </HBox>
 
-        <!-- Filtres -->
-        <HBox spacing="15" alignment="CENTER_LEFT">
-            <Label text="Filtres :" style="-fx-font-weight: bold;"/>
-            <ComboBox fx:id="cboFiltreStatut" styleClass="combo-box" prefWidth="120"/>
-            <ComboBox fx:id="cboTri" styleClass="combo-box" prefWidth="150"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Label fx:id="lblCount" text="0 sponsors"/>
-            <Button text="✕ Réinitialiser" onAction="#reinitialiserFiltres" styleClass="btn-reset"/>
-        </HBox>
+        <!-- Zone principale: liste à gauche, détail à droite -->
+        <HBox spacing="15" HBox.hgrow="ALWAYS">
+            <!-- Liste des sponsors (gauche) -->
+            <VBox HBox.hgrow="ALWAYS" maxWidth="400" minWidth="280">
+                <Label text="Sponsors disponibles" style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-padding: 0 0 5 0; -fx-text-fill: #ecf0f1;"/>
+                <ListView fx:id="listSponsors" VBox.vgrow="ALWAYS" styleClass="list-sponsors-compact"/>
+            </VBox>
 
-        <!-- Formulaire -->
-        <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-background-color: #f8f9fa; -fx-padding: 12; -fx-background-radius: 4;">
-            <Label text="Nom :" style="-fx-min-width: 70;"/>
-            <TextField fx:id="txtNom" promptText="Nom du sponsor" prefWidth="150"/>
-            <Label text="Téléphone :" style="-fx-min-width: 70;"/>
-            <TextField fx:id="txtTelephone" promptText="+21612345678" prefWidth="140"/>
-            <Label text="Email :" style="-fx-min-width: 50;"/>
-            <TextField fx:id="txtEmail" promptText="email@exemple.com" prefWidth="180"/>
-            <Label text="Logo :" style="-fx-min-width: 40;"/>
-            <TextField fx:id="txtLogo" promptText="Choisir une image..." prefWidth="120" editable="false"/>
-            <Button text="Parcourir..." onAction="#choisirLogo" styleClass="btn-refresh"/>
-            <ImageView fx:id="imgLogoPreview" fitHeight="40" fitWidth="40" preserveRatio="true" pickOnBounds="true"/>
-            <CheckBox fx:id="chkStatut" text="Actif"/>
+            <!-- Détail du sponsor sélectionné (droite) -->
+            <VBox styleClass="detail-panel" HBox.hgrow="ALWAYS" minWidth="350">
+                <Label text="DÉTAILS DU SPONSOR" style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #3498db; -fx-padding: 0 0 10 0;"/>
+                <StackPane VBox.vgrow="ALWAYS">
+                    <!-- Placeholder quand rien sélectionné -->
+                    <Label fx:id="lblPlaceholder" text="Sélectionnez un sponsor dans la liste" style="-fx-text-fill: #95a5a6; -fx-font-size: 14px;" StackPane.alignment="CENTER"/>
+                    <!-- Contenu détail -->
+                    <VBox fx:id="boxDetail" visible="false" spacing="12">
+                        <ImageView fx:id="imgDetailLogo" fitHeight="80" fitWidth="80" preserveRatio="true"/>
+                        <Label fx:id="lblDetailNom" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblDetailTel" style="-fx-font-size: 13px;"/>
+                        <Label fx:id="lblDetailEmail" style="-fx-font-size: 13px;"/>
+                        <Label fx:id="lblDetailStatut" style="-fx-font-size: 13px;"/>
+                        <Region VBox.vgrow="ALWAYS"/>
+                        <HBox spacing="10">
+                            <Button text="Edit" onAction="#ouvrirFormulaireModification" styleClass="btn-edit"/>
+                            <Button text="Drop" onAction="#supprimerSponsor" styleClass="btn-drop"/>
+                        </HBox>
+                    </VBox>
+                </StackPane>
+            </VBox>
         </HBox>
-
-        <!-- Boutons d'action -->
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <Button text="Ajouter" onAction="#ajouterSponsor" styleClass="btn-add"/>
-            <Button text="Modifier" onAction="#modifierSponsor" styleClass="btn-modify"/>
-            <Button text="Supprimer" onAction="#supprimerSponsor" styleClass="btn-delete"/>
-            <Button text="Annuler" onAction="#annuler" styleClass="btn-cancel"/>
-        </HBox>
-
-        <!-- Liste des sponsors (format cartes) -->
-        <Label text="📋 Liste des Sponsors" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
-        <ListView fx:id="listSponsors" VBox.vgrow="ALWAYS" styleClass="list-sponsors" prefHeight="300"/>
     </VBox>
 
 </VBox>

@@ -38,7 +38,9 @@
     </top>
 
     <center>
-        <StackPane fx:id="contentPane" styleClass="content-panel">
+        <!-- Image de fond : placez votre photo dans src/main/resources/images/ (ex: background.jpg),
+             puis dans style.css décommentez .content-panel-with-bg et remplacez content-panel par content-panel-with-bg ici -->
+        <StackPane fx:id="contentPane" styleClass="content-panel-with-bg">
             <padding>
                 <Insets top="15" right="15" bottom="15" left="15"/>
             </padding>
