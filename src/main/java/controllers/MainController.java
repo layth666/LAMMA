@@ -10,6 +10,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import controllers.EquipementListeController;
+import controllers.EquipementStoreController;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -17,6 +20,7 @@ public class MainController implements Initializable {
 
     @FXML private StackPane contentPane;
     @FXML private Button btnEquipements;
+    @FXML private Button btnBoutique;
     @FXML private Button btnMessagerie;
     @FXML private Button btnMinimize;
     @FXML private Button btnMaximize;
@@ -25,7 +29,12 @@ public class MainController implements Initializable {
 
     // ✅ Utiliser Region au lieu de Node
     private Region equipementView;
+    private Region boutiqueView;
     private Region chatView;
+
+    // Références des contrôleurs pour synchroniser les vues
+    private EquipementListeController equipementListeController;
+    private EquipementStoreController equipementStoreController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -53,12 +62,20 @@ public class MainController implements Initializable {
 
     private void loadViews() {
         try {
-            // Charger EquipementView
+            // Charger EquipementView (Dashboard admin)
             FXMLLoader equipementLoader =
-                    new FXMLLoader(getClass().getResource("/views/EquipementView.fxml"));
+                    new FXMLLoader(getClass().getResource("/views/EquipementListeView.fxml"));
             equipementView = equipementLoader.load();
             equipementView.setMaxWidth(Double.MAX_VALUE);
             equipementView.setMaxHeight(Double.MAX_VALUE);
+            equipementListeController = equipementLoader.getController();
+
+            // Charger EquipementStoreView (Boutique)
+            FXMLLoader boutiqueLoader = new FXMLLoader(getClass().getResource("/views/EquipementStoreView.fxml"));
+            boutiqueView = boutiqueLoader.load();
+            boutiqueView.setMaxWidth(Double.MAX_VALUE);
+            boutiqueView.setMaxHeight(Double.MAX_VALUE);
+            equipementStoreController = boutiqueLoader.getController();
 
             // Charger ChatView
             FXMLLoader chatLoader =
@@ -76,9 +93,26 @@ public class MainController implements Initializable {
     @FXML
     private void showEquipements() {
         if (equipementView != null) {
+            // Rafraîchir les données à chaque affichage pour rester synchronisé avec la boutique
+            if (equipementListeController != null) {
+                equipementListeController.rafraichirDepuisMain();
+            }
             contentPane.getChildren().clear();
             contentPane.getChildren().add(equipementView);
             updateNavButtons(btnEquipements);
+        }
+    }
+
+    @FXML
+    private void showBoutique() {
+        if (boutiqueView != null) {
+            // Rafraîchir les données à chaque affichage pour rester synchronisé avec le dashboard
+            if (equipementStoreController != null) {
+                equipementStoreController.rafraichirDepuisMain();
+            }
+            contentPane.getChildren().clear();
+            contentPane.getChildren().add(boutiqueView);
+            updateNavButtons(btnBoutique);
         }
     }
 
@@ -93,6 +127,7 @@ public class MainController implements Initializable {
 
     private void updateNavButtons(Button activeButton) {
         btnEquipements.getStyleClass().remove("active");
+        btnBoutique.getStyleClass().remove("active");
         btnMessagerie.getStyleClass().remove("active");
 
         if (!activeButton.getStyleClass().contains("active")) {

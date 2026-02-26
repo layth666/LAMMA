@@ -1,0 +1,6 @@
+# Copier ce fichier en mail.properties et mettre votre clé SendGrid
+# Ne pas commiter mail.properties (il est dans .gitignore)
+# Un tiret "-" en tête de la clé est retiré automatiquement (clé déchiffrée)
+
+sendgrid.api.key=VOTRE_CLE_SENDGRID
+sendgrid.from=votre-email-verifie@domaine.com

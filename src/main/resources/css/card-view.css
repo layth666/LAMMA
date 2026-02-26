@@ -1,0 +1,102 @@
+/* Card View - Style LAMMA Équipements */
+
+.modern-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.modern-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.modern-panel {
+    -fx-background-color: linear-gradient(to bottom, rgba(30, 58, 95, 0.95), rgba(45, 74, 111, 0.9));
+    -fx-background-radius: 16;
+    -fx-border-color: rgba(255,255,255,0.1);
+    -fx-border-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0, 0, 5);
+}
+
+.modern-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.modern-card {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255,255,255,0.08);
+    -fx-border-radius: 12;
+}
+
+.modern-input {
+    -fx-background-color: rgba(255,255,255,0.08);
+    -fx-background-radius: 10;
+    -fx-border-color: rgba(255,255,255,0.15);
+    -fx-border-radius: 10;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #94a3b8;
+    -fx-font-size: 12px;
+}
+
+.modern-input:focused {
+    -fx-border-color: #F97316;
+    -fx-background-color: rgba(255,255,255,0.12);
+}
+
+.button-capsule {
+    -fx-background-color: #F97316;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+}
+
+.button-capsule:hover {
+    -fx-background-color: #ea580c;
+}
+
+.button-capsule-glass {
+    -fx-background-color: rgba(255,255,255,0.1);
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-border-color: rgba(255,255,255,0.2);
+    -fx-border-radius: 20;
+    -fx-cursor: hand;
+}
+
+.button-capsule-glass:hover {
+    -fx-background-color: rgba(255,255,255,0.15);
+}
+
+.modern-list-view {
+    -fx-background-color: rgba(255,255,255,0.04);
+    -fx-background-radius: 12;
+}
+
+.modern-list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.modern-list-view .list-cell:filled:hover {
+    -fx-background-color: rgba(249, 115, 22, 0.2);
+}
+
+.modern-list-view .list-cell:filled:selected {
+    -fx-background-color: rgba(249, 115, 22, 0.35);
+}
+
+.section-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.glass-panel {
+    -fx-background-color: rgba(30, 58, 95, 0.92);
+    -fx-background-radius: 16;
+    -fx-border-color: rgba(255,255,255,0.1);
+    -fx-border-radius: 16;
+}

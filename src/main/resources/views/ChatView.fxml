@@ -6,12 +6,12 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.ChatController"
-            stylesheets="@/css/chat.css"
+            stylesheets="@/css/admin.css, @/css/chat.css"
             prefWidth="1200" prefHeight="750" maxWidth="Infinity" maxHeight="Infinity">
 
     <!-- LEFT: Liste des groupes -->
     <left>
-        <VBox styleClass="chat-sidebar" prefWidth="380">
+        <VBox styleClass="chat-sidebar chat-sidebar-admin" prefWidth="380">
             <!-- Header sidebar -->
             <HBox styleClass="sidebar-header" spacing="15" alignment="CENTER_LEFT">
                 <Label text="💬 Messagerie" styleClass="sidebar-title"/>
@@ -31,9 +31,9 @@
 
     <!-- CENTER: Zone de chat -->
     <center>
-        <VBox styleClass="chat-container">
+        <VBox styleClass="chat-container chat-container-admin">
             <!-- Header du chat -->
-            <HBox styleClass="chat-header" spacing="15" alignment="CENTER_LEFT">
+            <HBox styleClass="chat-header chat-header-admin" spacing="15" alignment="CENTER_LEFT">
                 <VBox spacing="2">
                     <Label fx:id="activeGroupName" text="Sélectionnez un groupe" styleClass="chat-group-name"/>
                     <Label fx:id="groupInfo" text="En ligne" styleClass="chat-group-status"/>
@@ -52,9 +52,11 @@
             </ScrollPane>
 
             <!-- Zone de saisie -->
-            <HBox styleClass="input-container" spacing="10">
-                <TextField fx:id="messageField" promptText="Tapez votre message..." styleClass="message-input" HBox.hgrow="ALWAYS"/>
-                <Button text="📤" fx:id="btnSend" styleClass="btn-send" onAction="#onSend"/>
+            <HBox styleClass="input-container input-container-admin" spacing="10">
+                <Button text="📎" fx:id="btnAttach" styleClass="admin-btn-glass" onAction="#onAttach" style="-fx-padding: 8 12;"/>
+                <Button text="📍" fx:id="btnLocation" styleClass="admin-btn-glass" onAction="#onLocation" style="-fx-padding: 8 12;"/>
+                <TextField fx:id="messageField" promptText="Tapez votre message..." styleClass="message-input modern-input" HBox.hgrow="ALWAYS"/>
+                <Button text="📤" fx:id="btnSend" styleClass="btn-send admin-btn-primary" onAction="#onSend"/>
             </HBox>
         </VBox>
     </center>

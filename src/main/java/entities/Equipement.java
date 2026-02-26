@@ -13,6 +13,8 @@ public class Equipement {
     private String ville;
     private String statut; // DISPONIBLE / VENDU / LOUE
     private Timestamp dateAjout;
+    private String caracteristiques; // JSON: {"places":"4","taille":"GRANDE"} pour tente, etc.
+    private Integer nombreVues; // pour statistique "équipement le plus affiché"
 
     public Equipement() {}
 
@@ -67,6 +69,12 @@ public class Equipement {
 
     public Timestamp getDateAjout() { return dateAjout; }
     public void setDateAjout(Timestamp dateAjout) { this.dateAjout = dateAjout; }
+
+    public String getCaracteristiques() { return caracteristiques; }
+    public void setCaracteristiques(String caracteristiques) { this.caracteristiques = caracteristiques; }
+
+    public Integer getNombreVues() { return nombreVues; }
+    public void setNombreVues(Integer nombreVues) { this.nombreVues = nombreVues; }
 
     @Override
     public String toString() {

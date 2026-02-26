@@ -20,8 +20,14 @@ public class EquipementService {
 
     // CREATE
     public void ajouter(Equipement e) {
-        String sql = "INSERT INTO equipement (nom, description, categorie, type, prix, ville, statut) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+        Long id = ajouterRetourId(e);
+        if (id != null) e.setId(id);
+    }
+
+    /** Ajoute un équipement et retourne son ID généré (pour sauvegarder les attributs). */
+    public Long ajouterRetourId(Equipement e) {
+        String sql = "INSERT INTO equipement (nom, description, categorie, type, prix, ville, statut, caracteristiques) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, e.getNom());
             ps.setString(2, e.getDescription());
             ps.setString(3, e.getCategorie());
@@ -29,24 +35,51 @@ public class EquipementService {
             ps.setBigDecimal(5, e.getPrix());
             ps.setString(6, e.getVille());
             ps.setString(7, e.getStatut() != null ? e.getStatut() : "DISPONIBLE");
+            ps.setString(8, e.getCaracteristiques());
             ps.executeUpdate();
-            System.out.println("✅ Équipement ajouté !");
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                long id = rs.getLong(1);
+                System.out.println("✅ Équipement ajouté ! id=" + id);
+                return id;
+            }
         } catch (SQLException ex) {
-            System.out.println("❌ Erreur ajout équipement");
-            ex.printStackTrace();
+            if (ex.getMessage() != null && ex.getMessage().contains("caracteristiques")) {
+                try {
+                    String sql2 = "INSERT INTO equipement (nom, description, categorie, type, prix, ville, statut) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                    try (PreparedStatement ps2 = cnx.prepareStatement(sql2, Statement.RETURN_GENERATED_KEYS)) {
+                        ps2.setString(1, e.getNom());
+                        ps2.setString(2, e.getDescription());
+                        ps2.setString(3, e.getCategorie());
+                        ps2.setString(4, e.getType());
+                        ps2.setBigDecimal(5, e.getPrix());
+                        ps2.setString(6, e.getVille());
+                        ps2.setString(7, e.getStatut() != null ? e.getStatut() : "DISPONIBLE");
+                        ps2.executeUpdate();
+                        ResultSet rs2 = ps2.getGeneratedKeys();
+                        if (rs2.next()) { return rs2.getLong(1); }
+                    }
+                } catch (SQLException ex2) {
+                    System.out.println("❌ Erreur ajout équipement");
+                    ex2.printStackTrace();
+                }
+            } else {
+                System.out.println("❌ Erreur ajout équipement");
+                ex.printStackTrace();
+            }
         }
+        return null;
     }
 
     // READ ALL (DB -> List -> Stream)
     public List<Equipement> afficher() {
         List<Equipement> list = new ArrayList<>();
-        String sql = "SELECT id, nom, description, categorie, type, prix, ville, statut, date_ajout FROM equipement";
-
+        String sqlWithVues = "SELECT id, nom, description, categorie, type, prix, ville, statut, date_ajout, caracteristiques, nombre_vues FROM equipement";
+        String sqlBase = "SELECT id, nom, description, categorie, type, prix, ville, statut, date_ajout, caracteristiques FROM equipement";
         try (Statement st = cnx.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-
+             ResultSet rs = st.executeQuery(sqlWithVues)) {
             while (rs.next()) {
-                list.add(new Equipement(
+                Equipement eq = new Equipement(
                         rs.getLong("id"),
                         rs.getString("nom"),
                         rs.getString("description"),
@@ -56,12 +89,43 @@ public class EquipementService {
                         rs.getString("ville"),
                         rs.getString("statut"),
                         rs.getTimestamp("date_ajout")
-                ));
+                );
+                try { eq.setCaracteristiques(rs.getString("caracteristiques")); } catch (Exception ignored) {}
+                try { eq.setNombreVues(rs.getInt("nombre_vues")); } catch (Exception ignored) {}
+                list.add(eq);
             }
-
         } catch (SQLException e) {
-            System.out.println("❌ Erreur affichage équipements");
-            e.printStackTrace();
+            if (e.getMessage() != null && (e.getMessage().contains("nombre_vues") || e.getMessage().contains("Unknown column"))) {
+                try (Statement st = cnx.createStatement(); ResultSet rs = st.executeQuery(sqlBase)) {
+                    while (rs.next()) {
+                        Equipement eq = new Equipement(rs.getLong("id"), rs.getString("nom"), rs.getString("description"),
+                                rs.getString("categorie"), rs.getString("type"), rs.getBigDecimal("prix"),
+                                rs.getString("ville"), rs.getString("statut"), rs.getTimestamp("date_ajout"));
+                        try { eq.setCaracteristiques(rs.getString("caracteristiques")); } catch (Exception ignored) {}
+                        list.add(eq);
+                    }
+                } catch (SQLException ex2) {
+                    System.out.println("❌ Erreur affichage équipements");
+                    ex2.printStackTrace();
+                }
+            } else if (e.getMessage() != null && e.getMessage().contains("caracteristiques")) {
+                try {
+                    String sql2 = "SELECT id, nom, description, categorie, type, prix, ville, statut, date_ajout FROM equipement";
+                    try (ResultSet rs2 = cnx.createStatement().executeQuery(sql2)) {
+                        while (rs2.next()) {
+                            list.add(new Equipement(rs2.getLong("id"), rs2.getString("nom"), rs2.getString("description"),
+                                    rs2.getString("categorie"), rs2.getString("type"), rs2.getBigDecimal("prix"),
+                                    rs2.getString("ville"), rs2.getString("statut"), rs2.getTimestamp("date_ajout")));
+                        }
+                    }
+                } catch (SQLException ex2) {
+                    System.out.println("❌ Erreur affichage équipements");
+                    ex2.printStackTrace();
+                }
+            } else {
+                System.out.println("❌ Erreur affichage équipements");
+                e.printStackTrace();
+            }
         }
 
         // ✅ Stream: tri par date_ajout DESC (plus récent en premier)
@@ -87,7 +151,7 @@ public class EquipementService {
 
     // UPDATE
     public void modifier(Equipement e) {
-        String sql = "UPDATE equipement SET nom = ?, description = ?, categorie = ?, type = ?, prix = ?, ville = ?, statut = ? WHERE id = ?";
+        String sql = "UPDATE equipement SET nom = ?, description = ?, categorie = ?, type = ?, prix = ?, ville = ?, statut = ?, caracteristiques = ? WHERE id = ?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, e.getNom());
             ps.setString(2, e.getDescription());
@@ -96,12 +160,34 @@ public class EquipementService {
             ps.setBigDecimal(5, e.getPrix());
             ps.setString(6, e.getVille());
             ps.setString(7, e.getStatut());
-            ps.setLong(8, e.getId());
+            ps.setString(8, e.getCaracteristiques());
+            ps.setLong(9, e.getId());
             int updated = ps.executeUpdate();
             System.out.println(updated > 0 ? "✅ Équipement modifié !" : "⚠️ Aucun équipement trouvé");
         } catch (SQLException ex) {
-            System.out.println("❌ Erreur modification équipement");
-            ex.printStackTrace();
+            if (ex.getMessage() != null && ex.getMessage().contains("caracteristiques")) {
+                try {
+                    String sql2 = "UPDATE equipement SET nom = ?, description = ?, categorie = ?, type = ?, prix = ?, ville = ?, statut = ? WHERE id = ?";
+                    try (PreparedStatement ps2 = cnx.prepareStatement(sql2)) {
+                        ps2.setString(1, e.getNom());
+                        ps2.setString(2, e.getDescription());
+                        ps2.setString(3, e.getCategorie());
+                        ps2.setString(4, e.getType());
+                        ps2.setBigDecimal(5, e.getPrix());
+                        ps2.setString(6, e.getVille());
+                        ps2.setString(7, e.getStatut());
+                        ps2.setLong(8, e.getId());
+                        ps2.executeUpdate();
+                        System.out.println("✅ Équipement modifié !");
+                    }
+                } catch (SQLException ex2) {
+                    System.out.println("❌ Erreur modification équipement");
+                    ex2.printStackTrace();
+                }
+            } else {
+                System.out.println("❌ Erreur modification équipement");
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -115,6 +201,18 @@ public class EquipementService {
         } catch (SQLException e) {
             System.out.println("❌ Erreur suppression équipement");
             e.printStackTrace();
+        }
+    }
+
+    /** Incrémente le nombre de vues d'un équipement (pour statistique "équipement le plus affiché"). */
+    public void incrementerVues(Long id) {
+        String sql = "UPDATE equipement SET nombre_vues = COALESCE(nombre_vues, 0) + 1 WHERE id = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setLong(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            if (e.getMessage() == null || (!e.getMessage().contains("nombre_vues") && !e.getMessage().contains("Unknown column")))
+                System.out.println("❌ Erreur incrementerVues: " + e.getMessage());
         }
     }
 
@@ -196,6 +294,13 @@ public class EquipementService {
     public List<Equipement> trierParNom() {
         return afficher().stream()
                 .sorted(Comparator.comparing(e -> e.getNom() != null ? e.getNom().toLowerCase() : ""))
+                .collect(Collectors.toList());
+    }
+
+    // ✅ Équipements disponibles (exclut VENDU)
+    public List<Equipement> afficherDisponibles() {
+        return afficher().stream()
+                .filter(e -> e.getStatut() == null || !e.getStatut().equals("VENDU"))
                 .collect(Collectors.toList());
     }
 

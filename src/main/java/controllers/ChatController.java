@@ -2,9 +2,11 @@ package controllers;
 
 import entities.GroupeChat;
 import entities.MessageChat;
+import Services.BannedWordsService;
 import Services.GroupeChatService;
 import Services.MessageChatService;
 import javafx.application.Platform;
+import javafx.stage.FileChooser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,7 +20,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.net.URI;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -43,9 +50,16 @@ public class ChatController implements Initializable {
     @FXML private Button btnNewGroup;
     @FXML private Button btnSend;
     @FXML private Button btnMenu;
+    @FXML private Button btnAttach;
+    @FXML private Button btnLocation;
 
     private GroupeChatService groupeService;
     private MessageChatService messageService;
+    private BannedWordsService bannedWordsService;
+    private String pendingFichierPath;
+    private String pendingTypeMessage;
+    private Double pendingLatitude;
+    private Double pendingLongitude;
     private ObservableList<GroupeChat> groupesObservableList;
     private GroupeChat selectedGroupe;
     private Timer refreshTimer;
@@ -56,7 +70,9 @@ public class ChatController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         groupeService = new GroupeChatService();
         messageService = new MessageChatService();
+        bannedWordsService = new BannedWordsService();
         groupesObservableList = FXCollections.observableArrayList();
+        pendingTypeMessage = "TEXT";
 
         // Configuration de la ListView pour afficher les groupes
         groupsList.setCellFactory(param -> new ListCell<GroupeChat>() {
@@ -214,35 +230,167 @@ public class ChatController implements Initializable {
 
     private void addMessageBubble(MessageChat msg) {
         if (msg == null || messagesBox == null) return;
-        
-        // Simuler si c'est l'utilisateur courant (pour la démo, on considère les messages pairs comme "moi")
-        boolean isMe = msg.getId() % 2 == 0; // À remplacer par la vraie logique utilisateur
-        
-        VBox bubble = new VBox(5);
-        bubble.getStyleClass().addAll("message-bubble", isMe ? "bubble-me" : "bubble-other");
+
+        boolean isMe = msg.getId() % 2 == 0;
+        String type = msg.getTypeMessage() != null ? msg.getTypeMessage() : "TEXT";
+        String contenu = msg.getContenu() != null ? msg.getContenu() : "";
+        String path = msg.getFichierPath();
+        Double lat = msg.getLatitude();
+        Double lon = msg.getLongitude();
+
+        VBox bubble = new VBox(6);
+        bubble.getStyleClass().addAll("message-bubble", "message-bubble-admin", isMe ? "bubble-me" : "bubble-other");
         bubble.setMaxWidth(400);
         bubble.setPadding(new Insets(10, 15, 10, 15));
 
-        String contenu = msg.getContenu() != null ? msg.getContenu() : "";
-        Label msgLabel = new Label(contenu);
-        msgLabel.setWrapText(true);
-        msgLabel.setFont(Font.font("System", 14));
-        msgLabel.setTextFill(Color.web("#000000"));
+        // Contenu selon le type : image (aperçu + ouvrir), document (icône + ouvrir), position (carte), texte
+        if ("IMAGE".equals(type) && path != null && !path.isBlank()) {
+            File f = new File(path);
+            if (f.exists()) {
+                try {
+                    Image img = new Image("file:" + f.getAbsolutePath(), 280, 200, true, true);
+                    ImageView iv = new ImageView(img);
+                    iv.setPreserveRatio(true);
+                    iv.setSmooth(true);
+                    iv.setOnMouseClicked(e -> ouvrirFichier(f));
+                    bubble.getChildren().add(iv);
+                } catch (Exception e) {
+                    ajouterLignePieceJointe(bubble, "🖼 " + f.getName(), f);
+                }
+            } else {
+                ajouterLignePieceJointe(bubble, "🖼 " + new File(path).getName() + " (fichier absent)", null);
+            }
+            if (!contenu.isEmpty() && !"(pièce jointe)".equals(contenu)) {
+                Label txt = new Label(contenu);
+                txt.setWrapText(true);
+                txt.setFont(Font.font("System", 14));
+                txt.setTextFill(Color.web("#e2e8f0"));
+                bubble.getChildren().add(txt);
+            }
+            Button btnOuvrir = new Button("Ouvrir l'image");
+            btnOuvrir.setStyle("-fx-font-size: 11; -fx-cursor: hand;");
+            btnOuvrir.setOnAction(e -> ouvrirFichier(f));
+            bubble.getChildren().add(btnOuvrir);
+        } else if ("PDF".equals(type) || "AUDIO".equals(type) || "VIDEO".equals(type)) {
+            File f = path != null ? new File(path) : null;
+            String icon = "PDF".equals(type) ? "📄" : "AUDIO".equals(type) ? "🎵" : "🎬";
+            String nom = f != null ? f.getName() : "fichier";
+            ajouterLignePieceJointe(bubble, icon + " " + nom, f);
+            if (!contenu.isEmpty() && !"(pièce jointe)".equals(contenu)) {
+                Label txt = new Label(contenu);
+                txt.setWrapText(true);
+                txt.setFont(Font.font("System", 14));
+                txt.setTextFill(Color.web("#e2e8f0"));
+                bubble.getChildren().add(txt);
+            }
+            if (f != null && f.exists()) {
+                Button btnOuvrir = new Button("Ouvrir / Consulter");
+                btnOuvrir.setStyle("-fx-font-size: 11; -fx-cursor: hand;");
+                btnOuvrir.setOnAction(e -> ouvrirFichier(f));
+                bubble.getChildren().add(btnOuvrir);
+            }
+        } else if ("LOCATION".equals(type) && lat != null && lon != null) {
+            Label titre = new Label("📍 Position actuelle");
+            titre.setFont(Font.font("System", FontWeight.BOLD, 13));
+            titre.setTextFill(Color.web("#e2e8f0"));
+            Label coords = new Label(String.format("%.5f, %.5f", lat, lon));
+            coords.setFont(Font.font("System", 12));
+            coords.setTextFill(Color.web("#94a3b8"));
+            Button btnCarte = new Button("Voir sur la carte");
+            btnCarte.setStyle("-fx-font-size: 11; -fx-cursor: hand;");
+            btnCarte.setOnAction(e -> ouvrirCarteNavigateur(lat, lon));
+            bubble.getChildren().addAll(titre, coords, btnCarte);
+            if (!contenu.isEmpty() && !"(pièce jointe)".equals(contenu)) {
+                Label txt = new Label(contenu);
+                txt.setWrapText(true);
+                txt.setFont(Font.font("System", 14));
+                txt.setTextFill(Color.web("#e2e8f0"));
+                bubble.getChildren().add(txt);
+            }
+        } else {
+            if (type != null && !"TEXT".equals(type) && (path != null || (lat != null && lon != null))) {
+                if (path != null) contenu = "[" + type + "] " + (contenu.isEmpty() ? new File(path).getName() : contenu);
+                else contenu = "📍 Position partagée";
+            }
+            Label msgLabel = new Label(contenu.isEmpty() ? "(message)" : contenu);
+            msgLabel.setWrapText(true);
+            msgLabel.setFont(Font.font("System", 14));
+            msgLabel.setTextFill(Color.web("#e2e8f0"));
+            bubble.getChildren().add(msgLabel);
+        }
 
-        String timeStr = msg.getDateEnvoi() != null 
-            ? msg.getDateEnvoi().toLocalDateTime().format(timeFmt) 
-            : "";
+        String timeStr = msg.getDateEnvoi() != null
+                ? msg.getDateEnvoi().toLocalDateTime().format(timeFmt)
+                : "";
         Label timeLabel = new Label(timeStr);
         timeLabel.setFont(Font.font("System", 11));
-        timeLabel.setTextFill(Color.web("#666666"));
+        timeLabel.setTextFill(Color.web("#94a3b8"));
+        bubble.getChildren().add(timeLabel);
 
-        bubble.getChildren().addAll(msgLabel, timeLabel);
+        ContextMenu ctx = new ContextMenu();
+        MenuItem editItem = new MenuItem("Modifier");
+        MenuItem deleteItem = new MenuItem("Supprimer");
+        editItem.setOnAction(e -> ouvrirEditMessage(msg));
+        deleteItem.setOnAction(e -> {
+            new Alert(Alert.AlertType.CONFIRMATION, "Supprimer ce message ?", ButtonType.OK, ButtonType.CANCEL)
+                    .showAndWait().filter(r -> r == ButtonType.OK).ifPresent(r -> {
+                messageService.supprimer(msg.getId());
+                loadMessages(selectedGroupe.getId());
+            });
+        });
+        ctx.getItems().addAll(editItem, deleteItem);
+        bubble.setOnContextMenuRequested(ev -> ctx.show(bubble, ev.getScreenX(), ev.getScreenY()));
 
         HBox row = new HBox(bubble);
         row.setAlignment(isMe ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
         row.setPadding(new Insets(3, 0, 3, 0));
 
         messagesBox.getChildren().add(row);
+    }
+
+    private void ajouterLignePieceJointe(VBox bubble, String texte, File f) {
+        Label l = new Label(texte);
+        l.setWrapText(true);
+        l.setFont(Font.font("System", 13));
+        l.setTextFill(Color.web("#e2e8f0"));
+        if (f != null && f.exists()) l.setOnMouseClicked(e -> ouvrirFichier(f));
+        bubble.getChildren().add(l);
+    }
+
+    private void ouvrirFichier(File f) {
+        if (f == null || !f.exists()) {
+            new Alert(Alert.AlertType.WARNING, "Fichier introuvable: " + (f != null ? f.getAbsolutePath() : "")).showAndWait();
+            return;
+        }
+        try {
+            Desktop.getDesktop().open(f);
+        } catch (Exception e) {
+            new Alert(Alert.AlertType.ERROR, "Impossible d'ouvrir le fichier: " + e.getMessage()).showAndWait();
+        }
+    }
+
+    private void ouvrirCarteNavigateur(double lat, double lon) {
+        try {
+            String url = "https://www.google.com/maps?q=" + lat + "," + lon;
+            Desktop.getDesktop().browse(URI.create(url));
+        } catch (Exception e) {
+            new Alert(Alert.AlertType.ERROR, "Impossible d'ouvrir la carte: " + e.getMessage()).showAndWait();
+        }
+    }
+
+    private void ouvrirEditMessage(MessageChat msg) {
+        TextInputDialog d = new TextInputDialog(msg.getContenu());
+        d.setTitle("Modifier le message");
+        d.setHeaderText("Nouveau contenu");
+        d.showAndWait().ifPresent(nouveauContenu -> {
+            if (bannedWordsService.containsBannedWord(nouveauContenu)) {
+                new Alert(Alert.AlertType.WARNING, "Message bloqué : langage inapproprié. Veuillez modifier votre message.").showAndWait();
+                return;
+            }
+            msg.setContenu(nouveauContenu);
+            messageService.modifier(msg);
+            loadMessages(selectedGroupe.getId());
+        });
     }
 
     @FXML
@@ -257,13 +405,29 @@ public class ChatController implements Initializable {
         }
 
         String text = messageField.getText();
-        if (text == null || text.trim().isEmpty()) return;
+        if (text == null) text = "";
+        if (text.trim().isEmpty() && (pendingFichierPath == null || pendingFichierPath.isEmpty())) return;
+
+        if (bannedWordsService.containsBannedWord(text)) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Message bloqué");
+            alert.setHeaderText("Langage inapproprié");
+            alert.setContentText("Votre message contient des mots interdits. Veuillez modifier votre message et respecter les règles de la communauté.");
+            alert.showAndWait();
+            return;
+        }
 
         try {
-            MessageChat newMsg = new MessageChat(text.trim(), selectedGroupe.getId());
+            MessageChat newMsg = new MessageChat(text.trim().isEmpty() ? "(pièce jointe)" : text.trim(), selectedGroupe.getId());
+            newMsg.setTypeMessage(pendingTypeMessage != null ? pendingTypeMessage : "TEXT");
+            newMsg.setFichierPath(pendingFichierPath);
+            newMsg.setLatitude(pendingLatitude);
+            newMsg.setLongitude(pendingLongitude);
             messageService.ajouter(newMsg);
-            
-            // Recharger les messages pour afficher le nouveau
+            pendingFichierPath = null;
+            pendingTypeMessage = "TEXT";
+            pendingLatitude = null;
+            pendingLongitude = null;
             loadMessages(selectedGroupe.getId());
             messageField.clear();
         } catch (Exception e) {
@@ -272,6 +436,61 @@ public class ChatController implements Initializable {
             alert.setHeaderText(null);
             alert.setContentText("Erreur lors de l'envoi du message: " + e.getMessage());
             alert.showAndWait();
+        }
+    }
+
+    @FXML
+    private void onAttach() {
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Joindre un fichier (image, PDF, audio, vidéo)");
+        fc.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp"),
+                new FileChooser.ExtensionFilter("PDF", "*.pdf"),
+                new FileChooser.ExtensionFilter("Audio", "*.mp3", "*.wav", "*.m4a"),
+                new FileChooser.ExtensionFilter("Vidéo", "*.mp4", "*.webm", "*.avi"),
+                new FileChooser.ExtensionFilter("Tous", "*.*")
+        );
+        java.io.File f = fc.showOpenDialog(messageField.getScene().getWindow());
+        if (f != null && f.exists()) {
+            pendingFichierPath = f.getAbsolutePath();
+            String name = f.getName().toLowerCase();
+            if (name.endsWith(".pdf")) pendingTypeMessage = "PDF";
+            else if (name.matches(".*\\.(png|jpg|jpeg|gif|bmp)")) pendingTypeMessage = "IMAGE";
+            else if (name.matches(".*\\.(mp3|wav|m4a)")) pendingTypeMessage = "AUDIO";
+            else if (name.matches(".*\\.(mp4|webm|avi)")) pendingTypeMessage = "VIDEO";
+            else pendingTypeMessage = "TEXT";
+            messageField.setPromptText("Fichier: " + f.getName() + " – tapez un message optionnel");
+        }
+    }
+
+    @FXML
+    private void onLocation() {
+        Dialog<String> d = new Dialog<>();
+        d.setTitle("📍 Partager ma position actuelle");
+        d.setHeaderText("Comme WhatsApp / Messenger : entrez vos coordonnées (ex. Tunis: 36.8, 10.18)");
+        d.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(15));
+        TextField latF = new TextField("36.8");
+        latF.setPromptText("Latitude");
+        TextField lonF = new TextField("10.18");
+        lonF.setPromptText("Longitude");
+        grid.add(new Label("Latitude:"), 0, 0);
+        grid.add(latF, 1, 0);
+        grid.add(new Label("Longitude:"), 0, 1);
+        grid.add(lonF, 1, 1);
+        d.getDialogPane().setContent(grid);
+        d.setResultConverter(btn -> btn == ButtonType.OK ? "ok" : null);
+        if (d.showAndWait().isEmpty() || d.getResult() == null) return;
+        try {
+            pendingLatitude = Double.parseDouble(latF.getText().trim());
+            pendingLongitude = Double.parseDouble(lonF.getText().trim());
+            pendingTypeMessage = "LOCATION";
+            messageField.setPromptText("📍 Position actuelle " + String.format("%.2f, %.2f", pendingLatitude, pendingLongitude) + " – message optionnel");
+        } catch (NumberFormatException e) {
+            new Alert(Alert.AlertType.WARNING, "Latitude et longitude doivent être des nombres (ex. 36.8 et 10.18).").showAndWait();
         }
     }
 

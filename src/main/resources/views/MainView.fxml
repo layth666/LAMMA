@@ -18,7 +18,8 @@
             <Region HBox.hgrow="ALWAYS"/>
             
             <!-- Boutons de navigation -->
-            <Button text="📋 Équipements" fx:id="btnEquipements" styleClass="nav-btn active" onAction="#showEquipements"/>
+            <Button text="📊 Dashboard" fx:id="btnEquipements" styleClass="nav-btn active" onAction="#showEquipements"/>
+            <Button text="🛒 Boutique" fx:id="btnBoutique" styleClass="nav-btn" onAction="#showBoutique"/>
             <Button text="💬 Messagerie" fx:id="btnMessagerie" styleClass="nav-btn" onAction="#showMessagerie"/>
             
             <Region HBox.hgrow="ALWAYS"/>

@@ -7,13 +7,18 @@ public class MessageChat {
     private String contenu;
     private Timestamp dateEnvoi;
     private int idGroupe;
+    private String typeMessage; // TEXT, IMAGE, PDF, AUDIO, VIDEO, LOCATION
+    private String fichierPath;
+    private Double latitude;
+    private Double longitude;
 
     public MessageChat() {}
 
     // Pour INSERT
     public MessageChat(String contenu, int idGroupe) {
-        this.contenu = contenu;
+        this.contenu = contenu != null ? contenu : "";
         this.idGroupe = idGroupe;
+        this.typeMessage = "TEXT";
     }
 
     // Pour SELECT
@@ -22,6 +27,7 @@ public class MessageChat {
         this.contenu = contenu;
         this.dateEnvoi = dateEnvoi;
         this.idGroupe = idGroupe;
+        this.typeMessage = "TEXT";
     }
 
     public int getId() { return id; }
@@ -35,6 +41,15 @@ public class MessageChat {
 
     public int getIdGroupe() { return idGroupe; }
     public void setIdGroupe(int idGroupe) { this.idGroupe = idGroupe; }
+
+    public String getTypeMessage() { return typeMessage; }
+    public void setTypeMessage(String typeMessage) { this.typeMessage = typeMessage; }
+    public String getFichierPath() { return fichierPath; }
+    public void setFichierPath(String fichierPath) { this.fichierPath = fichierPath; }
+    public Double getLatitude() { return latitude; }
+    public void setLatitude(Double latitude) { this.latitude = latitude; }
+    public Double getLongitude() { return longitude; }
+    public void setLongitude(Double longitude) { this.longitude = longitude; }
 
     @Override
     public String toString() {

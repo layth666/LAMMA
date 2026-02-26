@@ -89,6 +89,23 @@
     -fx-background-position: center;
 }
 
+/* Override par admin.css : même fond que Store/Dashboard */
+.chat-container-admin {
+    -fx-background-color: linear-gradient(to bottom, rgba(30, 58, 95, 0.92), rgba(45, 74, 111, 0.88));
+    -fx-background-image: null;
+}
+
+.chat-sidebar-admin {
+    -fx-background-color: rgba(15, 23, 42, 0.95);
+    -fx-border-color: rgba(255,255,255,0.08);
+    -fx-border-width: 0 1 0 0;
+}
+
+.chat-header-admin {
+    -fx-background-color: rgba(30, 58, 95, 0.98);
+    -fx-padding: 12 20;
+}
+
 .chat-header {
     -fx-background-color: #075e54;
     -fx-padding: 12 20;
@@ -169,6 +186,11 @@
     -fx-padding: 10 15;
     -fx-border-color: #e0e0e0;
     -fx-border-width: 1 0 0 0;
+}
+
+.input-container-admin {
+    -fx-background-color: rgba(15, 23, 42, 0.9);
+    -fx-border-color: rgba(255,255,255,0.08);
 }
 
 .message-input {

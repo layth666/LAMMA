@@ -1,0 +1,2 @@
+-- Migration: ajouter colonne caracteristiques pour attributs spécifiques par type d'équipement
+-- Exécuter si la colonne n'existe pas: ALTER TABLE equipement ADD COLUMN caracteristiques TEXT;
