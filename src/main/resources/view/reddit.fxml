@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.MainController"
+            styleClass="root"
+            prefWidth="1100" prefHeight="750">
+
+    <!-- TOP : Navbar with centered search -->
+    <top>
+        <VBox>
+            <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="16">
+                <Label text="🐧 LAMMA" styleClass="logo"/>
+
+            </HBox>
+
+            <!-- Blue gradient banner -->
+            <HBox styleClass="banner" alignment="CENTER_LEFT" spacing="12">
+                <Label text="📋" styleClass="banner-icon"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <HBox styleClass="navbar-search-box" alignment="CENTER" HBox.hgrow="ALWAYS" maxWidth="480">
+                    <Label text="🔍" styleClass="search-icon"/>
+                    <TextField fx:id="searchField" promptText="Rechercher un post..."
+                               styleClass="navbar-search" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <!-- Bell notification -->
+                <Label fx:id="bellLabel" text="🔔" styleClass="bell-label" onMouseClicked="#handleBellClick"/>
+                <Region HBox.hgrow="ALWAYS"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- CENTER -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+            <HBox spacing="24" styleClass="feed-wrapper" alignment="TOP_LEFT">
+
+                <!-- LEFT SIDEBAR -->
+                <VBox styleClass="left-sidebar" spacing="4" minWidth="200" maxWidth="200">
+
+                    <Label text="Trier par" styleClass="sidebar-section-title"/>
+                    <Button fx:id="btnDefault" text="⭐  Accueil" styleClass="filter-btn-active" maxWidth="Infinity" onAction="#handleSortDefault"/>
+                    <Button fx:id="btnComments" text="🔥  Populaire" styleClass="filter-btn" maxWidth="Infinity" onAction="#handleSortComments"/>
+                    <Button fx:id="btnAlpha" text="🔤  Alphabétique" styleClass="filter-btn" maxWidth="Infinity" onAction="#handleSortAlpha"/>
+                    <Button fx:id="btnRecent" text="🕐  Plus récent" styleClass="filter-btn" maxWidth="Infinity" onAction="#handleSortRecent"/>
+
+                </VBox>
+
+                <!-- MAIN FEED -->
+                <VBox spacing="16" styleClass="feed-column" HBox.hgrow="ALWAYS">
+
+                    <!-- Create Post Card -->
+                    <VBox styleClass="create-box" spacing="12">
+                        <Label text="Créer un Post" styleClass="section-title"/>
+                        <TextField fx:id="titleField" promptText="Titre du post" styleClass="input-field"/>
+                        <TextArea fx:id="contentArea" promptText="Contenu..."
+                                  prefHeight="90" styleClass="input-area"/>
+                        <Button text="+ Publier" onAction="#handleAddPost" styleClass="btn-green"/>
+                    </VBox>
+
+                    <!-- Posts Feed -->
+                    <VBox fx:id="postsContainer" spacing="12" styleClass="posts-container"/>
+                </VBox>
+
+                <!-- RIGHT SIDEBAR -->
+                <VBox styleClass="sidebar" spacing="12" minWidth="220" maxWidth="220">
+                    <VBox styleClass="sidebar-card" spacing="8">
+                        <Label text="🏠 Accueil" styleClass="sidebar-title"/>
+                        <Label text="Espace administrateur LAMMA. Gérez vos posts et commentaires."
+                               styleClass="sidebar-text" wrapText="true"/>
+                        <Button text="+ Nouveau Post" onAction="#handleAddPost" styleClass="btn-green" maxWidth="Infinity"/>
+                        <Button text="Nouvelle Communauté" styleClass="btn-blue" maxWidth="Infinity"/>
+                    </VBox>
+                </VBox>
+
+            </HBox>
+        </ScrollPane>
+    </center>
+
+    <!-- Bottom bar -->
+    <bottom>
+        <HBox styleClass="bottom-bar" alignment="CENTER_LEFT" spacing="10">
+            <Label text="Liste actualisée" styleClass="bottom-label"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
