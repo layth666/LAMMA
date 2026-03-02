@@ -7,8 +7,11 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import model.EventStats;
+import utils.CurrencyService;
 
 import java.net.URL;
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,8 +25,12 @@ public class DashboardController implements Initializable {
     @FXML private Label lblNbAssociations;
     @FXML private Label lblTopEvent;
     @FXML private PieChart pieParEvenement;
+    @FXML private javafx.scene.control.TextField txtMontantTnd;
+    @FXML private javafx.scene.control.ComboBox<String> cboDevise;
+    @FXML private Label lblResultConversion;
 
     private final EventSponsorDAO eventSponsorDAO = new EventSponsorDAO();
+    private java.util.Map<String, BigDecimal> ratesFromTnd = java.util.Collections.emptyMap();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -75,12 +82,60 @@ public class DashboardController implements Initializable {
             lblLastUpdate.setText("Dernière mise à jour : " +
                     LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
 
+            chargerConvertisseur();
+
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur Dashboard");
             alert.setHeaderText("Impossible de charger les statistiques");
             alert.setContentText(e.getMessage());
             alert.showAndWait();
+        }
+    }
+
+    private void chargerConvertisseur() {
+        if (txtMontantTnd == null || cboDevise == null || lblResultConversion == null) {
+            return;
+        }
+        try {
+            ratesFromTnd = CurrencyService.getRatesFromTnd();
+            cboDevise.getItems().setAll(ratesFromTnd.keySet());
+            if (cboDevise.getValue() == null && !cboDevise.getItems().isEmpty()) {
+                // Devise par défaut
+                cboDevise.setValue("EUR");
+            }
+            if (txtMontantTnd.getText() == null || txtMontantTnd.getText().isBlank()) {
+                txtMontantTnd.setText("1");
+            }
+
+            // Listeners (ajoutés une seule fois)
+            if (cboDevise.getUserData() == null) {
+                cboDevise.valueProperty().addListener((obs, o, n) -> mettreAJourConversion());
+                txtMontantTnd.textProperty().addListener((obs, o, n) -> mettreAJourConversion());
+                cboDevise.setUserData(Boolean.TRUE);
+            }
+
+            mettreAJourConversion();
+        } catch (IOException | InterruptedException e) {
+            lblResultConversion.setText("Erreur API devises");
+            e.printStackTrace();
+        }
+    }
+
+    private void mettreAJourConversion() {
+        if (ratesFromTnd == null || ratesFromTnd.isEmpty()) return;
+        String code = cboDevise.getValue();
+        if (code == null || !ratesFromTnd.containsKey(code)) return;
+
+        try {
+            double montantTnd = Double.parseDouble(txtMontantTnd.getText().trim());
+            BigDecimal rate = ratesFromTnd.get(code);
+            BigDecimal result = rate.multiply(BigDecimal.valueOf(montantTnd));
+            lblResultConversion.setText(
+                    String.format("%.2f TND = %.4f %s", montantTnd, result, code)
+            );
+        } catch (NumberFormatException e) {
+            lblResultConversion.setText("Montant TND invalide");
         }
     }
 }

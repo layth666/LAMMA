@@ -26,7 +26,7 @@
 
         <!-- Barre: + NEW, SYNC, Filtres, Recherche, count, RESET -->
         <HBox spacing="12" alignment="CENTER_LEFT">
-            <Button text="+ NEW" onAction="#ouvrirFormulaireAjout" styleClass="btn-new"/>
+            <Button text="+ Nouveau" onAction="#ouvrirFormulaireAjout" styleClass="btn-new"/>
             <Button text="SYNC" onAction="#actualiser" styleClass="btn-sync"/>
             <Label text="Filtres:" style="-fx-text-fill: #ecf0f1; -fx-font-weight: bold;"/>
             <ComboBox fx:id="cboFiltreStatut" styleClass="combo-box" prefWidth="100"/>

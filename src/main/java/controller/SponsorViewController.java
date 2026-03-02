@@ -14,6 +14,7 @@ import javafx.stage.Window;
 import model.Sponsor;
 import utils.DatabaseConnection;
 import utils.EmailService;
+import javafx.application.Platform;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,6 +26,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -48,6 +52,7 @@ public class SponsorViewController implements Initializable {
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
     private static final Pattern PHONE_PATTERN = Pattern.compile("^\\+216\\d{8}$");
     private Sponsor selectedSponsor = null;
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -248,8 +253,13 @@ public class SponsorViewController implements Initializable {
             pstmt.executeUpdate();
             ResultSet rs = pstmt.getGeneratedKeys();
             if (rs.next()) {
-                sponsorList.add(new Sponsor(rs.getInt(1), s.getNom(), s.getTelephone(), s.getEmail(), s.getLogo(), s.isStatut()));
+                int newId = rs.getInt(1);
+                Sponsor nouvelSponsor = new Sponsor(newId, s.getNom(), s.getTelephone(), s.getEmail(), s.getLogo(), s.isStatut());
+                sponsorList.add(nouvelSponsor);
                 applyFiltresEtTri();
+
+                // Planifier la désactivation automatique si pas associé à au moins 3 événements après 1 minute
+                planifierDesactivationSiPeuAssocies(newId);
             }
             showAlert("Succès", "Sponsor ajouté avec succès.");
 
@@ -262,6 +272,52 @@ public class SponsorViewController implements Initializable {
                 showAlert("Erreur", "Cet email existe déjà.");
             else showAlert("Erreur", "Erreur lors de l'ajout: " + e.getMessage());
         }
+    }
+
+    /**
+     * Après 1 minute, si le sponsor n'est pas associé à au moins 3 événements,
+     * son statut passe automatiquement à inactif.
+     */
+    private void planifierDesactivationSiPeuAssocies(int sponsorId) {
+        scheduler.schedule(() -> {
+            try (Connection conn = DatabaseConnection.getConnection()) {
+                int nbAssoc = 0;
+                try (PreparedStatement countStmt = conn.prepareStatement(
+                        "SELECT COUNT(*) FROM EventSponsor WHERE sponsor_id = ?")) {
+                    countStmt.setInt(1, sponsorId);
+                    ResultSet rs = countStmt.executeQuery();
+                    if (rs.next()) {
+                        nbAssoc = rs.getInt(1);
+                    }
+                }
+
+                if (nbAssoc < 3) {
+                    try (PreparedStatement updateStmt = conn.prepareStatement(
+                            "UPDATE Sponsor SET statut = false WHERE id = ?")) {
+                        updateStmt.setInt(1, sponsorId);
+                        updateStmt.executeUpdate();
+                    }
+
+                    // Mettre à jour la liste et le panneau de détail sur le thread JavaFX
+                    final int idToUpdate = sponsorId;
+                    Platform.runLater(() -> {
+                        for (Sponsor sp : sponsorList) {
+                            if (sp.getId() == idToUpdate) {
+                                sp.setStatut(false);
+                                break;
+                            }
+                        }
+                        applyFiltresEtTri();
+                        if (selectedSponsor != null && selectedSponsor.getId() == idToUpdate) {
+                            selectedSponsor.setStatut(false);
+                            updateDetailPanel(selectedSponsor);
+                        }
+                    });
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }, 1, TimeUnit.MINUTES);
     }
 
     private void updateSponsor(Sponsor s) {

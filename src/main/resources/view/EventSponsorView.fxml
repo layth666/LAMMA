@@ -24,7 +24,7 @@
         </padding>
 
         <HBox spacing="12" alignment="CENTER_LEFT">
-            <Button text="+ NEW" onAction="#ouvrirFormulaireAjout" styleClass="btn-new"/>
+            <Button text="+ Nouveau" onAction="#ouvrirFormulaireAjout" styleClass="btn-new"/>
             <Button text="SYNC" onAction="#actualiser" styleClass="btn-sync"/>
             <Button text="PDF" onAction="#exporterPdf" styleClass="btn-sync"/>
             <Region HBox.hgrow="ALWAYS"/>

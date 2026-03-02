@@ -34,6 +34,18 @@
 
             <VBox spacing="6" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                 <PieChart fx:id="pieParEvenement" VBox.vgrow="ALWAYS" styleClass="dashboard-pie"/>
+
+                <!-- Convertisseur TND -> Devise avec CurrencyFreaks -->
+                <VBox spacing="8" style="-fx-padding: 10 0 0 0;">
+                    <Label text="Convertisseur TND vers devise" style="-fx-text-fill: #ecf0f1; -fx-font-weight: bold;"/>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="Montant en TND:" style="-fx-text-fill: #ecf0f1;"/>
+                        <TextField fx:id="txtMontantTnd" promptText="Ex : 100.0" prefWidth="120"/>
+                        <Label text="Devise cible:" style="-fx-text-fill: #ecf0f1;"/>
+                        <ComboBox fx:id="cboDevise" prefWidth="140"/>
+                    </HBox>
+                    <Label fx:id="lblResultConversion" style="-fx-text-fill: #f1c40f; -fx-font-weight: bold;"/>
+                </VBox>
             </VBox>
         </HBox>
     </VBox>
