@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="700" prefWidth="800"
+            style="-fx-background-color: white;"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.FaceIDDialogController">
+
+    <!-- HEADER -->
+    <HBox alignment="CENTER_LEFT"
+          spacing="20"
+          style="-fx-background-color: linear-gradient(to right, #7B5FF5, #6B4FE5);"
+          AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0"
+          AnchorPane.topAnchor="0">
+
+        <padding>
+            <Insets top="22" right="30" bottom="22" left="30"/>
+        </padding>
+
+        <VBox spacing="4">
+            <Label text="Face ID Login" textFill="white">
+                <font>
+                    <Font name="System Bold" size="26"/>
+                </font>
+            </Label>
+            <Label text="Look directly at the camera"
+                   textFill="#e0e7ff">
+                <font>
+                    <Font size="14"/>
+                </font>
+            </Label>
+        </VBox>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Label fx:id="timerLabel"
+               text="5s"
+               textFill="white">
+            <font>
+                <Font name="System Bold" size="42"/>
+            </font>
+        </Label>
+    </HBox>
+
+    <!-- CAMERA CONTAINER -->
+    <VBox alignment="CENTER"
+          spacing="20"
+          AnchorPane.topAnchor="120"
+          AnchorPane.bottomAnchor="100"
+          AnchorPane.leftAnchor="60"
+          AnchorPane.rightAnchor="60">
+
+        <StackPane fx:id="cameraPane">
+
+            <!-- Rounded Camera Frame -->
+            <StackPane style="
+                -fx-background-color: #f8fafc;
+                -fx-background-radius: 16;
+                -fx-padding: 10;
+                -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20,0,0,4);
+            ">
+
+                <ImageView fx:id="cameraView"
+                           fitWidth="650"
+                           fitHeight="420"
+                           preserveRatio="true"
+                           style="-fx-background-radius: 12;"/>
+            </StackPane>
+
+        </StackPane>
+
+        <!-- MATCH PERCENTAGE (NO BLACK BOX) -->
+        <VBox alignment="CENTER" spacing="6">
+
+            <Label text="Match Confidence"
+                   textFill="#64748b">
+                <font>
+                    <Font size="13"/>
+                </font>
+            </Label>
+
+            <Label fx:id="matchLabel"
+                   text="---%"
+                   textFill="#7B5FF5">
+                <font>
+                    <Font name="System Bold" size="40"/>
+                </font>
+            </Label>
+
+            <ProgressBar fx:id="progressBar"
+                         prefWidth="400"
+                         prefHeight="6"/>
+        </VBox>
+
+        <!-- STATUS TEXT -->
+        <Label fx:id="statusLabel"
+               text="Initializing camera..."
+               textFill="#475569">
+            <font>
+                <Font size="14"/>
+            </font>
+        </Label>
+
+    </VBox>
+
+    <!-- RESULT PANEL -->
+    <VBox fx:id="resultPanel"
+          alignment="CENTER"
+          spacing="20"
+          visible="false"
+          AnchorPane.leftAnchor="50"
+          AnchorPane.rightAnchor="50"
+          AnchorPane.topAnchor="120"
+          AnchorPane.bottomAnchor="100">
+
+        <Label fx:id="resultIcon" text="🆕">
+            <font>
+                <Font size="70"/>
+            </font>
+        </Label>
+
+        <Label fx:id="resultTitle"
+               text="Face Not Recognized"
+               textFill="#7B5FF5">
+            <font>
+                <Font name="System Bold" size="24"/>
+            </font>
+        </Label>
+
+        <Label fx:id="resultMessage"
+               text="No face detected"
+               wrapText="true"
+               maxWidth="500"
+               alignment="CENTER"
+               textFill="#64748b">
+            <font>
+                <Font size="14"/>
+            </font>
+        </Label>
+
+        <HBox alignment="CENTER" spacing="15">
+
+            <Button fx:id="tryAgainBtn"
+                    text="Try Again"
+                    prefWidth="160"
+                    prefHeight="44"
+                    style="
+                        -fx-background-color: white;
+                        -fx-border-color: #7B5FF5;
+                        -fx-border-width: 2;
+                        -fx-text-fill: #7B5FF5;
+                        -fx-font-weight: 600;
+                        -fx-background-radius: 8;
+                        -fx-border-radius: 8;
+                    "
+                    onAction="#handleTryAgain"/>
+
+            <Button fx:id="registerBtn"
+                    text="Register Face"
+                    prefWidth="180"
+                    prefHeight="44"
+                    style="
+                        -fx-background-color: #7B5FF5;
+                        -fx-text-fill: white;
+                        -fx-font-weight: 600;
+                        -fx-background-radius: 8;
+                    "
+                    onAction="#handleRegister"/>
+
+        </HBox>
+
+    </VBox>
+
+    <!-- CANCEL -->
+    <Button text="Cancel"
+            prefWidth="120"
+            prefHeight="40"
+            AnchorPane.bottomAnchor="25"
+            AnchorPane.rightAnchor="30"
+            style="
+                -fx-background-color: white;
+                -fx-border-color: #e2e8f0;
+                -fx-text-fill: #64748b;
+                -fx-background-radius: 8;
+                -fx-border-radius: 8;
+            "
+            onAction="#handleCancel"/>
+
+</AnchorPane>

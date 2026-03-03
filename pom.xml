@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>tn.esprit</groupId>
+    <artifactId>Workshop1</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+
+    <!-- JAVA VERSION -->
+    <properties>
+
+        <maven.compiler.source>17</maven.compiler.source>
+
+        <maven.compiler.target>17</maven.compiler.target>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <javafx.version>21</javafx.version>
+
+    </properties>
+
+
+
+    <!-- DEPENDENCIES -->
+    <dependencies>
+
+        <!-- MYSQL -->
+        <dependency>
+
+            <groupId>com.mysql</groupId>
+
+            <artifactId>mysql-connector-j</artifactId>
+
+            <version>8.2.0</version>
+
+        </dependency>
+
+
+
+        <!-- JAVAFX CONTROLS WINDOWS -->
+        <dependency>
+
+            <groupId>org.openjfx</groupId>
+
+            <artifactId>javafx-controls</artifactId>
+
+            <version>${javafx.version}</version>
+
+            <classifier>win</classifier>
+
+        </dependency>
+
+
+
+        <!-- JAVAFX FXML WINDOWS -->
+        <dependency>
+
+            <groupId>org.openjfx</groupId>
+
+            <artifactId>javafx-fxml</artifactId>
+
+            <version>${javafx.version}</version>
+
+            <classifier>win</classifier>
+
+        </dependency>
+
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
+
+        <!-- Google OAuth 2.0 Client -->
+        <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.oauth-client</groupId>
+            <artifactId>google-oauth-client-jetty</artifactId>
+            <version>1.34.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.http-client</groupId>
+            <artifactId>google-http-client-jackson2</artifactId>
+            <version>1.43.3</version>
+        </dependency>
+
+        <!-- JSON Processing -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+
+        <!-- JavaFX WebView - REQUIS pour GoogleAuthDialog -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>21</version> <!-- ou votre version JavaFX actuelle -->
+        </dependency>
+
+    <!-- Cloudinary SDK -->
+    <dependency>
+        <groupId>com.cloudinary</groupId>
+        <artifactId>cloudinary-http44</artifactId>
+        <version>1.36.0</version>
+    </dependency>
+
+    <!-- Apache HttpClient (requis par Cloudinary) -->
+    <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.5.14</version>
+    </dependency>
+
+    <!-- Apache HttpCore -->
+    <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>4.4.16</version>
+    </dependency>
+
+
+
+
+        <!-- Jakarta Mail API (alternative moderne) -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>jakarta.mail</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>jakarta.activation</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+
+        <!-- JFreeChart - Pour les graphiques professionnels -->
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.4</version>
+        </dependency>
+
+        <!-- JFreeChart JavaFX (pour intégrer dans JavaFX) -->
+
+
+        <!-- Apache POI - Pour export Excel -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.5</version>
+        </dependency>
+
+        <!-- iText - Pour export PDF -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itext7-core</artifactId>
+            <version>7.2.5</version>
+            <type>pom</type>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.9.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20240303</version>
+        </dependency>
+
+        <!-- OpenCV (déjà présent normalement) -->
+        <dependency>
+            <groupId>org.openpnp</groupId>
+            <artifactId>opencv</artifactId>
+            <version>4.7.0-0</version>
+        </dependency>
+
+        </dependencies>
+
+
+
+        <!-- JAVAFX PLUGIN -->
+    <build>
+
+        <plugins>
+
+            <plugin>
+
+                <groupId>org.openjfx</groupId>
+
+                <artifactId>javafx-maven-plugin</artifactId>
+
+                <version>0.0.8</version>
+
+                <configuration>
+
+                    <!-- CHANGE THIS TO YOUR REAL MAIN CLASS -->
+                    <mainClass>test.Main</mainClass>
+
+                </configuration>
+
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+
+</project>

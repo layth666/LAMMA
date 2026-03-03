@@ -1,0 +1,35 @@
+/* Root background */
+.root {
+    -fx-background-color: #121212;
+}
+
+/* Main container */
+.vbox, .hbox, .anchor-pane, .border-pane {
+    -fx-background-color: #121212;
+}
+
+/* Header */
+.label {
+    -fx-text-fill: #ffffff;
+}
+
+/* Progress bar */
+.progress-bar {
+    -fx-accent: #1db954;
+}
+
+/* Button close */
+.button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.button:hover {
+    -fx-background-color: #2a2a2a;
+}
+
+/* WebView border */
+.web-view {
+    -fx-border-color: #2a2a2a;
+    -fx-border-width: 1;
+}
