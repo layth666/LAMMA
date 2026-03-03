@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SignatureServiceExample" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="utils.SignatureServiceExample" />
+    <module name="sponsor_management" />
+    <envs>
+      <env name="DOCUSIGN_API_KEY" value="dae549e4-1e2a-4e31-b0f9-7c5df52ae32d" />
+    </envs>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

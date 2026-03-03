@@ -258,4 +258,20 @@ public class EventSponsorDAO {
         }
         return 0;
     }
+
+    // Calculer le montant total des contributions pour un sponsor donné
+    public double getTotalContributionsParSponsor(int sponsorId) throws SQLException {
+        String query = "SELECT SUM(montant) FROM EventSponsor WHERE sponsor_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, sponsorId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        }
+        return 0;
+    }
 }

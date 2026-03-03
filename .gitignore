@@ -36,3 +36,21 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Security: Secret Keys and Credentials ###
+# DocuSign private keys
+*.pem
+*.key
+docusign_private_key*
+!docusign_private_key.example.pem
+
+# Environment files with secrets
+.env
+.env.local
+.env.*.local
+
+# API Keys and credentials (should be in environment variables)
+**/application-secrets.properties
+**/config/secrets/*
+credentials.json
+

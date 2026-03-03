@@ -4,6 +4,9 @@
     <option name="MAIN_CLASS_NAME" value="org.example.Main" />
     <module name="sponsor_management" />
     <option name="VM_PARAMETERS" value="--module-path &quot;C:\Users\asusm\.m2\repository\org\openjfx\javafx-base\21.0.2\javafx-base-21.0.2.jar;C:\Users\asusm\.m2\repository\org\openjfx\javafx-base\21.0.2\javafx-base-21.0.2-win.jar;C:\Users\asusm\.m2\repository\org\openjfx\javafx-graphics\21.0.2\javafx-graphics-21.0.2.jar;C:\Users\asusm\.m2\repository\org\openjfx\javafx-graphics\21.0.2\javafx-graphics-21.0.2-win.jar;C:\Users\asusm\.m2\repository\org\openjfx\javafx-controls\21.0.2\javafx-controls-21.0.2.jar;C:\Users\asusm\.m2\repository\org\openjfx\javafx-controls\21.0.2\javafx-controls-21.0.2-win.jar;C:\Users\asusm\.m2\repository\org\openjfx\javafx-fxml\21.0.2\javafx-fxml-21.0.2.jar;C:\Users\asusm\.m2\repository\org\openjfx\javafx-fxml\21.0.2\javafx-fxml-21.0.2-win.jar&quot; --add-modules javafx.controls,javafx.fxml" />
+    <envs>
+      <env name="DOCUSIGN_API_KEY" value="dae549e4-1e2a-4e31-b0f9-7c5df52ae32d" />
+    </envs>
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

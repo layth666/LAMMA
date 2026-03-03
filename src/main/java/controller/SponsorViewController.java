@@ -263,9 +263,13 @@ public class SponsorViewController implements Initializable {
             }
             showAlert("Succès", "Sponsor ajouté avec succès.");
 
-            // Envoi d'un e-mail de bienvenue (non bloquant si la clé n'est pas configurée)
+            // Envoi d'un e-mail de bienvenue avec contrat PDF après 1 minute
             if (s.getEmail() != null && !s.getEmail().isBlank()) {
-                EmailService.sendWelcomeEmail(s.getEmail(), s.getNom());
+                planifierEnvoiEmailBienvenue(
+                        sponsorList.get(sponsorList.size() - 1).getId(),
+                        s.getEmail(),
+                        s.getNom()
+                );
             }
         } catch (SQLException e) {
             if (e.getMessage() != null && e.getMessage().contains("Duplicate entry"))
@@ -315,6 +319,24 @@ public class SponsorViewController implements Initializable {
                     });
                 }
             } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }, 1, TimeUnit.MINUTES);
+    }
+
+    /**
+     * Planifie l'envoi d'un e-mail de bienvenue après 1 minute de l'ajout du sponsor.
+     * Cela permet de s'assurer que le sponsor est bien créé en base de données
+     * avant d'envoyer le mail.
+     */
+    private void planifierEnvoiEmailBienvenue(int sponsorId, String email, String nom) {
+        scheduler.schedule(() -> {
+            try {
+                System.out.println("📧 Envoi du mail de bienvenue au sponsor : " + nom);
+                EmailService.sendWelcomeEmailWithContract(sponsorId, email, nom);
+                System.out.println("✓ Mail envoyé avec succès à " + email);
+            } catch (Exception ex) {
+                System.err.println("✗ Erreur lors de l'envoi du mail à " + email);
                 ex.printStackTrace();
             }
         }, 1, TimeUnit.MINUTES);
