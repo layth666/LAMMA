@@ -16,19 +16,23 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserSignUP.fxml"));
-
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/User.fxml"));
         Scene scene = new Scene(loader.load());
 
-        // ── Remove default window decorations ──
+        // Remove default OS window borders (since you use custom buttons)
         stage.initStyle(StageStyle.UNDECORATED);
 
-        stage.setTitle("Campify - Signup");
+        stage.setTitle("LAMMA Adventure");
 
         stage.setScene(scene);
 
-        stage.show();
+        // ✅ OPEN FULL SCREEN
+        stage.setFullScreen(true);
 
+        // ✅ Remove ESC message
+        stage.setFullScreenExitHint("");
+
+        stage.show();
     }
 
 

@@ -1,6 +1,5 @@
 package controller;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,8 +14,6 @@ import service.LoginAttemptService.LoginStatus;
 import service.UserService;
 import utils.PasswordHasher;
 import utils.Session;
-import controller.KairosFaceIDController;
-import controller.FaceIDDialogController;
 
 import java.sql.SQLException;
 
@@ -46,24 +43,25 @@ public class Logincontroller {
     }
 
     private void setupButtonHoverEffects() {
+        // Login Button - Orange glow
         loginBtn.setOnMouseEntered(e -> {
             if (!loginBtn.isDisabled()) {
-                loginBtn.setStyle("-fx-background-color: #6B4FE5; -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: 600; -fx-background-radius: 8; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(123,95,245,0.5), 12, 0, 0, 6);");
+                loginBtn.setStyle("-fx-background-color: linear-gradient(to right, #FF9A56 0%, #FF7A45 100%); -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: 700; -fx-background-radius: 27; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(255, 107, 53, 0.6), 20, 0, 0, 7); -fx-letter-spacing: 1;");
             }
         });
 
         loginBtn.setOnMouseExited(e -> {
             if (!loginBtn.isDisabled()) {
-                loginBtn.setStyle("-fx-background-color: #7B5FF5; -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: 600; -fx-background-radius: 8; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(123,95,245,0.3), 8, 0, 0, 4);");
+                loginBtn.setStyle("-fx-background-color: linear-gradient(to right, #FF8C42 0%, #FF6B35 100%); -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: 700; -fx-background-radius: 27; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(255, 107, 53, 0.4), 15, 0, 0, 5); -fx-letter-spacing: 1;");
             }
         });
 
         googleLoginBtn.setOnMouseEntered(e -> {
-            googleLoginBtn.setStyle("-fx-background-color: #f8f9fa; -fx-border-color: #7B5FF5; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(123,95,245,0.2), 8, 0, 0, 4);");
+            googleLoginBtn.setStyle("-fx-background-color: rgba(255,255,255,0.08); -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: 600; -fx-border-color: rgba(255,255,255,0.4); -fx-border-width: 1.5; -fx-border-radius: 23; -fx-background-radius: 23; -fx-cursor: hand;");
         });
 
         googleLoginBtn.setOnMouseExited(e -> {
-            googleLoginBtn.setStyle("-fx-background-color: white; -fx-border-color: #dadce0; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 4, 0, 0, 2);");
+            googleLoginBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 13; -fx-font-weight: 600; -fx-border-color: rgba(255,255,255,0.25); -fx-border-width: 1.5; -fx-border-radius: 23; -fx-background-radius: 23; -fx-cursor: hand;");
         });
     }
 
@@ -358,33 +356,34 @@ public class Logincontroller {
         stage.setIconified(true);
     }
 
-    @FXML private void handleMaximize() {
+    @FXML
+    private void handleMaximize() {
         Stage stage = (Stage) maximizeBtn.getScene().getWindow();
-        stage.setMaximized(!stage.isMaximized());
+        stage.setFullScreen(!stage.isFullScreen());
     }
 
     @FXML private void onCloseHover() {
-        closeBtn.setStyle("-fx-background-color: #c42b1c; -fx-text-fill: white; -fx-font-size: 12; -fx-cursor: hand;");
+        closeBtn.setStyle("-fx-background-color: rgba(196, 43, 28, 0.9); -fx-text-fill: white; -fx-font-size: 14; -fx-cursor: hand; -fx-background-radius: 0;");
     }
 
     @FXML private void onCloseExit() {
-        closeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #000000; -fx-font-size: 12; -fx-cursor: hand;");
+        closeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 14; -fx-cursor: hand;");
     }
 
     @FXML private void onMinimizeHover() {
-        minimizeBtn.setStyle("-fx-background-color: #e5e5e5; -fx-text-fill: #000000; -fx-font-size: 12; -fx-cursor: hand;");
+        minimizeBtn.setStyle("-fx-background-color: rgba(255,255,255,0.15); -fx-text-fill: white; -fx-font-size: 14; -fx-cursor: hand; -fx-background-radius: 0;");
     }
 
     @FXML private void onMinimizeExit() {
-        minimizeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #000000; -fx-font-size: 12; -fx-cursor: hand;");
+        minimizeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 14; -fx-cursor: hand;");
     }
 
     @FXML private void onMaximizeHover() {
-        maximizeBtn.setStyle("-fx-background-color: #e5e5e5; -fx-text-fill: #000000; -fx-font-size: 12; -fx-cursor: hand;");
+        maximizeBtn.setStyle("-fx-background-color: rgba(255,255,255,0.15); -fx-text-fill: white; -fx-font-size: 14; -fx-cursor: hand; -fx-background-radius: 0;");
     }
 
     @FXML private void onMaximizeExit() {
-        maximizeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #000000; -fx-font-size: 12; -fx-cursor: hand;");
+        maximizeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 14; -fx-cursor: hand;");
     }
 
     private void showAlert(String message) {

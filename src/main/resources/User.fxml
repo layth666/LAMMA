@@ -6,194 +6,222 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="600.0" prefWidth="1010.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Logincontroller">
+<!-- 🏔️ LAMMA ADVENTURE LOGIN - OUTDOOR STYLE -->
+<StackPane prefHeight="1050" prefWidth="1920"
+           style="-fx-background-color: #1a2332;"
+           xmlns="http://javafx.com/javafx/17.0.12"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="controller.Logincontroller">
 
-    <!-- TOP BAR - Windows Controls -->
-    <top>
-        <HBox alignment="CENTER_RIGHT" prefHeight="32.0" spacing="0" style="-fx-background-color: #ffffff;">
-            <Button fx:id="minimizeBtn" onAction="#handleMinimize" onMouseEntered="#onMinimizeHover" onMouseExited="#onMinimizeExit" prefHeight="32" prefWidth="46" style="-fx-background-color: transparent; -fx-text-fill: #000000; -fx-font-size: 12; -fx-cursor: hand;" text="─" />
-            <Button fx:id="maximizeBtn" onAction="#handleMaximize" onMouseEntered="#onMaximizeHover" onMouseExited="#onMaximizeExit" prefHeight="32" prefWidth="46" style="-fx-background-color: transparent; -fx-text-fill: #000000; -fx-font-size: 12; -fx-cursor: hand;" text="❐" />
-            <Button fx:id="closeBtn" onAction="#handleClose" onMouseEntered="#onCloseHover" onMouseExited="#onCloseExit" prefHeight="32" prefWidth="46" style="-fx-background-color: transparent; -fx-text-fill: #000000; -fx-font-size: 12; -fx-cursor: hand;" text="✕" />
-        </HBox>
-    </top>
+    <!-- Background Image Layer -->
+    <ImageView fitHeight="768.0" fitWidth="1366.0" preserveRatio="false" pickOnBounds="true">
+        <image>
+            <Image url="@clayton-manche--HtKP_ke858-unsplash.jpg" />
+        </image>
+    </ImageView>
 
-    <!-- LEFT SECTION - Form -->
-    <left>
-        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="568.0">
-            <content>
-                <AnchorPane prefWidth="500" style="-fx-background-color: #ffffff;">
+    <!-- Dark Overlay -->
+    <StackPane style="-fx-background-color: rgba(0, 0, 0, 0.45);" />
 
-                    <!-- Main Form Container -->
-                    <VBox alignment="TOP_CENTER" spacing="20" AnchorPane.leftAnchor="60" AnchorPane.rightAnchor="60" AnchorPane.topAnchor="60">
+    <!-- Main Container -->
+    <BorderPane>
 
-                        <!-- Logo and Title -->
-                        <VBox alignment="CENTER" prefWidth="380.0" spacing="8">
-                            <ImageView fitHeight="60.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                                <image>
-                                    <Image url="@logo.png" />
-                                </image>
-                            </ImageView>
-                            <Label text="Welcome Back">
-                                <font>
-                                    <Font name="System Bold" size="28" />
-                                </font>
-                            </Label>
-                            <Label style="-fx-text-fill: #718096; -fx-font-size: 14;" text="Sign in to continue to LAMMA" />
-                        </VBox>
+        <!-- Windows Controls -->
+        <top>
+            <HBox alignment="CENTER_RIGHT" prefHeight="32" spacing="0" style="-fx-background-color: transparent;">
+                <Button fx:id="minimizeBtn" onAction="#handleMinimize"
+                        onMouseEntered="#onMinimizeHover" onMouseExited="#onMinimizeExit"
+                        prefHeight="32" prefWidth="46"
+                        style="-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 14; -fx-cursor: hand;" text="─" />
+                <Button fx:id="maximizeBtn" onAction="#handleMaximize"
+                        onMouseEntered="#onMaximizeHover" onMouseExited="#onMaximizeExit"
+                        prefHeight="32" prefWidth="46"
+                        style="-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 14; -fx-cursor: hand;" text="❐" />
+                <Button fx:id="closeBtn" onAction="#handleClose"
+                        onMouseEntered="#onCloseHover" onMouseExited="#onCloseExit"
+                        prefHeight="32" prefWidth="46"
+                        style="-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 14; -fx-cursor: hand;" text="✕" />
+            </HBox>
+        </top>
 
-                        <!-- Google Sign In Button - PROFESSIONAL STYLE -->
-                        <Button fx:id="googleLoginBtn" onAction="#handleGoogleLogin" maxWidth="380" prefHeight="50" prefWidth="380" style="-fx-background-color: white; -fx-border-color: #dadce0; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 4, 0, 0, 2);">
+        <!-- Center Content -->
+        <center>
+            <VBox alignment="CENTER" spacing="0">
+
+                <!-- Logo Mascot -->
+                <ImageView fitHeight="120.0" fitWidth="120.0" preserveRatio="true" pickOnBounds="true">
+                    <image>
+                        <Image url="@logo.png" />
+                    </image>
+                    <VBox.margin>
+                        <Insets bottom="20" />
+                    </VBox.margin>
+                </ImageView>
+
+                <!-- Title -->
+                <VBox alignment="CENTER" spacing="8">
+                    <VBox.margin>
+                        <Insets bottom="30" />
+                    </VBox.margin>
+
+                    <Label text="LAMMA ADVENTURE"
+                           style="-fx-text-fill: white; -fx-font-size: 36; -fx-font-weight: 700; -fx-letter-spacing: 2;" />
+
+                    <Label text="Your gateway to the great outdoors 🌲"
+                           style="-fx-text-fill: rgba(255,255,255,0.75); -fx-font-size: 15; -fx-font-weight: 500;" />
+                </VBox>
+
+                <!-- Login Card - Dark Glassmorphism -->
+                <VBox alignment="TOP_CENTER" spacing="24"
+                      style="-fx-background-color: rgba(26, 35, 50, 0.85); -fx-background-radius: 20; -fx-border-color: rgba(255,255,255,0.1); -fx-border-width: 1; -fx-border-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 30, 0, 0, 10);"
+                      prefWidth="480"
+                      maxWidth="480">
+
+                    <padding>
+                        <Insets top="40" right="40" bottom="40" left="40" />
+                    </padding>
+
+                    <!-- Welcome Header -->
+                    <VBox alignment="CENTER" spacing="6">
+                        <Label text="Welcome back"
+                               style="-fx-text-fill: white; -fx-font-size: 28; -fx-font-weight: 700;" />
+
+                        <Label text="Enter your trail credentials below"
+                               style="-fx-text-fill: rgba(255,255,255,0.6); -fx-font-size: 14; -fx-font-weight: 500;" />
+                    </VBox>
+
+                    <!-- Social Login Buttons -->
+                    <HBox alignment="CENTER">
+
+                        <!-- Facebook Button -->
+
+
+                        <!-- Google Button -->
+                        <Button fx:id="googleLoginBtn"
+                                onAction="#handleGoogleLogin"
+                                prefHeight="46" prefWidth="200"
+                                style="-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 13; -fx-font-weight: 600; -fx-border-color: rgba(255,255,255,0.25); -fx-border-width: 1.5; -fx-border-radius: 23; -fx-background-radius: 23; -fx-cursor: hand;">
                             <graphic>
-                                <HBox alignment="CENTER" spacing="12">
-                                    <!-- Google Logo SVG Icon -->
-                                    <ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
-                                        <image>
-                                            <Image url="@google.png" />
-                                        </image>
-                                    </ImageView>
-                                    <Label style="-fx-text-fill: #3c4043; -fx-font-size: 14; -fx-font-weight: 600; -fx-font-family: 'Roboto', sans-serif;" text="Sign in with Google" />
+                                <HBox alignment="CENTER" spacing="8">
+                                    <Label text="G" style="-fx-text-fill: white; -fx-font-weight: 700; -fx-font-size: 14;" />
+                                    <Label text="GOOGLE" style="-fx-text-fill: white; -fx-font-weight: 600; -fx-font-size: 13;" />
                                 </HBox>
                             </graphic>
                         </Button>
-                        <Button fx:id="faceIDLoginBtn"
-                                onAction="#handleFaceIDLogin"
-                                maxWidth="380"
-                                prefHeight="50"
-                                prefWidth="380"
-                                style="-fx-background-color: white;
-               -fx-border-color: #dadce0;
-               -fx-border-width: 1;
-               -fx-border-radius: 6;
-               -fx-background-radius: 6;
-               -fx-cursor: hand;
-               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 4, 0, 0, 2);">
 
-                            <graphic>
-                                <HBox alignment="CENTER" spacing="12">
+                    </HBox>
 
-                                    <!-- Face ID Icon -->
-                                    <ImageView fitHeight="20"
-                                               fitWidth="20"
-                                               preserveRatio="true">
-                                        <image>
-                                            <Image url="@faceid.png"/>
-                                        </image>
-                                    </ImageView>
-
-                                    <Label text="Sign in with Face ID"
-                                           style="-fx-text-fill: #3c4043;
-                          -fx-font-size: 14;
-                          -fx-font-weight: 600;
-                          -fx-font-family: 'Roboto', sans-serif;" />
-
-                                </HBox>
-                            </graphic>
-                        </Button>
-
-                        <!-- Divider -->
-                        <HBox alignment="CENTER" spacing="15" prefWidth="380">
-                            <VBox.margin>
-                                <Insets top="10" bottom="10" />
-                            </VBox.margin>
-                            <Separator prefWidth="160" style="-fx-background-color: #e2e8f0;" />
-                            <Label style="-fx-text-fill: #a0aec0; -fx-font-size: 12; -fx-font-weight: 500;" text="OR" />
-                            <Separator prefWidth="160" style="-fx-background-color: #e2e8f0;" />
-                        </HBox>
-
-                        <!-- Form Fields -->
-                        <VBox spacing="16" prefWidth="380">
-
-                            <!-- Email -->
-                            <VBox spacing="8">
-                                <Label style="-fx-text-fill: #2d3748; -fx-font-size: 13; -fx-font-weight: 600;" text="Email Address">
-                                    <padding>
-                                        <Insets left="2" />
-                                    </padding>
-                                </Label>
-                                <TextField fx:id="emailField" prefHeight="46" promptText="Enter your email" style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 1.5; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 12; -fx-font-size: 14;" />
-                            </VBox>
-
-                            <!-- Password -->
-                            <VBox spacing="8">
-                                <HBox alignment="CENTER_LEFT">
-                                    <Label style="-fx-text-fill: #2d3748; -fx-font-size: 13; -fx-font-weight: 600;" text="Password">
-                                        <padding>
-                                            <Insets left="2" />
-                                        </padding>
-                                    </Label>
-                                    <Region HBox.hgrow="ALWAYS" />
-                                    <Hyperlink fx:id="forgotPasswordLink" onAction="#handleForgotPassword" style="-fx-text-fill: #7B5FF5; -fx-font-size: 12; -fx-font-weight: 600;" text="Forgot?" />
-                                </HBox>
-                                <StackPane>
-                                    <PasswordField fx:id="passwordField" prefHeight="46" promptText="Enter your password" style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 1.5; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 12; -fx-font-size: 14;" />
-                                    <TextField fx:id="passwordVisible" prefHeight="46" promptText="Enter your password" style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 1.5; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 12; -fx-font-size: 14;" visible="false" />
-                                    <Button fx:id="togglePasswordBtn" onAction="#togglePasswordVisibility" style="-fx-background-color: transparent; -fx-cursor: hand;" StackPane.alignment="CENTER_RIGHT">
-                                        <graphic>
-                                            <Label fx:id="eyeIcon" style="-fx-font-size: 16; -fx-text-fill: #718096;" text="👁" />
-                                        </graphic>
-                                        <StackPane.margin>
-                                            <Insets right="12" />
-                                        </StackPane.margin>
-                                    </Button>
-                                </StackPane>
-                            </VBox>
-
-                            <!-- Remember Me -->
-                            <HBox alignment="CENTER_LEFT">
-                                <CheckBox style="-fx-text-fill: #4a5568; -fx-font-size: 13;" text="Remember me for 30 days" />
+                    <!-- Face ID Button -->
+                    <Button fx:id="faceIDLoginBtn"
+                            onAction="#handleFaceIDLogin"
+                            prefHeight="46"
+                            maxWidth="420"
+                            style="-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 13; -fx-font-weight: 600; -fx-border-color: rgba(255,255,255,0.25); -fx-border-width: 1.5; -fx-border-radius: 23; -fx-background-radius: 23; -fx-cursor: hand;">
+                        <graphic>
+                            <HBox alignment="CENTER" spacing="10">
+                                <Label text="🔐" style="-fx-font-size: 16;" />
+                                <Label text="SIGN IN WITH FACE ID" style="-fx-text-fill: white; -fx-font-weight: 600; -fx-font-size: 13;" />
                             </HBox>
+                        </graphic>
+                    </Button>
 
+                    <!-- Divider -->
+                    <HBox alignment="CENTER" spacing="15" prefWidth="420">
+                        <Separator prefWidth="180" style="-fx-background-color: rgba(255,255,255,0.2);" />
+                        <Label text="OR" style="-fx-text-fill: rgba(255,255,255,0.5); -fx-font-size: 12; -fx-font-weight: 600;" />
+                        <Separator prefWidth="180" style="-fx-background-color: rgba(255,255,255,0.2);" />
+                    </HBox>
+
+                    <!-- Form Fields -->
+                    <VBox spacing="20" prefWidth="420">
+
+                        <!-- Email -->
+                        <VBox spacing="10">
+                            <Label text="EMAIL ADDRESS"
+                                   style="-fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 11; -fx-font-weight: 700; -fx-letter-spacing: 0.5;" />
+
+                            <TextField fx:id="emailField"
+                                       promptText="explorer@hiking.com"
+                                       prefHeight="50"
+                                       style="-fx-background-color: rgba(15, 23, 42, 0.6); -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.4); -fx-border-color: rgba(255,255,255,0.15); -fx-border-width: 1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 14; -fx-font-size: 14;" />
                         </VBox>
 
-                        <!-- Login Button -->
-                        <Button fx:id="loginBtn" maxWidth="380" onAction="#handleLogin" prefHeight="50" prefWidth="380" style="-fx-background-color: #7B5FF5; -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: 600; -fx-background-radius: 8; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(123,95,245,0.3), 8, 0, 0, 4);" text="Sign In">
-                            <VBox.margin>
-                                <Insets top="8" />
-                            </VBox.margin>
-                        </Button>
+                        <!-- Password -->
+                        <VBox spacing="10">
+                            <Label text="PASSWORD"
+                                   style="-fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 11; -fx-font-weight: 700; -fx-letter-spacing: 0.5;" />
 
-                        <!-- Signup Link -->
-                        <HBox alignment="CENTER" spacing="6">
-                            <VBox.margin>
-                                <Insets top="8" bottom="40" />
-                            </VBox.margin>
-                            <Label style="-fx-text-fill: #718096; -fx-font-size: 14;" text="Don't have an account?" />
-                            <Hyperlink fx:id="signupLink" onAction="#goToSignup" style="-fx-text-fill: #7B5FF5; -fx-font-size: 14; -fx-font-weight: 600; -fx-underline: false;" text="Sign up" />
-                        </HBox>
+                            <StackPane>
+                                <PasswordField fx:id="passwordField"
+                                               promptText="Your secret path"
+                                               prefHeight="50"
+                                               style="-fx-background-color: rgba(15, 23, 42, 0.6); -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.4); -fx-border-color: rgba(255,255,255,0.15); -fx-border-width: 1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 14; -fx-font-size: 14;" />
+
+                                <TextField fx:id="passwordVisible"
+                                           promptText="Your secret path"
+                                           prefHeight="50"
+                                           visible="false"
+                                           style="-fx-background-color: rgba(15, 23, 42, 0.6); -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.4); -fx-border-color: rgba(255,255,255,0.15); -fx-border-width: 1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 14; -fx-font-size: 14;" />
+
+                                <Button fx:id="togglePasswordBtn"
+                                        onAction="#togglePasswordVisibility"
+                                        style="-fx-background-color: transparent; -fx-cursor: hand;"
+                                        StackPane.alignment="CENTER_RIGHT">
+                                    <graphic>
+                                        <Label fx:id="eyeIcon"
+                                               text="👁"
+                                               style="-fx-font-size: 16; -fx-text-fill: rgba(255,255,255,0.6);" />
+                                    </graphic>
+                                    <StackPane.margin>
+                                        <Insets right="14" />
+                                    </StackPane.margin>
+                                </Button>
+                            </StackPane>
+                        </VBox>
 
                     </VBox>
 
-                </AnchorPane>
-            </content>
-        </ScrollPane>
-    </left>
+                    <!-- Remember & Forgot -->
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <CheckBox text="Keep me signed in"
+                                  style="-fx-text-fill: rgba(255,255,255,0.75); -fx-font-size: 13; -fx-font-weight: 500;" />
 
-    <!-- RIGHT SECTION - Image -->
-    <center>
-        <StackPane prefHeight="568.0" prefWidth="460.0">
-            <ImageView fitHeight="735.0" fitWidth="667.0" preserveRatio="false">
-                <image>
-                    <Image url="@clayton-manche--HtKP_ke858-unsplash.jpg" />
-                </image>
-            </ImageView>
-            <StackPane style="-fx-background-color: rgba(0, 0, 0, 0.3);" />
-            <VBox alignment="BOTTOM_LEFT" spacing="16">
-                <padding>
-                    <Insets bottom="60" left="50" right="50" />
-                </padding>
-                <VBox alignment="BOTTOM_LEFT" spacing="8">
-                    <VBox.margin>
-                        <Insets top="150" />
-                    </VBox.margin>
-                    <Label style="-fx-text-fill: white; -fx-font-size: 44; -fx-font-weight: 700; -fx-line-spacing: 4;" text="Your next" />
-                    <Label style="-fx-text-fill: white; -fx-font-size: 44; -fx-font-weight: 700;" text="adventure" />
-                    <HBox spacing="8">
-                        <Label style="-fx-text-fill: white; -fx-font-size: 44; -fx-font-weight: 700;" text="starts" />
-                        <Label style="-fx-text-fill: #7B5FF5; -fx-font-size: 44; -fx-font-weight: 700; -fx-background-color: white; -fx-padding: 0 12; -fx-background-radius: 8;" text="here" />
+                        <Region HBox.hgrow="ALWAYS" />
+
+                        <Hyperlink fx:id="forgotPasswordLink"
+                                   onAction="#handleForgotPassword"
+                                   text="Lost your map?"
+                                   style="-fx-text-fill: #FF8C42; -fx-font-size: 13; -fx-font-weight: 600; -fx-underline: false;" />
                     </HBox>
-                </VBox>
-            </VBox>
-        </StackPane>
-    </center>
 
-</BorderPane>
+                    <!-- Login Button - ORANGE -->
+                    <Button fx:id="loginBtn"
+                            text="START EXPLORING"
+                            onAction="#handleLogin"
+                            prefHeight="54"
+                            maxWidth="420"
+                            style="-fx-background-color: linear-gradient(to right, #FF8C42 0%, #FF6B35 100%); -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: 700; -fx-background-radius: 27; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(255, 107, 53, 0.4), 15, 0, 0, 5); -fx-letter-spacing: 1;">
+                        <VBox.margin>
+                            <Insets top="10" />
+                        </VBox.margin>
+                    </Button>
+
+                    <!-- Signup Link -->
+                    <HBox alignment="CENTER" spacing="6">
+                        <Label text="New hiker?"
+                               style="-fx-text-fill: rgba(255,255,255,0.65); -fx-font-size: 14; -fx-font-weight: 500;" />
+
+                        <Hyperlink fx:id="signupLink"
+                                   onAction="#goToSignup"
+                                   text="Join our team"
+                                   style="-fx-text-fill: rgba(255,255,255,0.95); -fx-font-size: 14; -fx-font-weight: 600; -fx-underline: false;" />
+                    </HBox>
+
+                </VBox>
+
+            </VBox>
+        </center>
+
+    </BorderPane>
+
+</StackPane>

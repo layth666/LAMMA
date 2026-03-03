@@ -198,13 +198,13 @@ public class SignupController {
 
         Signup.setOnMouseEntered(e -> {
             if (!Signup.isDisabled()) {
-                Signup.setStyle("-fx-background-color: #6B4FE5; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: 600; -fx-background-radius: 10; -fx-cursor: hand;");
+                Signup.setStyle("-fx-background-color: linear-gradient(to right, #FF9A56 0%, #FF7A45 100%); -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: 700; -fx-background-radius: 26; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(255, 107, 53, 0.6), 20, 0, 0, 7); -fx-letter-spacing: 1;");
             }
         });
 
         Signup.setOnMouseExited(e -> {
             if (!Signup.isDisabled()) {
-                Signup.setStyle("-fx-background-color: #7B5FF5; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: 600; -fx-background-radius: 10; -fx-cursor: hand;");
+                Signup.setStyle("-fx-background-color: linear-gradient(to right, #FF8C42 0%, #FF6B35 100%); -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: 700; -fx-background-radius: 26; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(255, 107, 53, 0.4), 15, 0, 0, 5); -fx-letter-spacing: 1;");
             }
         });
     }
@@ -454,27 +454,27 @@ public class SignupController {
     }
 
     @FXML private void onCloseHover() {
-        closeBtn.setStyle("-fx-background-color: #c42b1c; -fx-text-fill: white; -fx-font-size: 12; -fx-cursor: hand;");
+        closeBtn.setStyle("-fx-background-color: rgba(196, 43, 28, 0.9); -fx-text-fill: white; -fx-font-size: 14; -fx-cursor: hand; -fx-background-radius: 0;");
     }
 
     @FXML private void onCloseExit() {
-        closeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #000000; -fx-font-size: 12; -fx-cursor: hand;");
+        closeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 14; -fx-cursor: hand;");
     }
 
     @FXML private void onMinimizeHover() {
-        minimizeBtn.setStyle("-fx-background-color: #e5e5e5; -fx-text-fill: #000000; -fx-font-size: 12; -fx-cursor: hand;");
+        minimizeBtn.setStyle("-fx-background-color: rgba(255,255,255,0.15); -fx-text-fill: white; -fx-font-size: 14; -fx-cursor: hand; -fx-background-radius: 0;");
     }
 
     @FXML private void onMinimizeExit() {
-        minimizeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #000000; -fx-font-size: 12; -fx-cursor: hand;");
+        minimizeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 14; -fx-cursor: hand;");
     }
 
     @FXML private void onMaximizeHover() {
-        maximizeBtn.setStyle("-fx-background-color: #e5e5e5; -fx-text-fill: #000000; -fx-font-size: 12; -fx-cursor: hand;");
+        maximizeBtn.setStyle("-fx-background-color: rgba(255,255,255,0.15); -fx-text-fill: white; -fx-font-size: 14; -fx-cursor: hand; -fx-background-radius: 0;");
     }
 
     @FXML private void onMaximizeExit() {
-        maximizeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #000000; -fx-font-size: 12; -fx-cursor: hand;");
+        maximizeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 14; -fx-cursor: hand;");
     }
 
     private void showAlert(String message) {

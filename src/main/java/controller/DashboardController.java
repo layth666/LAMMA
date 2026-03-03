@@ -292,109 +292,98 @@ public class DashboardController {
     private VBox createUserCard(User user) {
         VBox card = new VBox();
         card.setAlignment(Pos.CENTER_LEFT);
-        card.setSpacing(12);
-        card.setPadding(new Insets(16));
+        card.setSpacing(14);
+        card.setPadding(new Insets(18));
+
         card.setStyle(
-                "-fx-background-color: white;" +
-                        "-fx-border-color: #e9ecef;" +
+                "-fx-background-color: rgba(51, 65, 85, 0.4);" +
+                        "-fx-border-color: rgba(100, 116, 139, 0.3);" +
                         "-fx-border-width: 1;" +
-                        "-fx-border-radius: 12;" +
-                        "-fx-background-radius: 12;" +
+                        "-fx-border-radius: 16;" +
+                        "-fx-background-radius: 16;" +
                         "-fx-cursor: hand;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);"
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0, 0, 5);"
         );
-        card.setPrefWidth(250);
+        card.setPrefWidth(280);
 
         card.setOnMouseEntered(e -> card.setStyle(
-                "-fx-background-color: #f8f9fa;" +
-                        "-fx-border-color: #7B5FF5;" +
-                        "-fx-border-width: 1;" +
-                        "-fx-border-radius: 12;" +
-                        "-fx-background-radius: 12;" +
+                "-fx-background-color: rgba(51, 65, 85, 0.6);" +
+                        "-fx-border-color: rgba(255, 140, 0, 0.6);" +
+                        "-fx-border-width: 1.5;" +
+                        "-fx-border-radius: 16;" +
+                        "-fx-background-radius: 16;" +
                         "-fx-cursor: hand;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(123,95,245,0.15), 12, 0, 0, 4);"
+                        "-fx-effect: dropshadow(gaussian, rgba(255, 99, 71, 0.4), 20, 0, 0, 5);"
         ));
 
         card.setOnMouseExited(e -> card.setStyle(
-                "-fx-background-color: white;" +
-                        "-fx-border-color: #e9ecef;" +
+                "-fx-background-color: rgba(51, 65, 85, 0.4);" +
+                        "-fx-border-color: rgba(100, 116, 139, 0.3);" +
                         "-fx-border-width: 1;" +
-                        "-fx-border-radius: 12;" +
-                        "-fx-background-radius: 12;" +
+                        "-fx-border-radius: 16;" +
+                        "-fx-background-radius: 16;" +
                         "-fx-cursor: hand;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);"
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0, 0, 5);"
         ));
 
         HBox header = new HBox();
         header.setAlignment(Pos.CENTER_LEFT);
-        header.setSpacing(12);
+        header.setSpacing(14);
 
         StackPane avatarContainer = new StackPane();
-        Circle avatar = new Circle(20);
+        Circle avatar = new Circle(25);
 
-        // Initial label
         Label initial = new Label(user.getName().substring(0, 1).toUpperCase());
-        initial.setStyle("-fx-font-size: 16; -fx-font-weight: 700; -fx-text-fill: white;");
+        initial.setStyle("-fx-font-size: 18; -fx-font-weight: 700; -fx-text-fill: white;");
 
         String imageUrl = user.getImage();
 
-        // ✅ FIX: Better URL validation
         if (imageUrl != null && !imageUrl.trim().isEmpty() &&
                 !imageUrl.equalsIgnoreCase("null") &&
                 (imageUrl.startsWith("http://") || imageUrl.startsWith("https://"))) {
 
             try {
-                // Load image
                 Image image = new Image(imageUrl, true);
-
-                // Set default color first
                 avatar.setFill(Color.web(getUserColor(user)));
 
-                // Wait for image to load
-                image.progressProperty().addListener(new ChangeListener<Number>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                        if (newValue.doubleValue() >= 1.0) {
-                            Platform.runLater(() -> {
-                                if (!image.isError()) {
-                                    try {
-                                        avatar.setFill(new ImagePattern(image));
-                                        initial.setVisible(false);
-                                    } catch (Exception e) {
-                                        System.err.println("❌ Error applying image for " + user.getName() + ": " + e.getMessage());
-                                    }
+                image.progressProperty().addListener((observable, oldValue, newValue) -> {
+                    if (newValue.doubleValue() >= 1.0) {
+                        Platform.runLater(() -> {
+                            if (!image.isError()) {
+                                try {
+                                    avatar.setFill(new ImagePattern(image));
+                                    initial.setVisible(false);
+                                } catch (Exception e) {
+                                    System.err.println("❌ Image error: " + user.getName());
                                 }
-                            });
-                        }
+                            }
+                        });
                     }
                 });
 
-                // Handle errors
                 image.errorProperty().addListener((obs, oldVal, newVal) -> {
                     if (newVal) {
-                        System.err.println("❌ Image load error for: " + user.getName() + " - URL: " + imageUrl);
+                        System.err.println("❌ Image load error: " + user.getName());
                     }
                 });
 
             } catch (Exception e) {
-                System.err.println("❌ Invalid image URL for " + user.getName() + ": " + imageUrl);
                 avatar.setFill(Color.web(getUserColor(user)));
             }
         } else {
-            // No valid image - colored circle
             avatar.setFill(Color.web(getUserColor(user)));
         }
 
         avatarContainer.getChildren().addAll(avatar, initial);
 
         VBox userInfo = new VBox();
-        userInfo.setSpacing(2);
+        userInfo.setSpacing(3);
 
         Label userName = new Label(user.getName());
-        userName.setStyle("-fx-font-size: 14; -fx-font-weight: 600; -fx-text-fill: #212529;");
+        userName.setStyle("-fx-font-size: 15; -fx-font-weight: 700; -fx-text-fill: #e2e8f0;");
 
         Label userRole = new Label(user.getRole());
-        userRole.setStyle("-fx-font-size: 12; -fx-text-fill: #6c757d;");
+        userRole.setStyle("-fx-font-size: 12; -fx-text-fill: #94a3b8; -fx-font-weight: 500;");
 
         userInfo.getChildren().addAll(userName, userRole);
 
@@ -404,8 +393,8 @@ public class DashboardController {
         Button menuBtn = new Button("⋮");
         menuBtn.setStyle(
                 "-fx-background-color: transparent;" +
-                        "-fx-text-fill: #6c757d;" +
-                        "-fx-font-size: 18;" +
+                        "-fx-text-fill: #94a3b8;" +
+                        "-fx-font-size: 20;" +
                         "-fx-cursor: hand;" +
                         "-fx-padding: 0;"
         );
@@ -415,7 +404,7 @@ public class DashboardController {
         header.getChildren().addAll(avatarContainer, userInfo, spacer, menuBtn);
 
         Label email = new Label(user.getEmail());
-        email.setStyle("-fx-font-size: 12; -fx-text-fill: #6c757d;");
+        email.setStyle("-fx-font-size: 13; -fx-text-fill: #94a3b8;");
         email.setWrapText(true);
 
         card.getChildren().addAll(header, email);
@@ -548,23 +537,37 @@ public class DashboardController {
     private void handleAddUser() {
         Stage dialogStage = new Stage();
         dialogStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-        dialogStage.setTitle("Add New User");
+        dialogStage.setTitle("New Member");
 
+        // MAIN CONTAINER (DARK GLASS)
         VBox mainContainer = new VBox();
-        mainContainer.setStyle("-fx-background-color: white;");
-        mainContainer.setPrefWidth(500);
+        mainContainer.setPrefWidth(650);
+        mainContainer.setStyle(
+                "-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #2b3445, #1f2937);" +
+                        "-fx-background-radius: 18;" +
+                        "-fx-border-radius: 18;" +
+                        "-fx-border-color: rgba(255,255,255,0.08);" +
+                        "-fx-border-width: 1;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 25, 0, 0, 8);"
+        );
 
+        // ================= HEADER =================
         HBox header = new HBox();
         header.setAlignment(Pos.CENTER_LEFT);
-        header.setPadding(new Insets(24, 24, 20, 24));
-        header.setStyle("-fx-background-color: white; -fx-border-color: #e9ecef; -fx-border-width: 0 0 1 0;");
+        header.setPadding(new Insets(28));
+        header.setSpacing(15);
+        header.setStyle(
+                "-fx-border-color: rgba(255,255,255,0.06);" +
+                        "-fx-border-width: 0 0 1 0;"
+        );
 
         VBox headerText = new VBox(5);
-        Label title = new Label("Add New User");
-        title.setStyle("-fx-font-size: 20; -fx-font-weight: 700; -fx-text-fill: #212529;");
+
+        Label title = new Label("New Member");
+        title.setStyle("-fx-font-size: 22; -fx-font-weight: 700; -fx-text-fill: #f1f5f9;");
 
         Label subtitle = new Label("Create a new user account");
-        subtitle.setStyle("-fx-font-size: 13; -fx-text-fill: #6c757d;");
+        subtitle.setStyle("-fx-font-size: 13; -fx-text-fill: #94a3b8;");
 
         headerText.getChildren().addAll(title, subtitle);
 
@@ -573,89 +576,73 @@ public class DashboardController {
 
         Button closeBtn = new Button("✕");
         closeBtn.setStyle(
-                "-fx-background-color: #f8f9fa;" +
-                        "-fx-text-fill: #6c757d;" +
-                        "-fx-font-size: 18;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-padding: 8 12;"
+                "-fx-background-color: rgba(255,255,255,0.08);" +
+                        "-fx-text-fill: #94a3b8;" +
+                        "-fx-font-size: 16;" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-padding: 6 12;" +
+                        "-fx-cursor: hand;"
         );
         closeBtn.setOnAction(e -> dialogStage.close());
 
         header.getChildren().addAll(headerText, spacer, closeBtn);
 
-        VBox formContent = new VBox(20);
-        formContent.setPadding(new Insets(24));
+        // ================= FORM CONTENT =================
+        VBox formContent = new VBox(22);
+        formContent.setPadding(new Insets(30));
 
+        String labelStyle = "-fx-font-size: 12; -fx-font-weight: 600; -fx-text-fill: #cbd5e1;";
+        String fieldStyle =
+                "-fx-background-color: rgba(255,255,255,0.05);" +
+                        "-fx-border-color: rgba(255,255,255,0.1);" +
+                        "-fx-border-width: 1;" +
+                        "-fx-border-radius: 10;" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-padding: 12;" +
+                        "-fx-text-fill: #e2e8f0;" +
+                        "-fx-prompt-text-fill: #64748b;" +
+                        "-fx-font-size: 14;";
+
+        // NAME
         VBox nameGroup = new VBox(8);
-        Label nameLabel = new Label("Name *");
-        nameLabel.setStyle("-fx-font-size: 13; -fx-font-weight: 600; -fx-text-fill: #495057;");
+        Label nameLabel = new Label("FULL NAME");
+        nameLabel.setStyle(labelStyle);
 
         TextField nameField = new TextField();
         nameField.setPromptText("Enter full name");
-        nameField.setStyle(
-                "-fx-background-color: white;" +
-                        "-fx-border-color: #e9ecef;" +
-                        "-fx-border-width: 1.5;" +
-                        "-fx-border-radius: 8;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 12;" +
-                        "-fx-font-size: 14;"
-        );
-        nameField.setPrefHeight(44);
+        nameField.setStyle(fieldStyle);
+        nameField.setPrefHeight(45);
 
         nameGroup.getChildren().addAll(nameLabel, nameField);
 
+        // EMAIL
         VBox emailGroup = new VBox(8);
-        Label emailLabel = new Label("Email *");
-        emailLabel.setStyle("-fx-font-size: 13; -fx-font-weight: 600; -fx-text-fill: #495057;");
+        Label emailLabel = new Label("EMAIL ADDRESS");
+        emailLabel.setStyle(labelStyle);
 
         TextField emailField = new TextField();
         emailField.setPromptText("user@example.com");
-        emailField.setStyle(
-                "-fx-background-color: white;" +
-                        "-fx-border-color: #e9ecef;" +
-                        "-fx-border-width: 1.5;" +
-                        "-fx-border-radius: 8;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 12;" +
-                        "-fx-font-size: 14;"
-        );
-        emailField.setPrefHeight(44);
+        emailField.setStyle(fieldStyle);
+        emailField.setPrefHeight(45);
 
         emailGroup.getChildren().addAll(emailLabel, emailField);
 
+        // PASSWORD
         VBox passwordGroup = new VBox(8);
-        Label passwordLabel = new Label("Password *");
-        passwordLabel.setStyle("-fx-font-size: 13; -fx-font-weight: 600; -fx-text-fill: #495057;");
+        Label passwordLabel = new Label("PASSWORD");
+        passwordLabel.setStyle(labelStyle);
 
         StackPane passwordContainer = new StackPane();
 
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("Minimum 6 characters");
-        passwordField.setStyle(
-                "-fx-background-color: white;" +
-                        "-fx-border-color: #e9ecef;" +
-                        "-fx-border-width: 1.5;" +
-                        "-fx-border-radius: 8;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 12;" +
-                        "-fx-font-size: 14;"
-        );
-        passwordField.setPrefHeight(44);
+        passwordField.setStyle(fieldStyle);
+        passwordField.setPrefHeight(45);
 
         TextField passwordVisible = new TextField();
         passwordVisible.setPromptText("Minimum 6 characters");
-        passwordVisible.setStyle(
-                "-fx-background-color: white;" +
-                        "-fx-border-color: #e9ecef;" +
-                        "-fx-border-width: 1.5;" +
-                        "-fx-border-radius: 8;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 12;" +
-                        "-fx-font-size: 14;"
-        );
-        passwordVisible.setPrefHeight(44);
+        passwordVisible.setStyle(fieldStyle);
+        passwordVisible.setPrefHeight(45);
         passwordVisible.setVisible(false);
 
         passwordField.textProperty().bindBidirectional(passwordVisible.textProperty());
@@ -663,11 +650,11 @@ public class DashboardController {
         Button eyeBtn = new Button("👁");
         eyeBtn.setStyle(
                 "-fx-background-color: transparent;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-padding: 8;"
+                        "-fx-text-fill: #94a3b8;" +
+                        "-fx-cursor: hand;"
         );
         StackPane.setAlignment(eyeBtn, Pos.CENTER_RIGHT);
-        StackPane.setMargin(eyeBtn, new Insets(0, 8, 0, 0));
+        StackPane.setMargin(eyeBtn, new Insets(0, 12, 0, 0));
 
         eyeBtn.setOnAction(e -> {
             if (passwordField.isVisible()) {
@@ -684,49 +671,35 @@ public class DashboardController {
         passwordContainer.getChildren().addAll(passwordField, passwordVisible, eyeBtn);
 
         Label passwordHint = new Label("Must contain uppercase, lowercase, special character");
-        passwordHint.setStyle("-fx-font-size: 11; -fx-text-fill: #6c757d;");
+        passwordHint.setStyle("-fx-font-size: 11; -fx-text-fill: #64748b;");
 
         passwordGroup.getChildren().addAll(passwordLabel, passwordContainer, passwordHint);
 
+        // PHONE
+        VBox phoneGroup = new VBox(8);
+        Label phoneLabel = new Label("PHONE NUMBER");
+        phoneLabel.setStyle(labelStyle);
+
+        TextField phoneInput = new TextField();
+        phoneInput.setPromptText("Enter phone number");
+        phoneInput.setStyle(fieldStyle);
+        phoneInput.setPrefHeight(45);
+
+        phoneGroup.getChildren().addAll(phoneLabel, phoneInput);
+
+        // ROLE
         VBox roleGroup = new VBox(8);
-        Label roleLabel = new Label("Role *");
-        roleLabel.setStyle("-fx-font-size: 13; -fx-font-weight: 600; -fx-text-fill: #495057;");
+        Label roleLabel = new Label("ROLE");
+        roleLabel.setStyle(labelStyle);
 
         ComboBox<String> roleBox = new ComboBox<>();
         roleBox.getItems().addAll("USER", "ADMIN");
         roleBox.setValue("USER");
-        roleBox.setStyle(
-                "-fx-background-color: white;" +
-                        "-fx-border-color: #e9ecef;" +
-                        "-fx-border-width: 1.5;" +
-                        "-fx-border-radius: 8;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 8 12;" +
-                        "-fx-font-size: 14;"
-        );
-        roleBox.setPrefHeight(44);
+        roleBox.setStyle(fieldStyle);
+        roleBox.setPrefHeight(45);
         roleBox.setMaxWidth(Double.MAX_VALUE);
 
         roleGroup.getChildren().addAll(roleLabel, roleBox);
-
-        VBox phoneGroup = new VBox(8);
-        Label phoneLabel = new Label("Phone *");
-        phoneLabel.setStyle("-fx-font-size: 13; -fx-font-weight: 600; -fx-text-fill: #495057;");
-
-        TextField phoneInput = new TextField();
-        phoneInput.setPromptText("Enter phone number");
-        phoneInput.setStyle(
-                "-fx-background-color: white;" +
-                        "-fx-border-color: #e9ecef;" +
-                        "-fx-border-width: 1.5;" +
-                        "-fx-border-radius: 8;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 12;" +
-                        "-fx-font-size: 14;"
-        );
-        phoneInput.setPrefHeight(44);
-
-        phoneGroup.getChildren().addAll(phoneLabel, phoneInput);
 
         formContent.getChildren().addAll(
                 nameGroup,
@@ -736,56 +709,35 @@ public class DashboardController {
                 roleGroup
         );
 
-        HBox footer = new HBox(12);
+        // ================= FOOTER =================
+        HBox footer = new HBox(15);
         footer.setAlignment(Pos.CENTER_RIGHT);
-        footer.setPadding(new Insets(20, 24, 24, 24));
-        footer.setStyle("-fx-background-color: #f8f9fa; -fx-border-color: #e9ecef; -fx-border-width: 1 0 0 0;");
+        footer.setPadding(new Insets(25));
+        footer.setStyle(
+                "-fx-border-color: rgba(255,255,255,0.06);" +
+                        "-fx-border-width: 1 0 0 0;"
+        );
 
-        Button cancelBtn = new Button("Cancel");
+        Button cancelBtn = new Button("Abort Mission");
         cancelBtn.setStyle(
-                "-fx-background-color: white;" +
-                        "-fx-text-fill: #6c757d;" +
-                        "-fx-font-size: 14;" +
-                        "-fx-font-weight: 600;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-border-color: #e9ecef;" +
-                        "-fx-border-width: 1.5;" +
-                        "-fx-border-radius: 8;" +
+                "-fx-background-color: rgba(255,255,255,0.05);" +
+                        "-fx-text-fill: #cbd5e1;" +
+                        "-fx-background-radius: 10;" +
                         "-fx-padding: 12 24;" +
                         "-fx-cursor: hand;"
         );
         cancelBtn.setOnAction(e -> dialogStage.close());
 
-        Button saveBtn = new Button("Create User");
+        Button saveBtn = new Button("🚀 Create User");
         saveBtn.setStyle(
-                "-fx-background-color: #7B5FF5;" +
+                "-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #FF8C00, #FF6347);" +
                         "-fx-text-fill: white;" +
-                        "-fx-font-size: 14;" +
                         "-fx-font-weight: 600;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 12 24;" +
-                        "-fx-cursor: hand;"
+                        "-fx-background-radius: 10;" +
+                        "-fx-padding: 12 26;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(255,99,71,0.4), 10,0,0,2);"
         );
-
-        saveBtn.setOnMouseEntered(e -> saveBtn.setStyle(
-                "-fx-background-color: #6B4FE5;" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-size: 14;" +
-                        "-fx-font-weight: 600;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 12 24;" +
-                        "-fx-cursor: hand;"
-        ));
-
-        saveBtn.setOnMouseExited(e -> saveBtn.setStyle(
-                "-fx-background-color: #7B5FF5;" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-size: 14;" +
-                        "-fx-font-weight: 600;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 12 24;" +
-                        "-fx-cursor: hand;"
-        ));
 
         saveBtn.setOnAction(e -> {
             if (nameField.getText().trim().isEmpty()) {
