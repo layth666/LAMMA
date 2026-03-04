@@ -39,7 +39,6 @@ public class EquipementListeController implements Initializable {
 
     @FXML private ListView<Equipement> listView;
     @FXML private TextField searchField;
-    @FXML private ComboBox<String> filterStatutCombo;
     @FXML private Label countLabel;
     @FXML private Label statusLabel;
     @FXML private Button btnModifier;
@@ -67,9 +66,6 @@ public class EquipementListeController implements Initializable {
         mailService = new MailService();
         equipementList = FXCollections.observableArrayList();
 
-        filterStatutCombo.getItems().addAll("DISPONIBLE", "LOUE", "VENDU");
-        filterStatutCombo.setValue(null);
-
         listView.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(Equipement e, boolean empty) {
@@ -87,9 +83,8 @@ public class EquipementListeController implements Initializable {
                             e.getType() != null ? e.getType() : "-",
                             e.getPrix() != null ? new DecimalFormat("#,##0.00").format(e.getPrix()) : "0"));
                     info.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11;");
-                    Label statut = new Label(e.getStatut() != null ? e.getStatut() : "DISPONIBLE");
-                    statut.setStyle("-fx-text-fill: #22c55e; -fx-font-size: 10; -fx-font-weight: bold;");
-                    card.getChildren().addAll(nom, info, statut);
+
+                    card.getChildren().addAll(nom, info);
                     setGraphic(card);
                 }
             }
@@ -103,7 +98,6 @@ public class EquipementListeController implements Initializable {
         });
 
         searchField.textProperty().addListener((obs, o, n) -> appliquerFiltres());
-        filterStatutCombo.valueProperty().addListener((obs, o, n) -> appliquerFiltres());
 
         // Config listes admin (groupes / messages) avec CRUD
         if (groupsAdminList != null) {
@@ -174,11 +168,15 @@ public class EquipementListeController implements Initializable {
     private void onVoirDetails() {
         Equipement sel = listView.getSelectionModel().getSelectedItem();
         if (sel == null) return;
-        String msg = String.format("ID: %d\nNom: %s\nDescription: %s\nCatégorie: %s\nType: %s\nPrix: %s TND\nVille: %s\nStatut: %s",
-                sel.getId(), sel.getNom(), sel.getDescription() != null ? sel.getDescription() : "-",
-                sel.getCategorie() != null ? sel.getCategorie() : "-", sel.getType(),
+        String msg = String.format("ID: %d\nNom: %s\nDescription: %s\nCatégorie: %s\nType: %s\nPrix: %s TND\nVille: %s",
+                sel.getId(),
+                sel.getNom(),
+                sel.getDescription() != null ? sel.getDescription() : "-",
+                sel.getCategorie() != null ? sel.getCategorie() : "-",
+                sel.getType(),
                 sel.getPrix() != null ? new DecimalFormat("#,##0.00").format(sel.getPrix()) : "0",
-                sel.getVille() != null ? sel.getVille() : "-", sel.getStatut());
+                sel.getVille() != null ? sel.getVille() : "-"
+        );
         new Alert(Alert.AlertType.INFORMATION, msg).showAndWait();
     }
 
@@ -190,7 +188,6 @@ public class EquipementListeController implements Initializable {
     @FXML
     private void onReinitialiser() {
         searchField.clear();
-        filterStatutCombo.setValue(null);
         appliquerFiltres();
     }
 
@@ -432,7 +429,7 @@ public class EquipementListeController implements Initializable {
 
     private void appliquerFiltres() {
         String search = searchField.getText() != null ? searchField.getText().trim().toLowerCase() : "";
-        String statut = filterStatutCombo.getValue();
+        // `statut` filter removed because the Equipement entity no longer exposes it
 
         List<Equipement> filtered = equipementList.stream()
                 .filter(e -> {
@@ -441,13 +438,7 @@ public class EquipementListeController implements Initializable {
                             (e.getDescription() != null && e.getDescription().toLowerCase().contains(search)) ||
                             (e.getCategorie() != null && e.getCategorie().toLowerCase().contains(search)) ||
                             (e.getVille() != null && e.getVille().toLowerCase().contains(search));
-                    boolean matchStatut;
-                    if (statut != null) {
-                        matchStatut = e.getStatut() != null && e.getStatut().equals(statut);
-                    } else {
-                        matchStatut = e.getStatut() == null || !e.getStatut().equals("VENDU");
-                    }
-                    return matchSearch && matchStatut;
+                    return matchSearch;
                 })
                 .collect(Collectors.toList());
 

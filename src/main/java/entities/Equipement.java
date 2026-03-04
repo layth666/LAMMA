@@ -11,7 +11,6 @@ public class Equipement {
     private String type; // VENTE / LOCATION
     private BigDecimal prix;
     private String ville;
-    private String statut; // DISPONIBLE / VENDU / LOUE
     private Timestamp dateAjout;
     private String caracteristiques; // JSON: {"places":"4","taille":"GRANDE"} pour tente, etc.
     private Integer nombreVues; // pour statistique "équipement le plus affiché"
@@ -19,18 +18,17 @@ public class Equipement {
     public Equipement() {}
 
     // Constructeur pour INSERT
-    public Equipement(String nom, String description, String categorie, String type, BigDecimal prix, String ville, String statut) {
+    public Equipement(String nom, String description, String categorie, String type, BigDecimal prix, String ville) {
         this.nom = nom;
         this.description = description;
         this.categorie = categorie;
         this.type = type;
         this.prix = prix;
         this.ville = ville;
-        this.statut = statut != null ? statut : "DISPONIBLE";
     }
 
     // Constructeur complet pour SELECT
-    public Equipement(Long id, String nom, String description, String categorie, String type, BigDecimal prix, String ville, String statut, Timestamp dateAjout) {
+    public Equipement(Long id, String nom, String description, String categorie, String type, BigDecimal prix, String ville, Timestamp dateAjout) {
         this.id = id;
         this.nom = nom;
         this.description = description;
@@ -38,7 +36,6 @@ public class Equipement {
         this.type = type;
         this.prix = prix;
         this.ville = ville;
-        this.statut = statut;
         this.dateAjout = dateAjout;
     }
 
@@ -64,9 +61,6 @@ public class Equipement {
     public String getVille() { return ville; }
     public void setVille(String ville) { this.ville = ville; }
 
-    public String getStatut() { return statut; }
-    public void setStatut(String statut) { this.statut = statut; }
-
     public Timestamp getDateAjout() { return dateAjout; }
     public void setDateAjout(Timestamp dateAjout) { this.dateAjout = dateAjout; }
 
@@ -86,7 +80,6 @@ public class Equipement {
                 ", type='" + type + '\'' +
                 ", prix=" + prix +
                 ", ville='" + ville + '\'' +
-                ", statut='" + statut + '\'' +
                 ", dateAjout=" + dateAjout +
                 '}';
     }

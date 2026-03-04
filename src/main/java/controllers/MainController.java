@@ -58,6 +58,14 @@ public class MainController implements Initializable {
 
         // Afficher équipements par défaut
         showEquipements();
+
+        // Control permissions
+        entities.Utilisateur loggedUser = utils.Session.getInstance().getLoggedUser();
+        if (loggedUser == null || !"ADMIN".equalsIgnoreCase(loggedUser.getRole())) {
+            btnEquipements.setVisible(false);
+            btnEquipements.setManaged(false);
+            showBoutique(); // Default for USER
+        }
     }
 
     private void loadViews() {

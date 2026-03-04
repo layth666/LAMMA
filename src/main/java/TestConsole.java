@@ -13,7 +13,7 @@ public class TestConsole {
         System.out.println("===== TEST CONSOLE CHAT =====");
 
         // 1️⃣ CREATE GROUPE
-        GroupeChat g = new GroupeChat("Console Group", "Test depuis console", "PUBLIC");
+        GroupeChat g = new GroupeChat("Console Group", "Test depuis console", "PUBLIC" , 1);
         groupeService.ajouter(g);
 
         // 2️⃣ AFFICHER GROUPES
@@ -24,7 +24,7 @@ public class TestConsole {
         int idGroupe = 1;
 
         // 3️⃣ AJOUT MESSAGE
-        MessageChat m1 = new MessageChat("Salut depuis la console 👋", idGroupe);
+        MessageChat m1 = new MessageChat("Salut depuis la console 👋", idGroupe, 1);
         messageService.ajouter(m1);
 
         // 4️⃣ AFFICHER MESSAGES DU GROUPE

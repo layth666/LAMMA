@@ -13,15 +13,25 @@ public class GroupeChatService {
 
     public GroupeChatService() {
         cnx = MyDataBase.getInstance().getCnx();
+        creerColonneCreateurSiNexistePas();
+    }
+
+    private void creerColonneCreateurSiNexistePas() {
+        try (Statement st = cnx.createStatement()) {
+            st.execute("ALTER TABLE groupe_chat ADD COLUMN IF NOT EXISTS id_createur INT DEFAULT 1");
+        } catch (SQLException e) {
+            System.out.println("Colonne id_createur existe déjà ou erreur : " + e.getMessage());
+        }
     }
 
     // CREATE
     public void ajouter(GroupeChat g) {
-        String sql = "INSERT INTO groupe_chat (nom, description, type) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO groupe_chat (nom, description, type, id_createur) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, g.getNom());
             ps.setString(2, g.getDescription());
             ps.setString(3, g.getType());
+            ps.setInt(4, g.getIdCreateur());
             ps.executeUpdate();
             System.out.println("✅ Groupe ajouté !");
         } catch (SQLException e) {
@@ -33,18 +43,22 @@ public class GroupeChatService {
     // READ ALL (DB -> List -> Stream)
     public List<GroupeChat> afficher() {
         List<GroupeChat> list = new ArrayList<>();
-        String sql = "SELECT id, nom, description, type, date_creation FROM groupe_chat";
+        String sql = "SELECT id, nom, description, type, date_creation, id_createur FROM groupe_chat";
 
         try (Statement st = cnx.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
+                int idCreateur = 1;
+                try { idCreateur = rs.getInt("id_createur"); } catch (Exception ignored) {}
+                
                 list.add(new GroupeChat(
                         rs.getInt("id"),
                         rs.getString("nom"),
                         rs.getString("description"),
                         rs.getString("type"),
-                        rs.getTimestamp("date_creation")
+                        rs.getTimestamp("date_creation"),
+                        idCreateur
                 ));
             }
 

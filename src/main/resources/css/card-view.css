@@ -51,6 +51,8 @@
     -fx-font-weight: bold;
     -fx-background-radius: 20;
     -fx-cursor: hand;
+    -fx-padding: 8 14; /* plus d'espace pour le texte */
+    -fx-font-size: 13px; /* texte plus lisible */
 }
 
 .button-capsule:hover {

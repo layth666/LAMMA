@@ -9,7 +9,7 @@ public class TestConnexion {
         GroupeChatService service = new GroupeChatService();
 
         // CREATE
-        service.ajouter(new GroupeChat("Camping Lovers", "Groupe pour organiser sorties", "PUBLIC"));
+        service.ajouter(new GroupeChat("Camping Lovers", "Groupe pour organiser sorties", "PUBLIC", 1));
 
         // READ
         System.out.println(service.afficher());

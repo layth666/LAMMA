@@ -117,8 +117,72 @@
     -fx-font-weight: 500;
 }
 
-/* PieChart couleurs cohérentes */
-.chart-pie-label {
-    -fx-fill: white;
+/* Messages : forcer couleurs sur thème admin (sombre) */
+.message-bubble-admin.bubble-me, .bubble-me {
+    -fx-background-color: linear-gradient(to bottom right, rgba(249,115,22,0.45), rgba(249,115,22,0.30));
+    -fx-text-fill: white;
+}
+
+.message-bubble-admin.bubble-other, .bubble-other {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-border-color: rgba(255,255,255,0.08);
+}
+
+.message-text {
+    -fx-text-fill: #e5e7eb; /* texte principal clair */
+    -fx-font-size: 14px;
+}
+
+.message-time {
+    -fx-text-fill: #94a3b8;
     -fx-font-size: 11px;
+}
+
+.message-sender {
+    -fx-text-fill: #cbd5e1;
+    -fx-font-size: 11px;
+}
+
+.message-meta {
+    -fx-text-fill: #9ca3af;
+    -fx-font-size: 12px;
+}
+
+.poll-button {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+    -fx-padding: 6 8;
+}
+
+.poll-button:disabled {
+    -fx-background-color: rgba(59,130,246,0.45);
+    -fx-text-fill: rgba(255,255,255,0.8);
+}
+
+.poll-button.voted {
+    -fx-background-color: #10b981; /* vert pour option choisie */
+    -fx-text-fill: white;
+}
+
+.poll-button.voted:disabled {
+    -fx-background-color: #10b981;
+    -fx-opacity: 0.95;
+}
+
+.poll-votes {
+    -fx-text-fill: #cbd5e1;
+    -fx-font-size: 11px;
+}
+
+/* Input area on dark background */
+.input-container-admin .message-input {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-text-fill: #e5e7eb;
+}
+
+/* Ensure date separator visibility */
+.date-separator-admin, .date-separator {
+    -fx-background-color: rgba(255,255,255,0.08);
+    -fx-text-fill: #94a3b8;
 }

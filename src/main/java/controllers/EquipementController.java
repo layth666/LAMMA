@@ -32,14 +32,12 @@ public class EquipementController implements Initializable {
     @FXML private TableColumn<Equipement, String> colType;
     @FXML private TableColumn<Equipement, BigDecimal> colPrix;
     @FXML private TableColumn<Equipement, String> colVille;
-    @FXML private TableColumn<Equipement, String> colStatut;
     @FXML private TableColumn<Equipement, Timestamp> colDateAjout;
     @FXML private TableColumn<Equipement, String> colActions;
 
     @FXML private TextField searchField;
     @FXML private ComboBox<String> filterCategorie;
     @FXML private ComboBox<String> filterType;
-    @FXML private ComboBox<String> filterStatut;
     @FXML private ComboBox<String> sortCombo;
 
     @FXML private TextField nomField;
@@ -48,7 +46,6 @@ public class EquipementController implements Initializable {
     @FXML private ComboBox<String> typeCombo;
     @FXML private TextField prixField;
     @FXML private TextField villeField;
-    @FXML private ComboBox<String> statutCombo;
 
     @FXML private Button btnAjouter;
     @FXML private Button btnModifier;
@@ -77,7 +74,6 @@ public class EquipementController implements Initializable {
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
         colPrix.setCellValueFactory(new PropertyValueFactory<>("prix"));
         colVille.setCellValueFactory(new PropertyValueFactory<>("ville"));
-        colStatut.setCellValueFactory(new PropertyValueFactory<>("statut"));
         colDateAjout.setCellValueFactory(new PropertyValueFactory<>("dateAjout"));
 
         // Formatage des colonnes
@@ -138,11 +134,9 @@ public class EquipementController implements Initializable {
 
         // Configuration des ComboBox
         typeCombo.getItems().addAll("VENTE", "LOCATION");
-        statutCombo.getItems().addAll("DISPONIBLE", "VENDU", "LOUE");
 
-        // Filtres : Type et Statut uniquement (pas "public" - équipements = Vente/Location)
+        // Filtres : Type uniquement (pas "statut")
         filterType.getItems().addAll("VENTE", "LOCATION");
-        filterStatut.getItems().addAll("DISPONIBLE", "VENDU", "LOUE");
         sortCombo.getItems().addAll(
             "Date (récent)",
             "Date (ancien)",
@@ -165,7 +159,6 @@ public class EquipementController implements Initializable {
         searchField.textProperty().addListener((obs, oldVal, newVal) -> appliquerFiltres());
         filterCategorie.valueProperty().addListener((obs, oldVal, newVal) -> appliquerFiltres());
         filterType.valueProperty().addListener((obs, oldVal, newVal) -> appliquerFiltres());
-        filterStatut.valueProperty().addListener((obs, oldVal, newVal) -> appliquerFiltres());
         sortCombo.valueProperty().addListener((obs, oldVal, newVal) -> appliquerFiltres());
 
         // Sélection dans la table
@@ -315,7 +308,6 @@ public class EquipementController implements Initializable {
         String search = searchField.getText() != null ? searchField.getText().trim().toLowerCase() : "";
         String cat = filterCategorie.getValue();
         String type = filterType.getValue();
-        String statut = filterStatut.getValue();
 
         return e -> {
             // Recherche globale
@@ -331,10 +323,8 @@ public class EquipementController implements Initializable {
             // Filtre type (null = pas de filtre)
             boolean matchType = type == null || (e.getType() != null && e.getType().equals(type));
 
-            // Filtre statut (null = pas de filtre)
-            boolean matchStatut = statut == null || (e.getStatut() != null && e.getStatut().equals(statut));
 
-            return matchSearch && matchCat && matchType && matchStatut;
+            return matchSearch && matchCat && matchType  ;
         };
     }
 
@@ -356,8 +346,8 @@ public class EquipementController implements Initializable {
                     categorieField.getText().trim(),
                     typeCombo.getValue(),
                     new BigDecimal(prixField.getText().trim()),
-                    villeField.getText().trim(),
-                    statutCombo.getValue()
+                    villeField.getText().trim()
+
             );
 
             service.ajouter(e);
@@ -407,7 +397,7 @@ public class EquipementController implements Initializable {
             selectedEquipement.setType(typeCombo.getValue());
             selectedEquipement.setPrix(new BigDecimal(prixField.getText().trim()));
             selectedEquipement.setVille(villeField.getText().trim());
-            selectedEquipement.setStatut(statutCombo.getValue());
+
 
             service.modifier(selectedEquipement);
             viderFormulaire();
@@ -492,7 +482,6 @@ public class EquipementController implements Initializable {
             "Type: %s\n" +
             "Prix: %s TND\n" +
             "Ville: %s\n" +
-            "Statut: %s\n" +
             "Date d'ajout: %s",
             equipementFinal.getId(),
             equipementFinal.getNom(),
@@ -501,7 +490,7 @@ public class EquipementController implements Initializable {
             equipementFinal.getType(),
             equipementFinal.getPrix() != null ? new DecimalFormat("#,##0.00").format(equipementFinal.getPrix()) : "N/A",
             equipementFinal.getVille() != null ? equipementFinal.getVille() : "N/A",
-            equipementFinal.getStatut(),
+
             equipementFinal.getDateAjout() != null ? new SimpleDateFormat("yyyy-MM-dd HH:mm").format(equipementFinal.getDateAjout()) : "N/A"
         );
         
@@ -519,7 +508,6 @@ public class EquipementController implements Initializable {
         searchField.clear();
         filterCategorie.setValue(null);
         filterType.setValue(null);
-        filterStatut.setValue(null);
         sortCombo.setValue("Date (récent)");
     }
 
@@ -530,7 +518,7 @@ public class EquipementController implements Initializable {
         typeCombo.setValue(e.getType());
         prixField.setText(e.getPrix() != null ? e.getPrix().toString() : "");
         villeField.setText(e.getVille());
-        statutCombo.setValue(e.getStatut());
+
     }
 
     private void viderFormulaire() {
@@ -540,7 +528,6 @@ public class EquipementController implements Initializable {
         typeCombo.setValue(null);
         prixField.clear();
         villeField.clear();
-        statutCombo.setValue("DISPONIBLE");
     }
 
     // ✅ Contrôle de saisie (validation)

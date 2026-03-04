@@ -11,9 +11,9 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("/views/MainView.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("/views/LoginView.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1200, 750);
-        stage.setTitle("LAMMA Voyage - Gestion des Équipements & Messagerie");
+        stage.setTitle("LAMMA Voyage - Connexion");
         stage.setScene(scene);
         stage.setMinWidth(900);
         stage.setMinHeight(600);

@@ -7,6 +7,7 @@ public class MessageChat {
     private String contenu;
     private Timestamp dateEnvoi;
     private int idGroupe;
+    private int idUser; // NEW
     private String typeMessage; // TEXT, IMAGE, PDF, AUDIO, VIDEO, LOCATION
     private String fichierPath;
     private Double latitude;
@@ -15,18 +16,20 @@ public class MessageChat {
     public MessageChat() {}
 
     // Pour INSERT
-    public MessageChat(String contenu, int idGroupe) {
+    public MessageChat(String contenu, int idGroupe, int idUser) {
         this.contenu = contenu != null ? contenu : "";
         this.idGroupe = idGroupe;
+        this.idUser = idUser;
         this.typeMessage = "TEXT";
     }
 
     // Pour SELECT
-    public MessageChat(int id, String contenu, Timestamp dateEnvoi, int idGroupe) {
+    public MessageChat(int id, String contenu, Timestamp dateEnvoi, int idGroupe, int idUser) {
         this.id = id;
         this.contenu = contenu;
         this.dateEnvoi = dateEnvoi;
         this.idGroupe = idGroupe;
+        this.idUser = idUser;
         this.typeMessage = "TEXT";
     }
 
@@ -41,6 +44,9 @@ public class MessageChat {
 
     public int getIdGroupe() { return idGroupe; }
     public void setIdGroupe(int idGroupe) { this.idGroupe = idGroupe; }
+
+    public int getIdUser() { return idUser; }
+    public void setIdUser(int idUser) { this.idUser = idUser; }
 
     public String getTypeMessage() { return typeMessage; }
     public void setTypeMessage(String typeMessage) { this.typeMessage = typeMessage; }
@@ -58,6 +64,7 @@ public class MessageChat {
                 ", contenu='" + contenu + '\'' +
                 ", dateEnvoi=" + dateEnvoi +
                 ", idGroupe=" + idGroupe +
+                ", idUser=" + idUser +
                 '}';
     }
 }

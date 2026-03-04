@@ -87,7 +87,7 @@ public class GroupeChatController extends HttpServlet {
                             .anyMatch(s -> !s.isBlank());
 
                     if (ok) {
-                        service.ajouter(new GroupeChat(nom, description, type));
+                        service.ajouter(new GroupeChat(nom, description, type, 1));
                     }
                 }
         );

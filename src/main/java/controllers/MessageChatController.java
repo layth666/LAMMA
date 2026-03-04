@@ -113,7 +113,7 @@ public class MessageChatController extends HttpServlet {
                     m.setContenu(contenu);
                     messageService.modifier(m);
                 },
-                () -> messageService.ajouter(new MessageChat(contenu, idGroupe))
+                () -> messageService.ajouter(new MessageChat(contenu, idGroupe, 1))
         );
 
         resp.sendRedirect(req.getContextPath() + "/messages?idGroupe=" + idGroupe);

@@ -9,6 +9,7 @@ public class EquipementAttribut {
     private long equipementId;
     private String nomAttribut;
     private String valeur;
+    private String description; // nouvelle colonne pour expliquer l'attribut
 
     public EquipementAttribut() {}
 
@@ -25,6 +26,14 @@ public class EquipementAttribut {
         this.valeur = valeur;
     }
 
+    public EquipementAttribut(int id, long equipementId, String nomAttribut, String valeur, String description) {
+        this.id = id;
+        this.equipementId = equipementId;
+        this.nomAttribut = nomAttribut;
+        this.valeur = valeur;
+        this.description = description;
+    }
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
     public long getEquipementId() { return equipementId; }
@@ -33,4 +42,6 @@ public class EquipementAttribut {
     public void setNomAttribut(String nomAttribut) { this.nomAttribut = nomAttribut; }
     public String getValeur() { return valeur; }
     public void setValeur(String valeur) { this.valeur = valeur; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 }

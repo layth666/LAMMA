@@ -2,6 +2,9 @@ package controllers;
 
 import entities.Equipement;
 import Services.EquipementService;
+import Services.EquipementVueService;
+import utils.ClientIdUtil;
+import utils.UserSession;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -44,7 +47,11 @@ public class EquipementStoreController implements Initializable {
     @FXML private Label weatherLabel;
 
     private EquipementService service;
+    private EquipementVueService vueService;
     private final HttpClient httpClient = HttpClient.newHttpClient();
+
+    // Flag pour éviter que le listener de la ComboBox ne réagisse lors des mises à jour programmatiques
+    private boolean suspendCategoryListener = false;
 
     // Coordonnées de Tunis, Tunisie
     private static final double LATITUDE = 36.80;
@@ -65,8 +72,26 @@ public class EquipementStoreController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         service = new EquipementService();
+        vueService = new EquipementVueService();
+        // si aucun userId présent, demander une saisie simple (popup) pour l'identifier
+        String uid = UserSession.getUserId();
+        if (uid == null || uid.isEmpty()) {
+            Platform.runLater(() -> {
+                TextInputDialog d = new TextInputDialog();
+                d.setTitle("Identifiant utilisateur");
+                d.setHeaderText("Entrez votre userId pour que vos visites soient comptées (ex: email ou login)");
+                d.setContentText("UserId : ");
+                d.showAndWait().ifPresent(v -> {
+                    if (v != null && !v.trim().isEmpty()) {
+                        UserSession.saveUserId(v.trim());
+                    }
+                });
+            });
+        }
         searchField.textProperty().addListener((o, ov, nv) -> charger());
-        filterCategorie.valueProperty().addListener((o, ov, nv) -> charger());
+        filterCategorie.valueProperty().addListener((o, ov, nv) -> {
+            if (!suspendCategoryListener) charger();
+        });
         charger();
         chargerMeteo();
         if (weatherLabel != null) {
@@ -76,17 +101,40 @@ public class EquipementStoreController implements Initializable {
     }
 
     private void charger() {
-        filterCategorie.getItems().clear();
-        List<Equipement> all = service.afficherDisponibles();        
-        all.stream()
+        // Conserver la sélection courante avant de rafraîchir la liste
+        String previousSelection = null;
+        try { previousSelection = filterCategorie.getValue(); } catch (Exception ex) { /* ignore */ }
+
+        List<Equipement> all = service.afficherDisponibles();
+
+        // Construire la liste des catégories triées
+        List<String> categories = all.stream()
                 .map(Equipement::getCategorie)
                 .filter(c -> c != null && !c.trim().isEmpty())
+                .map(String::trim)
                 .distinct()
-                .sorted()
-                .forEach(c -> filterCategorie.getItems().add(c));
+                .sorted(String::compareToIgnoreCase)
+                .collect(Collectors.toList());
+
+        // Préfixer par "Toutes catégories"
+        categories.add(0, "Toutes catégories");
+
+        // Mettre à jour les items sans déclencher le listener
+        suspendCategoryListener = true;
+        try {
+            filterCategorie.getItems().setAll(categories);
+            if (previousSelection != null && filterCategorie.getItems().contains(previousSelection)) {
+                filterCategorie.setValue(previousSelection);
+            } else {
+                filterCategorie.setValue("Toutes catégories");
+            }
+        } finally {
+            suspendCategoryListener = false;
+        }
 
         String search = searchField.getText() != null ? searchField.getText().trim().toLowerCase() : "";
         String cat = filterCategorie.getValue();
+        final String catFilter = "Toutes catégories".equals(cat) ? null : cat;
 
         List<Equipement> filtered = all.stream()
                 .filter(e -> {
@@ -94,7 +142,7 @@ public class EquipementStoreController implements Initializable {
                             (e.getNom() != null && e.getNom().toLowerCase().contains(search)) ||
                             (e.getDescription() != null && e.getDescription().toLowerCase().contains(search)) ||
                             (e.getCategorie() != null && e.getCategorie().toLowerCase().contains(search));
-                    boolean matchCat = cat == null || (e.getCategorie() != null && e.getCategorie().equals(cat));
+                    boolean matchCat = catFilter == null || (e.getCategorie() != null && e.getCategorie().trim().equalsIgnoreCase(catFilter.trim()));
                     return matchSearch && matchCat;
                 })
                 .collect(Collectors.toList());
@@ -456,8 +504,11 @@ public class EquipementStoreController implements Initializable {
         Label prix = new Label(e.getPrix() != null ? new DecimalFormat("#,##0.00").format(e.getPrix()) + " TND" : "0 TND");
         prix.setStyle("-fx-text-fill: #F97316; -fx-font-weight: bold; -fx-font-size: 13;");
 
-        Label statut = new Label(e.getStatut() != null ? e.getStatut() : "DISPONIBLE");
-        statut.setStyle("-fx-text-fill: #22c55e; -fx-font-size: 10; -fx-font-weight: bold;");
+        // Remplacer le statut par le compteur de vues
+        int vues = 0;
+        try { vues = vueService.getViewsCount(e.getId()); } catch (Exception ignored) {}
+        Label vuesLbl = new Label("👁 " + vues);
+        vuesLbl.setStyle("-fx-text-fill: #cbd5e1; -fx-font-size: 11; -fx-font-weight: bold;");
 
         HBox boutons = new HBox(6);
         boutons.setStyle("-fx-padding: 6 0 0 0;");
@@ -469,7 +520,7 @@ public class EquipementStoreController implements Initializable {
         btnSupprimer.setOnAction(ev -> onSupprimerEquipement(e));
         boutons.getChildren().addAll(btnModifier, btnSupprimer);
 
-        card.getChildren().addAll(nom, cat, prix, statut, boutons);
+        card.getChildren().addAll(nom, cat, prix, vuesLbl, boutons);
         return card;
     }
 
@@ -500,12 +551,18 @@ public class EquipementStoreController implements Initializable {
     }
 
     private void afficherDetails(Equipement e) {
-        service.incrementerVues(e.getId());
-        String msg = String.format("Nom: %s\nCatégorie: %s\nType: %s\nPrix: %s TND\nVille: %s\nStatut: %s\n\n%s",
+        // récupérer userId (auth) et enregistrer la vue par user
+        String userId = UserSession.getUserId();
+        if (userId != null && !userId.isBlank()) {
+            try { vueService.registerView(e.getId(), userId); } catch (Exception ignored) {}
+        }
+
+        // Charger les détails (texte simplifié)
+        String msg = String.format("Nom: %s\nCatégorie: %s\nType: %s\nPrix: %s TND\nVille: %s\n\n%s",
                 e.getNom(), e.getCategorie() != null ? e.getCategorie() : "-",
                 e.getType() != null ? e.getType() : "-",
                 e.getPrix() != null ? new DecimalFormat("#,##0.00").format(e.getPrix()) : "0",
-                e.getVille() != null ? e.getVille() : "-", e.getStatut(),
+                e.getVille() != null ? e.getVille() : "-",
                 e.getDescription() != null ? e.getDescription() : "");
 
         Alert a = new Alert(Alert.AlertType.INFORMATION);

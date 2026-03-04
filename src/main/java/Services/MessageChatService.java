@@ -13,46 +13,139 @@ public class MessageChatService {
 
     public MessageChatService() {
         cnx = MyDataBase.getInstance().getCnx();
+        creerColonneUserSiNexistePas();
+        // S'assurer que les colonnes nécessaires existent (type_message, fichier_path, latitude, longitude)
+        ensureColumnsExist();
+    }
+
+    private void creerColonneUserSiNexistePas() {
+        try (Statement st = cnx.createStatement()) {
+            st.execute("ALTER TABLE message_chat ADD COLUMN IF NOT EXISTS id_user INT DEFAULT 1");
+        } catch (SQLException e) {
+            System.out.println("Colonne id_user existe déjà ou erreur : " + e.getMessage());
+        }
     }
 
     // CREATE
-    public void ajouter(MessageChat m) {
-        String sql = "INSERT INTO message_chat (contenu, id_groupe, type_message, fichier_path, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+    public int ajouter(MessageChat m) {
+        String sql = "INSERT INTO message_chat (contenu, id_groupe, id_user, type_message, fichier_path, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, m.getContenu() != null ? m.getContenu() : "");
             ps.setInt(2, m.getIdGroupe());
-            ps.setString(3, m.getTypeMessage() != null ? m.getTypeMessage() : "TEXT");
-            ps.setString(4, m.getFichierPath());
-            ps.setObject(5, m.getLatitude());
-            ps.setObject(6, m.getLongitude());
+            ps.setInt(3, m.getIdUser());
+            ps.setString(4, m.getTypeMessage() != null ? m.getTypeMessage() : "TEXT");
+            ps.setString(5, m.getFichierPath());
+            ps.setObject(6, m.getLatitude());
+            ps.setObject(7, m.getLongitude());
             ps.executeUpdate();
-            System.out.println("✅ Message ajouté !");
+            
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                int newId = rs.getInt(1);
+                m.setId(newId);
+                System.out.println("✅ Message ajouté ! ID=" + newId);
+                return newId;
+            }
+            return -1;
         } catch (SQLException e) {
-            if (e.getMessage() != null && (e.getMessage().contains("type_message") || e.getMessage().contains("Unknown column"))) {
-                try (PreparedStatement ps = cnx.prepareStatement("INSERT INTO message_chat (contenu, id_groupe) VALUES (?, ?)")) {
+            System.out.println("Ajout message échoué: " + e.getMessage());
+            // Si erreur liée au schéma (colonnes manquantes), tenter de créer les colonnes puis retenter
+            if (e.getMessage() != null && (e.getMessage().contains("type_message") || e.getMessage().contains("fichier_path") || e.getMessage().contains("latitude") || e.getMessage().contains("longitude") || e.getMessage().contains("Unknown column"))) {
+                try {
+                    ensureColumnsExist();
+                    // Retenter l'insertion une fois
+                    try (PreparedStatement ps2 = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                        ps2.setString(1, m.getContenu() != null ? m.getContenu() : "");
+                        ps2.setInt(2, m.getIdGroupe());
+                        ps2.setInt(3, m.getIdUser());
+                        ps2.setString(4, m.getTypeMessage() != null ? m.getTypeMessage() : "TEXT");
+                        ps2.setString(5, m.getFichierPath());
+                        ps2.setObject(6, m.getLatitude());
+                        ps2.setObject(7, m.getLongitude());
+                        ps2.executeUpdate();
+                        ResultSet rs2 = ps2.getGeneratedKeys();
+                        if (rs2.next()) {
+                            int newId = rs2.getInt(1);
+                            m.setId(newId);
+                            System.out.println("✅ Message ajouté après migration des colonnes ! ID=" + newId);
+                            return newId;
+                        }
+                    }
+                } catch (Exception ex2) {
+                    System.out.println("Échec tentative de création des colonnes: " + ex2.getMessage());
+                }
+
+                // Si tout échoue, retomber à l'ancien fallback (insert minimal)
+                try (PreparedStatement ps = cnx.prepareStatement("INSERT INTO message_chat (contenu, id_groupe, id_user) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
                     ps.setString(1, m.getContenu() != null ? m.getContenu() : "");
                     ps.setInt(2, m.getIdGroupe());
+                    ps.setInt(3, m.getIdUser());
                     ps.executeUpdate();
-                    System.out.println("✅ Message ajouté !");
-                } catch (SQLException ex2) {
-                    System.out.println("❌ Erreur ajout message");
-                    ex2.printStackTrace();
+                    ResultSet rs = ps.getGeneratedKeys();
+                    if (rs.next()) {
+                        int newId = rs.getInt(1);
+                        m.setId(newId);
+                        System.out.println("✅ Message ajouté (fallback) ! ID=" + newId);
+                        return newId;
+                    }
+                    return -1;
+                } catch (SQLException ex3) {
+                    System.out.println("❌ Erreur ajout message fallback");
+                    ex3.printStackTrace();
+                    return -1;
                 }
             } else {
                 System.out.println("❌ Erreur ajout message");
                 e.printStackTrace();
+                return -1;
             }
+        }
+    }
+
+    /**
+     * Tente d'ajouter les colonnes utilisées par la messagerie si elles n'existent pas.
+     * Méthode idempotente (utilise IF NOT EXISTS quand disponible) pour rendre le code résilient
+     * vis-à-vis d'anciens schémas SQLite/MySQL qui pourraient être différents.
+     */
+    private void ensureColumnsExist() {
+        try (Statement st = cnx.createStatement()) {
+            // Les syntaxes ALTER TABLE ADD COLUMN IF NOT EXISTS existent sur certaines bases (Postgres, MySQL récent).
+            // On essaye plusieurs variantes en silence pour maximiser la compatibilité.
+            try {
+                st.execute("ALTER TABLE message_chat ADD COLUMN IF NOT EXISTS type_message VARCHAR(50) DEFAULT 'TEXT'");
+            } catch (SQLException ignored) {
+                try { st.execute("ALTER TABLE message_chat ADD COLUMN type_message VARCHAR(50)"); } catch (SQLException ignored2) {}
+            }
+            try {
+                st.execute("ALTER TABLE message_chat ADD COLUMN IF NOT EXISTS fichier_path TEXT");
+            } catch (SQLException ignored) {
+                try { st.execute("ALTER TABLE message_chat ADD COLUMN fichier_path TEXT"); } catch (SQLException ignored2) {}
+            }
+            try {
+                st.execute("ALTER TABLE message_chat ADD COLUMN IF NOT EXISTS latitude DOUBLE");
+            } catch (SQLException ignored) {
+                try { st.execute("ALTER TABLE message_chat ADD COLUMN latitude DOUBLE"); } catch (SQLException ignored2) {}
+            }
+            try {
+                st.execute("ALTER TABLE message_chat ADD COLUMN IF NOT EXISTS longitude DOUBLE");
+            } catch (SQLException ignored) {
+                try { st.execute("ALTER TABLE message_chat ADD COLUMN longitude DOUBLE"); } catch (SQLException ignored2) {}
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la tentative d'ajout des colonnes message_chat: " + e.getMessage());
         }
     }
 
     // READ ALL (DB -> List -> Stream)
     public List<MessageChat> afficher() {
         List<MessageChat> list = new ArrayList<>();
-        String sql = "SELECT id, contenu, date_envoi, id_groupe, type_message, fichier_path, latitude, longitude FROM message_chat";
+        String sql = "SELECT id, contenu, date_envoi, id_groupe, id_user, type_message, fichier_path, latitude, longitude FROM message_chat";
         try (Statement st = cnx.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
-                MessageChat msg = new MessageChat(rs.getInt("id"), rs.getString("contenu"), rs.getTimestamp("date_envoi"), rs.getInt("id_groupe"));
+                int idUser = 1; // Default
+                try { idUser = rs.getInt("id_user"); } catch (Exception ignored) {}
+                MessageChat msg = new MessageChat(rs.getInt("id"), rs.getString("contenu"), rs.getTimestamp("date_envoi"), rs.getInt("id_groupe"), idUser);
                 try { msg.setTypeMessage(rs.getString("type_message")); } catch (Exception ignored) {}
                 try { msg.setFichierPath(rs.getString("fichier_path")); } catch (Exception ignored) {}
                 try { msg.setLatitude(rs.getDouble("latitude")); if (rs.wasNull()) msg.setLatitude(null); } catch (Exception ignored) {}
@@ -61,8 +154,12 @@ public class MessageChatService {
             }
         } catch (SQLException e) {
             if (e.getMessage() != null && (e.getMessage().contains("type_message") || e.getMessage().contains("Unknown column"))) {
-                try (Statement st = cnx.createStatement(); ResultSet rs = st.executeQuery("SELECT id, contenu, date_envoi, id_groupe FROM message_chat")) {
-                    while (rs.next()) list.add(new MessageChat(rs.getInt("id"), rs.getString("contenu"), rs.getTimestamp("date_envoi"), rs.getInt("id_groupe")));
+                try (Statement st = cnx.createStatement(); ResultSet rs = st.executeQuery("SELECT id, contenu, date_envoi, id_groupe, id_user FROM message_chat")) {
+                    while (rs.next()) {
+                        int idUser = 1; // Default
+                        try { idUser = rs.getInt("id_user"); } catch (Exception ignored) {}
+                        list.add(new MessageChat(rs.getInt("id"), rs.getString("contenu"), rs.getTimestamp("date_envoi"), rs.getInt("id_groupe"), idUser));
+                    }
                 } catch (SQLException ex2) {
                     System.out.println("❌ Erreur affichage messages");
                     ex2.printStackTrace();

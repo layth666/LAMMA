@@ -37,7 +37,6 @@ public class EquipementFormController implements Initializable {
     @FXML private TextField inputVille;
     @FXML private TextField inputPrix;
     @FXML private TextArea inputDescription;
-    @FXML private ComboBox<String> inputStatut;
     @FXML private VBox errorContainer;
     @FXML private Label globalErrorMessage;
     @FXML private TextField inputMail;
@@ -61,8 +60,6 @@ public class EquipementFormController implements Initializable {
         inputMatelasGonflable.getItems().addAll("Oui", "Non");
         inputLunettesCouleur.getItems().addAll("Noir", "Bleu", "Vert", "Gris", "Brun", "Autre");
         inputLunettesPolarisees.getItems().addAll("Oui", "Non");
-        inputStatut.getItems().addAll("DISPONIBLE", "LOUE", "VENDU");
-        inputStatut.setValue("DISPONIBLE");
         inputCategorie.valueProperty().addListener((o, ov, nv) -> {
             boolean tente = "Tente".equalsIgnoreCase(nv);
             boolean matelas = "Matelas".equalsIgnoreCase(nv);
@@ -95,7 +92,7 @@ public class EquipementFormController implements Initializable {
             inputVille.setText(e.getVille());
             inputPrix.setText(e.getPrix() != null ? e.getPrix().toString() : "");
             inputDescription.setText(e.getDescription());
-            inputStatut.setValue(e.getStatut() != null ? e.getStatut() : "DISPONIBLE");
+
             if (e.getCaracteristiques() != null && e.getCaracteristiques().contains("=")) {
                 for (String part : e.getCaracteristiques().split(";")) {
                     if (part.startsWith("places=")) inputPlaces.setValue(part.substring(7).trim());
@@ -139,7 +136,6 @@ public class EquipementFormController implements Initializable {
         } else {
             formTitle.setText("Nouvel équipement");
             inputCategorie.setValue(null);
-            inputStatut.setValue("DISPONIBLE");
         }
     }
 
@@ -158,11 +154,10 @@ public class EquipementFormController implements Initializable {
             String cat = inputCategorie.getValue() != null ? inputCategorie.getValue() : "";
             String type = inputType.getValue();
             String ville = inputVille.getText() != null ? inputVille.getText().trim() : "";
-            String statut = inputStatut.getValue() != null ? inputStatut.getValue() : "DISPONIBLE";
             BigDecimal prix = new BigDecimal(inputPrix.getText().trim());
 
             if (equipement == null) {
-                Equipement nouveau = new Equipement(nom, desc, cat, type, prix, ville, statut);
+                Equipement nouveau = new Equipement(nom, desc, cat, type, prix, ville);
                 String car = buildCaracteristiques();
                 if (car != null) nouveau.setCaracteristiques(car);
                 Long id = service.ajouterRetourId(nouveau);
@@ -183,7 +178,6 @@ public class EquipementFormController implements Initializable {
                 if (car != null) equipement.setCaracteristiques(car);
                 equipement.setType(type);
                 equipement.setVille(ville);
-                equipement.setStatut(statut);
                 equipement.setPrix(prix);
                 service.modifier(equipement);
                 attributService.supprimerParEquipement(equipement.getId());
@@ -300,9 +294,9 @@ public class EquipementFormController implements Initializable {
         String prix = e.getPrix() != null ? e.getPrix().toString() : "";
         String sujet = "Équipement ajouté avec succès – LAMMA";
         String corps = String.format(
-                "L'équipement (%s) avec le prix %s TND a été ajouté avec succès.%n%nDétails :%n- Nom : %s%n- Catégorie : %s%n- Type : %s%n- Prix : %s TND%n- Ville : %s%n- Statut : %s%n- Description : %s",
+                "L'équipement (%s) avec le prix %s TND a été ajouté avec succès.%n%nDétails :%n- Nom : %s%n- Catégorie : %s%n- Type : %s%n- Prix : %s TND%n- Ville : %s%n- Description : %s",
                 type, prix,
-                e.getNom(), e.getCategorie(), e.getType(), e.getPrix(), e.getVille(), e.getStatut(),
+                e.getNom(), e.getCategorie(), e.getType(), e.getPrix(), e.getVille(),
                 e.getDescription() != null ? e.getDescription() : "-"
         );
         boolean ok = mailService.sendText(from, to, sujet, corps);

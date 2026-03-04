@@ -26,7 +26,7 @@ public class EquipementService {
 
     /** Ajoute un équipement et retourne son ID généré (pour sauvegarder les attributs). */
     public Long ajouterRetourId(Equipement e) {
-        String sql = "INSERT INTO equipement (nom, description, categorie, type, prix, ville, statut, caracteristiques) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO equipement (nom, description, categorie, type, prix, ville, caracteristiques) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, e.getNom());
             ps.setString(2, e.getDescription());
@@ -34,8 +34,7 @@ public class EquipementService {
             ps.setString(4, e.getType());
             ps.setBigDecimal(5, e.getPrix());
             ps.setString(6, e.getVille());
-            ps.setString(7, e.getStatut() != null ? e.getStatut() : "DISPONIBLE");
-            ps.setString(8, e.getCaracteristiques());
+            ps.setString(7, e.getCaracteristiques());
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
@@ -46,7 +45,7 @@ public class EquipementService {
         } catch (SQLException ex) {
             if (ex.getMessage() != null && ex.getMessage().contains("caracteristiques")) {
                 try {
-                    String sql2 = "INSERT INTO equipement (nom, description, categorie, type, prix, ville, statut) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                    String sql2 = "INSERT INTO equipement (nom, description, categorie, type, prix, ville) VALUES (?, ?, ?, ?, ?, ?)";
                     try (PreparedStatement ps2 = cnx.prepareStatement(sql2, Statement.RETURN_GENERATED_KEYS)) {
                         ps2.setString(1, e.getNom());
                         ps2.setString(2, e.getDescription());
@@ -54,7 +53,6 @@ public class EquipementService {
                         ps2.setString(4, e.getType());
                         ps2.setBigDecimal(5, e.getPrix());
                         ps2.setString(6, e.getVille());
-                        ps2.setString(7, e.getStatut() != null ? e.getStatut() : "DISPONIBLE");
                         ps2.executeUpdate();
                         ResultSet rs2 = ps2.getGeneratedKeys();
                         if (rs2.next()) { return rs2.getLong(1); }
@@ -74,8 +72,8 @@ public class EquipementService {
     // READ ALL (DB -> List -> Stream)
     public List<Equipement> afficher() {
         List<Equipement> list = new ArrayList<>();
-        String sqlWithVues = "SELECT id, nom, description, categorie, type, prix, ville, statut, date_ajout, caracteristiques, nombre_vues FROM equipement";
-        String sqlBase = "SELECT id, nom, description, categorie, type, prix, ville, statut, date_ajout, caracteristiques FROM equipement";
+        String sqlWithVues = "SELECT id, nom, description, categorie, type, prix, ville, date_ajout, caracteristiques, nombre_vues FROM equipement";
+        String sqlBase = "SELECT id, nom, description, categorie, type, prix, ville, date_ajout, caracteristiques FROM equipement";
         try (Statement st = cnx.createStatement();
              ResultSet rs = st.executeQuery(sqlWithVues)) {
             while (rs.next()) {
@@ -87,7 +85,6 @@ public class EquipementService {
                         rs.getString("type"),
                         rs.getBigDecimal("prix"),
                         rs.getString("ville"),
-                        rs.getString("statut"),
                         rs.getTimestamp("date_ajout")
                 );
                 try { eq.setCaracteristiques(rs.getString("caracteristiques")); } catch (Exception ignored) {}
@@ -100,7 +97,7 @@ public class EquipementService {
                     while (rs.next()) {
                         Equipement eq = new Equipement(rs.getLong("id"), rs.getString("nom"), rs.getString("description"),
                                 rs.getString("categorie"), rs.getString("type"), rs.getBigDecimal("prix"),
-                                rs.getString("ville"), rs.getString("statut"), rs.getTimestamp("date_ajout"));
+                                rs.getString("ville"), rs.getTimestamp("date_ajout"));
                         try { eq.setCaracteristiques(rs.getString("caracteristiques")); } catch (Exception ignored) {}
                         list.add(eq);
                     }
@@ -110,12 +107,12 @@ public class EquipementService {
                 }
             } else if (e.getMessage() != null && e.getMessage().contains("caracteristiques")) {
                 try {
-                    String sql2 = "SELECT id, nom, description, categorie, type, prix, ville, statut, date_ajout FROM equipement";
+                    String sql2 = "SELECT id, nom, description, categorie, type, prix, ville, date_ajout FROM equipement";
                     try (ResultSet rs2 = cnx.createStatement().executeQuery(sql2)) {
                         while (rs2.next()) {
                             list.add(new Equipement(rs2.getLong("id"), rs2.getString("nom"), rs2.getString("description"),
                                     rs2.getString("categorie"), rs2.getString("type"), rs2.getBigDecimal("prix"),
-                                    rs2.getString("ville"), rs2.getString("statut"), rs2.getTimestamp("date_ajout")));
+                                    rs2.getString("ville"), rs2.getTimestamp("date_ajout")));
                         }
                     }
                 } catch (SQLException ex2) {
@@ -151,7 +148,7 @@ public class EquipementService {
 
     // UPDATE
     public void modifier(Equipement e) {
-        String sql = "UPDATE equipement SET nom = ?, description = ?, categorie = ?, type = ?, prix = ?, ville = ?, statut = ?, caracteristiques = ? WHERE id = ?";
+        String sql = "UPDATE equipement SET nom = ?, description = ?, categorie = ?, type = ?, prix = ?, ville = ?, caracteristiques = ? WHERE id = ?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, e.getNom());
             ps.setString(2, e.getDescription());
@@ -159,15 +156,14 @@ public class EquipementService {
             ps.setString(4, e.getType());
             ps.setBigDecimal(5, e.getPrix());
             ps.setString(6, e.getVille());
-            ps.setString(7, e.getStatut());
-            ps.setString(8, e.getCaracteristiques());
-            ps.setLong(9, e.getId());
+            ps.setString(7, e.getCaracteristiques());
+            ps.setLong(8, e.getId());
             int updated = ps.executeUpdate();
             System.out.println(updated > 0 ? "✅ Équipement modifié !" : "⚠️ Aucun équipement trouvé");
         } catch (SQLException ex) {
             if (ex.getMessage() != null && ex.getMessage().contains("caracteristiques")) {
                 try {
-                    String sql2 = "UPDATE equipement SET nom = ?, description = ?, categorie = ?, type = ?, prix = ?, ville = ?, statut = ? WHERE id = ?";
+                    String sql2 = "UPDATE equipement SET nom = ?, description = ?, categorie = ?, type = ?, prix = ?, ville = ? WHERE id = ?";
                     try (PreparedStatement ps2 = cnx.prepareStatement(sql2)) {
                         ps2.setString(1, e.getNom());
                         ps2.setString(2, e.getDescription());
@@ -175,8 +171,7 @@ public class EquipementService {
                         ps2.setString(4, e.getType());
                         ps2.setBigDecimal(5, e.getPrix());
                         ps2.setString(6, e.getVille());
-                        ps2.setString(7, e.getStatut());
-                        ps2.setLong(8, e.getId());
+                        ps2.setLong(7, e.getId());
                         ps2.executeUpdate();
                         System.out.println("✅ Équipement modifié !");
                     }
@@ -240,12 +235,14 @@ public class EquipementService {
                 .collect(Collectors.toList());
     }
 
-    // ✅ Stream: Rechercher par statut
+    // NOTE: la recherche par statut a été neutralisée car le champ 'statut' a été retiré.
     public List<Equipement> rechercherParStatut(String statut) {
-        String s = (statut == null) ? "" : statut.trim().toUpperCase();
-        return afficher().stream()
-                .filter(e -> e.getStatut() != null && e.getStatut().trim().toUpperCase().equals(s))
-                .collect(Collectors.toList());
+        return afficher();
+    }
+
+    // NOTE: afficherDisponibles retourne la liste complète (plus de statut pour exclure 'VENDU').
+    public List<Equipement> afficherDisponibles() {
+        return afficher();
     }
 
     // ✅ Stream: Rechercher par ville
@@ -294,13 +291,6 @@ public class EquipementService {
     public List<Equipement> trierParNom() {
         return afficher().stream()
                 .sorted(Comparator.comparing(e -> e.getNom() != null ? e.getNom().toLowerCase() : ""))
-                .collect(Collectors.toList());
-    }
-
-    // ✅ Équipements disponibles (exclut VENDU)
-    public List<Equipement> afficherDisponibles() {
-        return afficher().stream()
-                .filter(e -> e.getStatut() == null || !e.getStatut().equals("VENDU"))
                 .collect(Collectors.toList());
     }
 

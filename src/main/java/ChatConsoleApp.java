@@ -38,7 +38,7 @@ public class ChatConsoleApp {
                         break;
                     }
 
-                    MessageChat m = new MessageChat(contenu, idGroupe);
+                    MessageChat m = new MessageChat(contenu, idGroupe, 1);
                     messageService.ajouter(m);
                 }
 

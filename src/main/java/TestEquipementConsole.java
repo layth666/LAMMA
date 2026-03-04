@@ -18,8 +18,8 @@ public class TestEquipementConsole {
             "Camping",
             "LOCATION",
             new BigDecimal("50.00"),
-            "Tunis",
-            "DISPONIBLE"
+            "Tunis"
+
         );
         equipementService.ajouter(e1);
 
@@ -29,8 +29,8 @@ public class TestEquipementConsole {
             "Sport",
             "VENTE",
             new BigDecimal("350.00"),
-            "Sfax",
-            "DISPONIBLE"
+            "Sfax"
+
         );
         equipementService.ajouter(e2);
 
@@ -74,7 +74,7 @@ public class TestEquipementConsole {
         if (equipementToUpdate != null) {
             System.out.println("\n✏️ Modification de l'équipement ID=1 :");
             equipementToUpdate.setPrix(new BigDecimal("45.00"));
-            equipementToUpdate.setStatut("LOUE");
+
             equipementService.modifier(equipementToUpdate);
             System.out.println("✅ Équipement modifié !");
         }

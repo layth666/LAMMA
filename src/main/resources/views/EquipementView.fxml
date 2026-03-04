@@ -52,7 +52,6 @@
                     <HBox spacing="15" alignment="CENTER_LEFT">
                         <ComboBox fx:id="filterCategorie" promptText="Catégorie" prefWidth="180"/>
                         <ComboBox fx:id="filterType" promptText="Type" prefWidth="140"/>
-                        <ComboBox fx:id="filterStatut" promptText="Statut" prefWidth="140"/>
                         <ComboBox fx:id="sortCombo" promptText="Trier par..." prefWidth="180"/>
                         <Label fx:id="countLabel" text="0 équipement(s)" styleClass="count-label"/>
                         <Region HBox.hgrow="ALWAYS"/>
@@ -75,7 +74,6 @@
                             <TableColumn fx:id="colType" text="Type" minWidth="75" prefWidth="95"/>
                             <TableColumn fx:id="colPrix" text="Prix (TND)" minWidth="90" prefWidth="110"/>
                             <TableColumn fx:id="colVille" text="Ville" minWidth="85" prefWidth="105"/>
-                            <TableColumn fx:id="colStatut" text="Statut" minWidth="85" prefWidth="105"/>
                             <TableColumn fx:id="colDateAjout" text="Date" minWidth="100" prefWidth="120"/>
                             <TableColumn fx:id="colActions" text="Actions" minWidth="115" prefWidth="140"/>
                         </columns>
@@ -113,8 +111,6 @@
                         <Label text="Ville" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
                         <TextField fx:id="villeField" promptText="Ex: Tunis, Sfax" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
-                        <Label text="Statut" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-                        <ComboBox fx:id="statutCombo" promptText="Disponible, Loué, Vendu" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
 
                         <Label text="Description" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
                         <TextArea fx:id="descriptionField" promptText="Description optionnelle de l'équipement..." prefRowCount="3" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3"/>
