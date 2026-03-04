@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane prefHeight="650.0" prefWidth="900.0" styleClass="app-root"  xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DetailsEvenementController">
+
+    <!-- background -->
+    <ImageView fx:id="bgImage" fitHeight="650.0" fitWidth="900.0" preserveRatio="false" />
+    <Pane mouseTransparent="true" styleClass="bg-overlay" />
+
+    <BorderPane>
+        <padding>
+            <Insets bottom="22" left="22" right="22" top="22" />
+        </padding>
+
+        <!-- ================= TOP ================= -->
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="16" styleClass="header-card">
+                <padding>
+                    <Insets bottom="16" left="18" right="18" top="16" />
+                </padding>
+
+                <ImageView fx:id="imgLogo" fitHeight="58" fitWidth="58" preserveRatio="true" />
+
+                <VBox spacing="3">
+                    <Label styleClass="title" text="Détails de l'événement" />
+                    <Label fx:id="lblMsg" styleClass="subtitle" text="" />
+                </VBox>
+
+                <Pane HBox.hgrow="ALWAYS" />
+            </HBox>
+        </top>
+
+        <!-- ================= BOTTOM ================= -->
+        <bottom>
+            <HBox alignment="CENTER_LEFT" spacing="12" styleClass="panel">
+                <padding>
+                    <Insets bottom="12" left="12" right="12" top="12" />
+                </padding>
+
+                <!-- USER -->
+                <HBox fx:id="userButtons" alignment="CENTER_LEFT" spacing="12">
+                    <Button fx:id="btnAddToGoogleCalendar" onAction="#onAddToGoogleCalendar" prefHeight="38.0" prefWidth="69.0" styleClass="btn-primary" text="📅" />
+                    <Button fx:id="btnToggleNotif" onAction="#onToggleNotification" styleClass="btn-secondary" text="🔔 " />
+                    <Button onAction="#onRetour" styleClass="btn-secondary" text="↩ Retour" />
+                </HBox>
+
+                <Pane HBox.hgrow="ALWAYS" />
+
+                <!-- ADMIN -->
+                <HBox fx:id="adminButtons" alignment="CENTER_RIGHT" spacing="12">
+                    <Button onAction="#onAjouterProgramme" styleClass="btn-primary" text="Ajouter Programme" />
+                    <Button onAction="#onModifierEvenement" styleClass="btn-secondary" text="Modifier" />
+                </HBox>
+
+            </HBox>
+        </bottom>
+      <right>
+            <ScrollPane fitToWidth="true" styleClass="glass-scroll" BorderPane.alignment="CENTER">
+                <content>
+                    <VBox spacing="18">
+                        <padding>
+                            <Insets bottom="10" left="0" right="0" top="10" />
+                        </padding>
+
+                        <!-- ===== Bloc Détails + QR + Localisation ===== -->
+                        <HBox alignment="TOP_LEFT" spacing="18" styleClass="panel">
+                            <padding>
+                                <Insets bottom="18" left="18" right="18" top="18" />
+                            </padding>
+
+                            <!-- Image + Génération IA -->
+                            <VBox alignment="TOP_CENTER" spacing="8">
+                                <ImageView fx:id="imgEvent" fitHeight="220" fitWidth="240" preserveRatio="true" styleClass="detail-event-image" />
+                                <Button fx:id="btnGenererImageIa" onAction="#onGenererImageIa" styleClass="btn-secondary" text="🖼 Générer image IA" />
+                                <Label fx:id="lblImageIaMsg" styleClass="subtitle" text="" />
+                            </VBox>
+
+                            <!-- Infos -->
+                            <VBox spacing="10" HBox.hgrow="ALWAYS">
+                                <Label styleClass="detail-section-title" text="Détails" />
+
+                                <GridPane hgap="12" vgap="10">
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="110" />
+                                        <ColumnConstraints hgrow="ALWAYS" />
+                                    </columnConstraints>
+
+                                    <Label styleClass="chip" text="Titre:" GridPane.rowIndex="0" />
+                                    <Label fx:id="lblTitre" styleClass="card-title" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                                    <Label styleClass="chip" text="Type:" GridPane.rowIndex="1" />
+                                    <Label fx:id="lblType" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                    <Label styleClass="chip" text="Lieu:" GridPane.rowIndex="2" />
+                                    <Label fx:id="lblLieu" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                                    <Label styleClass="chip" text="Début:" GridPane.rowIndex="3" />
+                                    <Label fx:id="lblDebut" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                                    <Label styleClass="chip" text="Fin:" GridPane.rowIndex="4" />
+                                    <Label fx:id="lblFin" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                                    <Label styleClass="chip" text="Description:" GridPane.rowIndex="5" />
+                                    <Label fx:id="lblDescription" styleClass="card-sub" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                           <rowConstraints>
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints />
+                           </rowConstraints>
+                                </GridPane>
+                            </VBox>
+
+                            <!-- QR -->
+                            <VBox alignment="TOP_CENTER" prefWidth="260" spacing="10">
+                                <Label styleClass="detail-section-title" text="QR Code" />
+                                <ImageView fx:id="imgQr" fitHeight="220" fitWidth="220" preserveRatio="true" styleClass="qr-image" />
+
+                                <Button fx:id="btnRegenQr" onAction="#onGenererQr" styleClass="btn-secondary" text="Regénérer QR" />
+                                <Label fx:id="lblQrInfo" styleClass="subtitle" text="" />
+                            </VBox>
+
+                            <!-- Localisation -->
+                            <VBox prefWidth="260" spacing="10" styleClass="panel">
+                                <padding>
+                                    <Insets bottom="12" left="14" right="14" top="12" />
+                                </padding>
+
+                                <Label styleClass="card-title" text="Localisation" />
+
+                                <HBox spacing="10">
+                                    <Label styleClass="chip" text="Latitude:" />
+                                    <Label fx:id="lblLatitude" />
+                                </HBox>
+
+                                <HBox spacing="10">
+                                    <Label styleClass="chip" text="Longitude:" />
+                                    <Label fx:id="lblLongitude" />
+                                </HBox>
+
+                                <Button fx:id="btnOpenMap" onAction="#onOpenMap" styleClass="btn-primary" text="📍 Ouvrir dans Google Maps" />
+                            </VBox>
+
+                        </HBox>
+
+                        <!-- ===== Bandeau Équipements / À prévoir ===== -->
+                        <VBox fx:id="boxEquipmentBanner" prefHeight="65.0" prefWidth="944.0" spacing="8" style="-fx-background-color: linear-gradient(to right, #1e3a5f, #2d5a87); -fx-background-radius: 8;" styleClass="panel">
+                            <padding>
+                                <Insets bottom="14" left="18" right="18" top="14" />
+                            </padding>
+                            <Label fx:id="lblEquipmentTitle" style="-fx-text-fill: white;" styleClass="card-title" text="📋 À prévoir pour cet événement" />
+                            <FlowPane fx:id="flowEquipment" hgap="10" prefWrapLength="850" vgap="8" />
+                        </VBox>
+
+                        <!-- ===== Réservation coin maquillage (si Maquillage spécial) ===== -->
+                        <VBox fx:id="boxReservationMaquillage" managed="false" spacing="10" styleClass="panel" visible="false">
+                            <padding>
+                                <Insets bottom="14" left="18" right="18" top="14" />
+                            </padding>
+                            <Label styleClass="card-title" text="💄 Coin maquillage" />
+                            <Label fx:id="lblReservationMaquillage" styleClass="card-sub" text="Réservez une place au coin maquillage et recevez un email de confirmation." wrapText="true" />
+                            <Button fx:id="btnReserverMaquillage" onAction="#onReserverMaquillage" styleClass="btn-primary" text="Réserver une place (coin maquillage)" />
+                        </VBox>
+
+                        <!-- ===== Programmes ===== -->
+                        <Label styleClass="card-title" text="Programmes" />
+
+                        <ScrollPane fitToWidth="true" prefHeight="220.0" styleClass="panel glass-scroll">
+                            <content>
+                                <VBox fx:id="progContainer" spacing="12">
+                                    <padding>
+                                        <Insets bottom="10" left="10" right="10" top="10" />
+                                    </padding>
+                                </VBox>
+                            </content>
+                        </ScrollPane>
+
+                        <!-- ===== METEO ===== -->
+                        <VBox spacing="6" styleClass="panel">
+                            <padding>
+                                <Insets bottom="12" left="14" right="14" top="12" />
+                            </padding>
+
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <Label styleClass="card-title" text="Météo" />
+                                <Pane HBox.hgrow="ALWAYS" />
+                                <Label fx:id="lblMeteo" styleClass="subtitle" text="" />
+                            </HBox>
+                        </VBox>
+
+                        <!-- ===== CITATION ===== -->
+                        <VBox spacing="6" styleClass="panel">
+                            <padding>
+                                <Insets bottom="12" left="14" right="14" top="12" />
+                            </padding>
+
+                            <Label styleClass="card-title" text="Citation du jour" />
+                            <Label fx:id="lblQuote" styleClass="card-sub" wrapText="true" />
+                            <Label fx:id="lblQuoteAuthor" styleClass="subtitle" text="" />
+                        </VBox>
+
+                        <!-- ===== SPOTIFY ===== -->
+                        <VBox fx:id="spotifyBox" managed="false" spacing="10" styleClass="panel" visible="false">
+                            <padding>
+                                <Insets bottom="12" left="14" right="14" top="12" />
+                            </padding>
+
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <Label styleClass="card-title" text="Spotify (ambiance soirée)" />
+                                <Pane HBox.hgrow="ALWAYS" />
+                                <Label fx:id="lblSpotifyMsg" styleClass="subtitle" text="" />
+                            </HBox>
+
+                            <HBox alignment="CENTER_LEFT" spacing="14">
+                                <ImageView fx:id="imgSpotifyCover" fitHeight="90" fitWidth="90" preserveRatio="true" styleClass="detail-event-image" />
+
+                                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                    <Label fx:id="lblSpotifyTitle" styleClass="card-title" text="" />
+                                    <Label fx:id="lblSpotifyProvider" styleClass="subtitle" text="" />
+                                </VBox>
+
+                                <Button fx:id="btnOpenSpotify" onAction="#onOpenSpotify" styleClass="btn-secondary" text="Ouvrir sur Spotify" />
+                            </HBox>
+                        </VBox>
+
+                    </VBox>
+                </content>
+            </ScrollPane>
+      </right>
+
+    </BorderPane>
+</StackPane>

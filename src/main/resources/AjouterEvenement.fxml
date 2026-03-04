@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane prefHeight="650.0" prefWidth="900.0"
+           xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="controllers.AjouterEvenementController"
+
+           styleClass="app-root">
+
+    <ImageView fx:id="bgImage" fitHeight="650.0" fitWidth="900.0" preserveRatio="false" />
+    <Pane styleClass="bg-overlay" />
+
+    <BorderPane>
+        <padding>
+            <Insets bottom="26" left="26" right="26" top="26" />
+        </padding>
+
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="16" styleClass="header-card">
+                <ImageView fx:id="imgLogo" fitHeight="58" fitWidth="58" preserveRatio="true" />
+                <Label styleClass="title" text="Ajouter un Événement" />
+                <Pane HBox.hgrow="ALWAYS"/>
+            </HBox>
+        </top>
+
+        <center>
+            <ScrollPane fitToWidth="true" styleClass="glass-scroll">
+                <content>
+                    <VBox alignment="CENTER" spacing="16" styleClass="panel">
+                        <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
+
+                        <Label fx:id="lblMsg" styleClass="subtitle" text="" />
+
+                        <Label styleClass="card-title" text="Image de l'événement" />
+                        <ImageView fx:id="imgPreview"
+                                   fitWidth="360" fitHeight="180"
+                                   preserveRatio="true"
+                                   smooth="true"
+                                   pickOnBounds="true"
+                                   styleClass="detail-event-image" />
+
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <Label text="Titre :" styleClass="chip"/>
+                            <TextField fx:id="txtTitre" promptText="Titre" prefWidth="520"/>
+                        </HBox>
+
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <Label text="Description :" styleClass="chip"/>
+                            <TextArea fx:id="txtDesc" promptText="Description" prefWidth="520" prefRowCount="3"/>
+                        </HBox>
+
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <Label text="Type :" styleClass="chip"/>
+                            <ComboBox fx:id="cbType" prefWidth="200"/>
+                        </HBox>
+
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <Label text="Date Début :" styleClass="chip"/>
+                            <DatePicker fx:id="dpDebut" prefWidth="220"/>
+                            <Label fx:id="lblHeureDebut" styleClass="chip" text="09:00"/>
+                            <Button text="🕐" onAction="#onChoisirHeureDebut" styleClass="btn-secondary"/>
+                        </HBox>
+
+                        <HBox fx:id="boxDateFin" spacing="12" alignment="CENTER_LEFT">
+                            <Label text="Date Fin :" styleClass="chip"/>
+                            <DatePicker fx:id="dpFin" prefWidth="220" promptText="Optionnel"/>
+                            <Label fx:id="lblHeureFin" styleClass="chip" text="10:00"/>
+                            <Button text="🕐" onAction="#onChoisirHeureFin" styleClass="btn-secondary"/>
+                        </HBox>
+
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <Label text="Lieu :" styleClass="chip"/>
+                            <TextField fx:id="txtLieu" promptText="Lieu" prefWidth="520"/>
+                        </HBox>
+
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <Label text="Playlist Spotify :" styleClass="chip"/>
+                            <TextField fx:id="txtSpotifyUrl"
+                                       promptText="https://open.spotify.com/playlist/..."
+                                       prefWidth="520"/>
+                        </HBox>
+
+                        <!-- Équipements (admin) -->
+                        <VBox fx:id="boxEquipment" spacing="10" visible="true" managed="true">
+                            <Label styleClass="card-title" text="Équipements / À prévoir" />
+                            <Label fx:id="lblEquipmentHint" styleClass="subtitle" text="Sélectionnez ou ajoutez les équipements selon le type d'événement" />
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <TextField fx:id="txtEquipment" promptText="Ex: Tente, Sac de couchage..." prefWidth="300"/>
+                                <Button text="+ Ajouter" styleClass="btn-secondary" onAction="#onAddEquipment"/>
+                            </HBox>
+                            <FlowPane fx:id="flowEquipmentSuggestions" hgap="8" vgap="8" prefWrapLength="500"/>
+                            <Label styleClass="chip" text="Sélectionnés :"/>
+                            <FlowPane fx:id="flowEquipmentSelected" hgap="8" vgap="8" prefWrapLength="500"/>
+                        </VBox>
+
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <Button text="Choisir image" styleClass="btn-secondary" onAction="#onChooseImage"/>
+                            <Button text="Générer image IA" styleClass="btn-secondary" onAction="#onGenerateImage"/>
+                            <Label fx:id="lblImageName" text="logo.png" styleClass="subtitle"/>
+                        </HBox>
+
+                        <HBox spacing="16" alignment="CENTER">
+                            <Button text="Ajouter" styleClass="btn-primary" onAction="#onAjouterEvenement"/>
+                            <Button text="Retour" styleClass="btn-secondary" onAction="#onRetour"/>
+                        </HBox>
+                    </VBox>
+                </content>
+            </ScrollPane>
+        </center>
+
+    </BorderPane>
+</StackPane>
