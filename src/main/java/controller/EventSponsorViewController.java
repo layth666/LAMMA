@@ -418,9 +418,9 @@ public class EventSponsorViewController implements Initializable {
         evenementList.clear();
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT * FROM Evenement ORDER BY date_debut DESC")) {
+             ResultSet rs = stmt.executeQuery("SELECT * FROM evenement ORDER BY date_debut DESC")) {
             while (rs.next()) {
-                evenementList.add(new Evenement(rs.getInt("id"), rs.getString("nom"),
+                evenementList.add(new Evenement(rs.getInt("id_event"), rs.getString("titre"),
                         rs.getDate("date_debut").toLocalDate(), rs.getDate("date_fin").toLocalDate(),
                         rs.getString("lieu"), rs.getString("description"), rs.getString("statut")));
             }
@@ -445,7 +445,11 @@ public class EventSponsorViewController implements Initializable {
 
     private void loadAssociations() {
         associationList.clear();
-        String query = "SELECT es.*, e.nom as event_nom, s.nom as sponsor_nom FROM EventSponsor es JOIN Evenement e ON es.event_id = e.id JOIN Sponsor s ON es.sponsor_id = s.id ORDER BY e.date_debut DESC, es.niveau";
+        String query = "SELECT es.*, e.titre as event_nom, s.nom as sponsor_nom " +
+                "FROM EventSponsor es " +
+                "JOIN evenement e ON es.event_id = e.id_event " +
+                "JOIN Sponsor s ON es.sponsor_id = s.id " +
+                "ORDER BY e.date_debut DESC, es.niveau";
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {

@@ -80,9 +80,9 @@ public class EventSponsorDAO {
     // Récupérer toutes les associations avec les noms
     public List<EventSponsor> listerTous() throws SQLException {
         List<EventSponsor> associations = new ArrayList<>();
-        String query = "SELECT es.*, e.nom as event_nom, s.nom as sponsor_nom " +
+        String query = "SELECT es.*, e.titre as event_nom, s.nom as sponsor_nom " +
                 "FROM EventSponsor es " +
-                "JOIN Evenement e ON es.event_id = e.id " +
+                "JOIN evenement e ON es.event_id = e.id_event " +
                 "JOIN Sponsor s ON es.sponsor_id = s.id " +
                 "ORDER BY e.date_debut DESC, es.niveau";
 
@@ -106,9 +106,9 @@ public class EventSponsorDAO {
     // Récupérer les associations par événement
     public List<EventSponsor> getByEvenement(int eventId) throws SQLException {
         List<EventSponsor> associations = new ArrayList<>();
-        String query = "SELECT es.*, e.nom as event_nom, s.nom as sponsor_nom " +
+        String query = "SELECT es.*, e.titre as event_nom, s.nom as sponsor_nom " +
                 "FROM EventSponsor es " +
-                "JOIN Evenement e ON es.event_id = e.id " +
+                "JOIN evenement e ON es.event_id = e.id_event " +
                 "JOIN Sponsor s ON es.sponsor_id = s.id " +
                 "WHERE es.event_id = ? " +
                 "ORDER BY es.niveau";
@@ -135,9 +135,9 @@ public class EventSponsorDAO {
     // Récupérer les associations par sponsor
     public List<EventSponsor> getBySponsor(int sponsorId) throws SQLException {
         List<EventSponsor> associations = new ArrayList<>();
-        String query = "SELECT es.*, e.nom as event_nom, s.nom as sponsor_nom " +
+        String query = "SELECT es.*, e.titre as event_nom, s.nom as sponsor_nom " +
                 "FROM EventSponsor es " +
-                "JOIN Evenement e ON es.event_id = e.id " +
+                "JOIN evenement e ON es.event_id = e.id_event " +
                 "JOIN Sponsor s ON es.sponsor_id = s.id " +
                 "WHERE es.sponsor_id = ? " +
                 "ORDER BY e.date_debut DESC";
@@ -163,9 +163,9 @@ public class EventSponsorDAO {
 
     // Récupérer une association par ID
     public EventSponsor getById(int id) throws SQLException {
-        String query = "SELECT es.*, e.nom as event_nom, s.nom as sponsor_nom " +
+        String query = "SELECT es.*, e.titre as event_nom, s.nom as sponsor_nom " +
                 "FROM EventSponsor es " +
-                "JOIN Evenement e ON es.event_id = e.id " +
+                "JOIN evenement e ON es.event_id = e.id_event " +
                 "JOIN Sponsor s ON es.sponsor_id = s.id " +
                 "WHERE es.id = ?";
 
@@ -208,10 +208,10 @@ public class EventSponsorDAO {
     // Statistiques : totaux par événement
     public List<EventStats> getTotalsParEvenement() throws SQLException {
         List<EventStats> stats = new ArrayList<>();
-        String query = "SELECT e.nom AS event_nom, SUM(es.montant) AS total_montant, COUNT(*) AS nb_assoc " +
+        String query = "SELECT e.titre AS event_nom, SUM(es.montant) AS total_montant, COUNT(*) AS nb_assoc " +
                 "FROM EventSponsor es " +
-                "JOIN Evenement e ON es.event_id = e.id " +
-                "GROUP BY es.event_id, e.nom " +
+                "JOIN evenement e ON es.event_id = e.id_event " +
+                "GROUP BY es.event_id, e.titre " +
                 "ORDER BY total_montant DESC";
 
         try (Connection conn = DatabaseConnection.getConnection();

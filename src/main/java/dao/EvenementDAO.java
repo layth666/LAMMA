@@ -11,7 +11,8 @@ public class EvenementDAO {
 
     // Ajouter un événement
     public void ajouter(Evenement evenement) throws SQLException {
-        String query = "INSERT INTO Evenement (nom, date_debut, date_fin, lieu, description, statut) VALUES (?, ?, ?, ?, ?, ?)";
+        // Table unifiée LAMMABD.evenement (structure lamma(2) : id_event, titre, ...)
+        String query = "INSERT INTO evenement (titre, date_debut, date_fin, lieu, description, statut) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -33,7 +34,7 @@ public class EvenementDAO {
 
     // Modifier un événement
     public void modifier(Evenement evenement) throws SQLException {
-        String query = "UPDATE Evenement SET nom = ?, date_debut = ?, date_fin = ?, lieu = ?, description = ?, statut = ? WHERE id = ?";
+        String query = "UPDATE evenement SET titre = ?, date_debut = ?, date_fin = ?, lieu = ?, description = ?, statut = ? WHERE id_event = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
@@ -51,7 +52,7 @@ public class EvenementDAO {
 
     // Supprimer un événement
     public void supprimer(int id) throws SQLException {
-        String query = "DELETE FROM Evenement WHERE id = ?";
+        String query = "DELETE FROM evenement WHERE id_event = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
@@ -63,7 +64,7 @@ public class EvenementDAO {
     // Récupérer tous les événements
     public List<Evenement> listerTous() throws SQLException {
         List<Evenement> evenements = new ArrayList<>();
-        String query = "SELECT * FROM Evenement ORDER BY date_debut DESC";
+        String query = "SELECT * FROM evenement ORDER BY date_debut DESC";
 
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
@@ -71,8 +72,8 @@ public class EvenementDAO {
 
             while (rs.next()) {
                 evenements.add(new Evenement(
-                        rs.getInt("id"),
-                        rs.getString("nom"),
+                        rs.getInt("id_event"),
+                        rs.getString("titre"),
                         rs.getDate("date_debut").toLocalDate(),
                         rs.getDate("date_fin").toLocalDate(),
                         rs.getString("lieu"),
@@ -87,7 +88,7 @@ public class EvenementDAO {
     // Récupérer les événements à venir
     public List<Evenement> listerAVenir() throws SQLException {
         List<Evenement> evenements = new ArrayList<>();
-        String query = "SELECT * FROM Evenement WHERE date_debut >= CURDATE() ORDER BY date_debut";
+        String query = "SELECT * FROM evenement WHERE date_debut >= CURDATE() ORDER BY date_debut";
 
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
@@ -95,8 +96,8 @@ public class EvenementDAO {
 
             while (rs.next()) {
                 evenements.add(new Evenement(
-                        rs.getInt("id"),
-                        rs.getString("nom"),
+                        rs.getInt("id_event"),
+                        rs.getString("titre"),
                         rs.getDate("date_debut").toLocalDate(),
                         rs.getDate("date_fin").toLocalDate(),
                         rs.getString("lieu"),
@@ -110,7 +111,7 @@ public class EvenementDAO {
 
     // Récupérer un événement par ID
     public Evenement getById(int id) throws SQLException {
-        String query = "SELECT * FROM Evenement WHERE id = ?";
+        String query = "SELECT * FROM evenement WHERE id_event = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
@@ -119,8 +120,8 @@ public class EvenementDAO {
 
             if (rs.next()) {
                 return new Evenement(
-                        rs.getInt("id"),
-                        rs.getString("nom"),
+                        rs.getInt("id_event"),
+                        rs.getString("titre"),
                         rs.getDate("date_debut").toLocalDate(),
                         rs.getDate("date_fin").toLocalDate(),
                         rs.getString("lieu"),
@@ -135,7 +136,7 @@ public class EvenementDAO {
     // Récupérer les événements par statut
     public List<Evenement> getByStatut(String statut) throws SQLException {
         List<Evenement> evenements = new ArrayList<>();
-        String query = "SELECT * FROM Evenement WHERE statut = ? ORDER BY date_debut";
+        String query = "SELECT * FROM evenement WHERE statut = ? ORDER BY date_debut";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -145,8 +146,8 @@ public class EvenementDAO {
 
             while (rs.next()) {
                 evenements.add(new Evenement(
-                        rs.getInt("id"),
-                        rs.getString("nom"),
+                        rs.getInt("id_event"),
+                        rs.getString("titre"),
                         rs.getDate("date_debut").toLocalDate(),
                         rs.getDate("date_fin").toLocalDate(),
                         rs.getString("lieu"),
@@ -160,7 +161,7 @@ public class EvenementDAO {
 
     // Compter le nombre total d'événements
     public int compter() throws SQLException {
-        String query = "SELECT COUNT(*) FROM Evenement";
+        String query = "SELECT COUNT(*) FROM evenement";
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {

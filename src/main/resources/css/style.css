@@ -1,406 +1,594 @@
-/* LAMMA - Thème bleu, jaune, rouge */
+/* ========================================
+   THEME LAMMA - Style Dashboard Moderne
+   Couleurs: Fond sombre + Orange + Violet
+======================================== */
 
-/* Variables couleurs */
+/* Variables de couleurs */
 * {
-    -fx-lamma-blue: #1a5276;
-    -fx-lamma-blue-light: #2471a3;
-    -fx-lamma-blue-header: #0d3d5c;
-    -fx-lamma-yellow: #f4d03f;
-    -fx-lamma-yellow-dark: #d4a017;
-    -fx-lamma-red: #e74c3c;
-    -fx-lamma-red-dark: #c0392b;
-    -fx-lamma-green: #27ae60;
-    -fx-lamma-green-dark: #1e8449;
+    -fx-primary-orange: #FF8C42;
+    -fx-primary-orange-hover: #E67A34;
+    -fx-primary-orange-dark: #D96B26;
+
+    -fx-secondary-purple: #8B5CF6;
+    -fx-secondary-purple-hover: #7C3AED;
+    -fx-secondary-purple-dark: #6D28D9;
+
+    -fx-secondary-teal: #14B8A6;
+    -fx-secondary-teal-hover: #0D9488;
+
+    -fx-bg-dark: #1E1B2E;
+    -fx-bg-dark-card: #2A2640;
+    -fx-bg-dark-lighter: #352F4A;
+    -fx-bg-sidebar: #0F0D1A;
+
+    -fx-text-white: #FFFFFF;
+    -fx-text-gray: #9CA3AF;
+    -fx-text-light: #E5E7EB;
+
+    -fx-danger-red: #EF4444;
+    -fx-danger-red-hover: #DC2626;
+
+    -fx-success-green: #10B981;
+    -fx-gray-button: #4B5563;
+    -fx-gray-button-hover: #374151;
 }
 
-/* Header principal */
+/* ========================================
+   FOND GÉNÉRAL
+======================================== */
+.root {
+    -fx-background-color: -fx-bg-dark;
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+/* ========================================
+   HEADER PRINCIPAL (en haut)
+======================================== */
 .header-panel {
-    -fx-background-color: linear-gradient(to right, -fx-lamma-blue-header, -fx-lamma-blue);
-    -fx-padding: 12 20;
+    -fx-background-color: -fx-bg-sidebar;
+    -fx-padding: 15 25;
+    -fx-border-color: #3D3759;
+    -fx-border-width: 0 0 1 0;
 }
 
 .header-title {
-    -fx-font-size: 22px;
+    -fx-font-size: 24px;
     -fx-font-weight: bold;
-    -fx-text-fill: white;
+    -fx-text-fill: -fx-text-white;
 }
 
-/* Boutons de navigation */
+/* ========================================
+   BOUTONS DE NAVIGATION (Menu latéral style)
+======================================== */
 .nav-button {
-    -fx-background-color: -fx-lamma-blue-light;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-padding: 8 20;
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-text-gray;
+    -fx-font-size: 14px;
+    -fx-padding: 12 20;
     -fx-cursor: hand;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
 }
 
 .nav-button:hover {
-    -fx-background-color: -fx-lamma-yellow;
-    -fx-text-fill: -fx-lamma-blue-header;
+    -fx-background-color: -fx-bg-dark-lighter;
+    -fx-text-fill: -fx-text-white;
 }
 
 .nav-button.active {
-    -fx-background-color: -fx-lamma-yellow;
-    -fx-text-fill: -fx-lamma-blue-header;
+    -fx-background-color: -fx-primary-orange;
+    -fx-text-fill: -fx-text-white;
+    -fx-font-weight: bold;
 }
 
-/* Bouton retour / lien */
+/* Bouton retour */
 .btn-back {
-    -fx-background-color: -fx-lamma-blue-light;
-    -fx-text-fill: white;
-    -fx-padding: 6 14;
+    -fx-background-color: -fx-bg-dark-card;
+    -fx-text-fill: -fx-text-white;
+    -fx-padding: 8 16;
     -fx-cursor: hand;
+    -fx-background-radius: 6;
 }
 
 .btn-back:hover {
-    -fx-background-color: -fx-lamma-blue;
+    -fx-background-color: -fx-bg-dark-lighter;
 }
 
-/* Barre titre section */
+/* ========================================
+   SECTION HEADERS (Titres de sections)
+======================================== */
 .section-header {
-    -fx-background-color: linear-gradient(to right, -fx-lamma-blue-header, -fx-lamma-blue);
-    -fx-padding: 10 15;
+    -fx-background-color: transparent;
+    -fx-padding: 15 0;
 }
 
 .section-title {
-    -fx-font-size: 16px;
+    -fx-font-size: 18px;
     -fx-font-weight: bold;
-    -fx-text-fill: white;
+    -fx-text-fill: -fx-text-white;
 }
 
-/* Boutons d'action */
-.btn-add {
-    -fx-background-color: -fx-lamma-green;
+/* ========================================
+   BOUTONS D'ACTION (Style Dashboard LAMMA)
+======================================== */
+
+/* Bouton AJOUTER / NOUVEAU (Orange principal) */
+.btn-add,
+.btn-new {
+    -fx-background-color: -fx-primary-orange;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-padding: 8 16;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20;
     -fx-cursor: hand;
-}
-
-.btn-add:hover {
-    -fx-background-color: -fx-lamma-green-dark;
-}
-
-.btn-refresh {
-    -fx-background-color: -fx-lamma-blue-light;
-    -fx-text-fill: white;
-    -fx-padding: 8 16;
-    -fx-cursor: hand;
-}
-
-.btn-refresh:hover {
-    -fx-background-color: -fx-lamma-blue;
-}
-
-.btn-modify {
-    -fx-background-color: -fx-lamma-yellow;
-    -fx-text-fill: -fx-lamma-blue-header;
-    -fx-font-weight: bold;
-    -fx-padding: 8 16;
-    -fx-cursor: hand;
-}
-
-.btn-modify:hover {
-    -fx-background-color: -fx-lamma-yellow-dark;
-    -fx-text-fill: white;
-}
-
-.btn-delete {
-    -fx-background-color: -fx-lamma-red;
-    -fx-text-fill: white;
-    -fx-padding: 8 16;
-    -fx-cursor: hand;
-}
-
-.btn-delete:hover {
-    -fx-background-color: -fx-lamma-red-dark;
-}
-
-.btn-reset {
-    -fx-background-color: -fx-lamma-red;
-    -fx-text-fill: white;
-    -fx-padding: 6 12;
-    -fx-cursor: hand;
-}
-
-.btn-reset:hover {
-    -fx-background-color: -fx-lamma-red-dark;
-}
-
-.btn-cancel {
-    -fx-background-color: #95a5a6;
-    -fx-text-fill: white;
-    -fx-padding: 8 16;
-    -fx-cursor: hand;
-}
-
-/* ========== CONTENU PRINCIPAL (thème sombre comme photos) ========== */
-/* Où mettre la photo de fond : placez votre image dans src/main/resources/images/
-   par ex. background.jpg, puis décommentez ci‑dessous et utilisez la classe
-   content-panel-with-bg sur le StackPane (contentPane) dans MainView.fxml */
-.content-panel {
-    -fx-background-color: #2C3E50;
-    -fx-padding: 15;
-}
-
-/* Option : fond avec image (décommenter et adapter le chemin)*/
-
-.content-panel-with-bg {
-    -fx-background-color: #2C3E50;
-    -fx-background-image: url("../images/background.jpg");
-    -fx-background-size: cover;
-    -fx-background-position: center center;
-    -fx-padding: 15;
-}
-
-.content-card {
-    -fx-background-color: rgba(44, 62, 80, 0.92);
     -fx-background-radius: 8;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 12, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(255, 140, 66, 0.3), 8, 0, 0, 2);
+}
+
+.btn-add:hover,
+.btn-new:hover {
+    -fx-background-color: -fx-primary-orange-hover;
+    -fx-effect: dropshadow(gaussian, rgba(255, 140, 66, 0.5), 12, 0, 0, 3);
+}
+
+/* Bouton MODIFIER / EDIT (Orange) */
+.btn-modify,
+.btn-edit {
+    -fx-background-color: -fx-primary-orange;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-background-radius: 8;
+}
+
+.btn-modify:hover,
+.btn-edit:hover {
+    -fx-background-color: -fx-primary-orange-hover;
+}
+
+/* Bouton RAFRAICHIR / SYNC (Gris foncé) */
+.btn-refresh,
+.btn-sync {
+    -fx-background-color: -fx-gray-button;
+    -fx-text-fill: white;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-background-radius: 8;
+}
+
+.btn-refresh:hover,
+.btn-sync:hover {
+    -fx-background-color: -fx-gray-button-hover;
+}
+
+/* Bouton SUPPRIMER / DELETE (Rouge) */
+.btn-delete,
+.btn-drop {
+    -fx-background-color: -fx-danger-red;
+    -fx-text-fill: white;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-background-radius: 8;
+}
+
+.btn-delete:hover,
+.btn-drop:hover {
+    -fx-background-color: -fx-danger-red-hover;
+}
+
+/* Bouton ANNULER (Gris) */
+.btn-cancel,
+.btn-reset {
+    -fx-background-color: -fx-gray-button;
+    -fx-text-fill: white;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-background-radius: 8;
+}
+
+.btn-cancel:hover,
+.btn-reset:hover {
+    -fx-background-color: -fx-gray-button-hover;
+}
+
+/* ========================================
+   CONTENU PRINCIPAL (Cartes style dashboard)
+======================================== */
+.content-panel {
+    -fx-background-color: -fx-bg-dark;
     -fx-padding: 20;
 }
 
-.content-card .label {
-    -fx-text-fill: #ecf0f1;
+.content-panel-with-bg {
+    -fx-background-color: -fx-bg-dark;
+    -fx-background-image: url("../images/background.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-padding: 20;
 }
 
+/* Cartes de contenu (comme les cartes utilisateurs) */
+.content-card {
+    -fx-background-color: -fx-bg-dark-card;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 12, 0, 0, 4);
+    -fx-padding: 20;
+    -fx-border-color: #3D3759;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+}
+
+.content-card .label {
+    -fx-text-fill: -fx-text-light;
+}
+
+/* Champs de formulaire (fond sombre) */
 .content-card .text-field,
-.content-card .combo-box {
-    -fx-background-color: #3D4249;
-    -fx-text-fill: #ecf0f1;
-    -fx-prompt-text-fill: #95a5a6;
-    -fx-background-radius: 4;
+.content-card .combo-box,
+.text-field,
+.combo-box {
+    -fx-background-color: -fx-bg-dark-lighter;
+    -fx-text-fill: -fx-text-white;
+    -fx-prompt-text-fill: -fx-text-gray;
+    -fx-background-radius: 6;
+    -fx-border-color: #3D3759;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-padding: 8 12;
+}
+
+.text-field:focused,
+.combo-box:focused {
+    -fx-border-color: -fx-primary-orange;
+    -fx-border-width: 2;
+}
+
+/* ========================================
+   TABLEVIEW (Style moderne sombre)
+======================================== */
+.table-view {
+    -fx-background-color: -fx-bg-dark-card;
+    -fx-border-color: #3D3759;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.table-view .column-header {
+    -fx-background-color: -fx-bg-dark-lighter;
+    -fx-text-fill: -fx-text-white;
+    -fx-font-weight: bold;
+    -fx-padding: 12 10;
+    -fx-border-color: #3D3759;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: -fx-bg-dark-lighter;
+}
+
+.table-row-cell {
+    -fx-background-color: -fx-bg-dark-card;
+    -fx-text-fill: -fx-text-light;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: derive(-fx-bg-dark-card, 5%);
+}
+
+.table-row-cell:selected {
+    -fx-background-color: -fx-primary-orange;
+    -fx-text-fill: white;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: -fx-bg-dark-lighter;
+}
+
+.table-cell {
+    -fx-text-fill: -fx-text-light;
+    -fx-padding: 10 8;
+}
+
+.table-row-cell:selected .table-cell {
+    -fx-text-fill: white;
+}
+
+/* ========================================
+   LISTVIEW (Style cartes utilisateurs)
+======================================== */
+.list-view {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
+.list-cell {
+    -fx-background-color: -fx-bg-dark-card;
+    -fx-text-fill: -fx-text-light;
+    -fx-padding: 12;
+    -fx-background-radius: 10;
+    -fx-border-color: #3D3759;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: -fx-bg-dark-lighter;
+}
+
+.list-cell:selected {
+    -fx-background-color: -fx-secondary-purple;
+    -fx-text-fill: white;
 }
 
 /* ListView sponsors (format cartes) */
 .list-sponsors {
     -fx-background-color: transparent;
-    -fx-background-insets: 0;
 }
 
 .list-sponsors .list-cell {
-    -fx-padding: 5 0;
+    -fx-padding: 8 0;
     -fx-background-color: transparent;
 }
 
 .list-sponsors .list-cell:selected .sponsor-card {
-    -fx-background-color: #e8f4fc;
+    -fx-background-color: -fx-secondary-purple;
 }
 
-/* TableView */
-.table-view {
-    -fx-background-color: white;
-    -fx-border-color: #bdc3c7;
-    -fx-border-radius: 4;
-}
-
-.table-view .column-header {
-    -fx-background-color: linear-gradient(to bottom, -fx-lamma-blue-light, -fx-lamma-blue);
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-padding: 10 8;
-}
-
-.table-row-cell:odd {
-    -fx-background-color: #f9f9f9;
-}
-
-.table-row-cell:selected {
-    -fx-background-color: -fx-lamma-yellow;
-    -fx-text-fill: -fx-lamma-blue-header;
-}
-
-/* Champ de recherche (thème sombre) */
+/* ========================================
+   CHAMP DE RECHERCHE
+======================================== */
 .search-field {
-    -fx-padding: 8 12;
-    -fx-font-size: 13px;
-    -fx-background-color: #3D4249;
-    -fx-text-fill: #ecf0f1;
-    -fx-prompt-text-fill: #95a5a6;
+    -fx-background-color: -fx-bg-dark-lighter;
+    -fx-text-fill: -fx-text-white;
+    -fx-prompt-text-fill: -fx-text-gray;
+    -fx-padding: 10 15;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8;
+    -fx-border-color: #3D3759;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
 }
 
-/* ComboBox */
-.combo-box {
-    -fx-min-width: 120px;
+.search-field:focused {
+    -fx-border-color: -fx-primary-orange;
+    -fx-border-width: 2;
 }
 
-/* Footer / Status bar */
-.footer-panel {
-    -fx-background-color: -fx-lamma-blue-header;
-    -fx-padding: 8 15;
-}
-
-.footer-label {
-    -fx-text-fill: white;
-    -fx-font-size: 12px;
-}
-
-/* Boutons style photos (orange / gris) */
-.btn-new {
-    -fx-background-color: #e67e22;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-padding: 8 18;
-    -fx-cursor: hand;
-}
-
-.btn-new:hover {
-    -fx-background-color: #d35400;
-}
-
-.btn-sync {
-    -fx-background-color: #4a4a4a;
-    -fx-text-fill: white;
-    -fx-padding: 8 18;
-    -fx-cursor: hand;
-}
-
-.btn-sync:hover {
-    -fx-background-color: #2c2c2c;
-}
-
-.btn-edit {
-    -fx-background-color: #e67e22;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-padding: 8 20;
-    -fx-cursor: hand;
-}
-
-.btn-edit:hover {
-    -fx-background-color: #d35400;
-}
-
-.btn-drop {
-    -fx-background-color: #4a4a4a;
-    -fx-text-fill: white;
-    -fx-padding: 8 20;
-    -fx-cursor: hand;
-}
-
-.btn-drop:hover {
-    -fx-background-color: #2c2c2c;
+/* ========================================
+   LABELS (Texte général)
+======================================== */
+.label {
+    -fx-text-fill: -fx-text-light;
 }
 
 .lbl-count {
     -fx-font-weight: bold;
-    -fx-text-fill: #27ae60;
+    -fx-text-fill: -fx-primary-orange;
+    -fx-font-size: 16px;
 }
 
-/* Panneau détail (droite) - thème sombre */
-.detail-panel {
-    -fx-background-color: rgba(61, 66, 73, 0.78);
-    -fx-padding: 15;
+/* ========================================
+   FOOTER / STATUS BAR
+======================================== */
+.footer-panel {
+    -fx-background-color: -fx-bg-sidebar;
+    -fx-padding: 10 20;
+    -fx-border-color: #3D3759;
+    -fx-border-width: 1 0 0 0;
+}
+
+.footer-label {
+    -fx-text-fill: -fx-text-gray;
+    -fx-font-size: 12px;
+}
+
+/* ========================================
+   SIDEBAR (style LAMMA Dashboard)
+======================================== */
+.sidebar {
+    -fx-background-color: #111827;
+    -fx-padding: 20 16;
+    -fx-spacing: 16;
+}
+
+.sidebar-section-title {
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 1px;
+}
+
+.sidebar-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e5e7eb;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 8 12;
     -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.sidebar-btn:hover {
+    -fx-background-color: rgba(249, 115, 22, 0.15);
+}
+
+.sidebar-btn-primary {
+    -fx-background-color: #f97316;
+    -fx-text-fill: white;
+}
+
+.sidebar-btn-primary:hover {
+    -fx-background-color: #ea580c;
+}
+
+.sidebar-sub-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #9ca3af;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 6 10;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-font-size: 11px;
+}
+
+.sidebar-sub-btn:hover {
+    -fx-background-color: rgba(148, 163, 184, 0.25);
+}
+
+/* ========================================
+   PANNEAU DÉTAIL (Droite)
+======================================== */
+.detail-panel {
+    -fx-background-color: -fx-bg-dark-card;
+    -fx-padding: 20;
+    -fx-background-radius: 12;
+    -fx-border-color: #3D3759;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
 }
 
 .detail-panel .label {
-    -fx-text-fill: #ecf0f1;
+    -fx-text-fill: -fx-text-light;
 }
 
-/* Liste compacte (thème sombre) */
-.list-sponsors-compact {
-    -fx-background-color: rgba(61, 66, 73, 0.6);
-    -fx-background-insets: 0;
+/* ========================================
+   DIALOG FORMS (Fenêtres modales)
+======================================== */
+.dialog-form-dark {
+    -fx-background-color: -fx-bg-dark;
 }
 
-.list-sponsors-compact .list-cell {
-    -fx-padding: 8 10;
-    -fx-text-fill: #ecf0f1;
+.dialog-form-dark .content {
+    -fx-background-color: -fx-bg-dark-card;
+    -fx-padding: 20;
+    -fx-background-radius: 12;
 }
 
-.list-sponsors-compact .list-cell:selected {
-    -fx-background-color: #2471a3;
+.dialog-form-dark .label {
+    -fx-text-fill: -fx-text-white;
+    -fx-font-size: 14px;
 }
 
-.list-sponsors-compact .list-cell:filled:hover {
-    -fx-background-color: rgba(36, 113, 163, 0.5);
+.dialog-form-dark .text-field {
+    -fx-background-color: -fx-bg-dark-lighter;
+    -fx-text-fill: -fx-text-white;
+    -fx-prompt-text-fill: -fx-text-gray;
+    -fx-background-radius: 6;
+    -fx-border-color: #3D3759;
+    -fx-border-radius: 6;
+    -fx-padding: 8 12;
 }
 
-/* ========== FORMULAIRES (dialogs) - thème "Nouveau Restaurant" ========== */
+.dialog-form-dark .combo-box {
+    -fx-background-color: -fx-bg-dark-lighter;
+    -fx-text-fill: -fx-text-white;
+}
+
+.dialog-form-dark .check-box {
+    -fx-text-fill: -fx-text-white;
+}
+
+.dialog-form-dark .button {
+    -fx-cursor: hand;
+    -fx-background-radius: 6;
+    -fx-padding: 10 18;
+}
+
+.dialog-form-dark .button:default {
+    -fx-background-color: -fx-primary-orange;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.dialog-form-dark .button:default:hover {
+    -fx-background-color: -fx-primary-orange-hover;
+}
+
+.dialog-form-dark .button:cancel {
+    -fx-background-color: -fx-gray-button;
+    -fx-text-fill: white;
+}
+
+.dialog-form-dark .button:cancel:hover {
+    -fx-background-color: -fx-gray-button-hover;
+}
+
+/* ========================================
+   CHARTS (Graphiques dashboard)
+======================================== */
 .chart-plot-background {
     -fx-background-color: transparent;
 }
 
 .chart-title {
-    -fx-text-fill: #ecf0f1;
-    -fx-font-size: 13px;
+    -fx-text-fill: -fx-text-white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
 }
 
 .axis-label,
 .axis-tick-label {
-    -fx-text-fill: #ecf0f1;
+    -fx-text-fill: -fx-text-gray;
     -fx-font-size: 11px;
 }
 
 .chart-legend {
-    -fx-text-fill: #ecf0f1;
-    -fx-background-color: transparent;
-    -fx-background-radius: 0;
-    -fx-padding: 0;
-}
-
-.dashboard-pie .chart-legend {
-    -fx-background-color: transparent;
+    -fx-text-fill: -fx-text-white;
+    -fx-background-color: -fx-bg-dark-card;
+    -fx-background-radius: 6;
+    -fx-padding: 8;
 }
 
 .chart-pie-label {
-    -fx-fill: #ecf0f1;
+    -fx-fill: -fx-text-white;
     -fx-font-size: 11px;
 }
-.dialog-form-dark {
-    -fx-background-color: #2C3038;
+
+/* ========================================
+   SCROLLBAR (Barre de défilement sombre)
+======================================== */
+.scroll-bar {
+    -fx-background-color: transparent;
 }
 
-.dialog-form-dark .content {
-    -fx-background-color: #2C3038;
-    -fx-padding: 10;
+.scroll-bar .thumb {
+    -fx-background-color: -fx-bg-dark-lighter;
+    -fx-background-radius: 5;
 }
 
-.dialog-form-dark .label {
-    -fx-text-fill: #ecf0f1;
+.scroll-bar .thumb:hover {
+    -fx-background-color: -fx-primary-orange;
 }
 
-.dialog-form-dark .text-field {
-    -fx-background-color: #3D4249;
-    -fx-text-fill: #ecf0f1;
-    -fx-prompt-text-fill: #95a5a6;
-    -fx-background-radius: 4;
-    -fx-border-color: #4a4a4a;
-    -fx-border-radius: 4;
+.scroll-bar .track {
+    -fx-background-color: -fx-bg-dark-card;
 }
 
-.dialog-form-dark .combo-box {
-    -fx-background-color: #3D4249;
-    -fx-text-fill: #ecf0f1;
+/* ========================================
+   CHECKBOX & RADIO (Style moderne)
+======================================== */
+.check-box,
+.radio-button {
+    -fx-text-fill: -fx-text-white;
 }
 
-.dialog-form-dark .combo-box .list-cell {
-    -fx-text-fill: #ecf0f1;
+.check-box .box,
+.radio-button .radio {
+    -fx-background-color: -fx-bg-dark-lighter;
+    -fx-border-color: #3D3759;
 }
 
-.dialog-form-dark .check-box {
-    -fx-text-fill: #ecf0f1;
+.check-box:selected .mark,
+.radio-button:selected .dot {
+    -fx-background-color: -fx-primary-orange;
 }
 
-.dialog-form-dark .button {
-    -fx-cursor: hand;
-}
-
-.dialog-form-dark .button:default {
-    -fx-background-color: #e67e22;
-    -fx-text-fill: white;
-}
-
-.dialog-form-dark .button:default:hover {
-    -fx-background-color: #d35400;
-}
-
-.dialog-form-dark .button:cancel {
-    -fx-background-color: #4a4a4a;
-    -fx-text-fill: white;
-}
-
-.dialog-form-dark .button:cancel:hover {
-    -fx-background-color: #2c2c2c;
+/* ========================================
+   TOOLTIPS
+======================================== */
+.tooltip {
+    -fx-background-color: -fx-bg-dark-card;
+    -fx-text-fill: -fx-text-white;
+    -fx-background-radius: 6;
+    -fx-padding: 8 12;
+    -fx-font-size: 12px;
 }

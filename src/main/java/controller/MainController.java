@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 
@@ -21,6 +22,16 @@ public class MainController {
     private Button btnEventSponsor;
     @FXML
     private Button btnDashboard;
+    @FXML
+    private Button btnSideDashboard;
+    @FXML
+    private Button btnSideSponsors;
+    @FXML
+    private Button btnSideEventSponsor;
+    @FXML
+    private Button btnSideStats;
+    @FXML
+    private VBox boxSponsorSubMenu;
 
     private Parent sponsorView;
     private Parent eventSponsorView;
@@ -47,6 +58,22 @@ public class MainController {
         btnEventSponsor.setOnAction(e -> showEventSponsor());
         btnDashboard.setOnAction(e -> showDashboard());
 
+        if (btnSideDashboard != null) {
+            btnSideDashboard.setOnAction(e -> showDashboard());
+        }
+        if (btnSideSponsors != null) {
+            btnSideSponsors.setOnAction(e -> {
+                showSponsors();
+                toggleSponsorSubMenu();
+            });
+        }
+        if (btnSideEventSponsor != null) {
+            btnSideEventSponsor.setOnAction(e -> showEventSponsor());
+        }
+        if (btnSideStats != null) {
+            btnSideStats.setOnAction(e -> showDashboard());
+        }
+
         setActiveButton(btnSponsors);
     }
 
@@ -69,6 +96,13 @@ public class MainController {
             dashboardController.actualiser();
         }
         setActiveButton(btnDashboard);
+    }
+
+    private void toggleSponsorSubMenu() {
+        if (boxSponsorSubMenu == null) return;
+        boolean visible = !boxSponsorSubMenu.isVisible();
+        boxSponsorSubMenu.setVisible(visible);
+        boxSponsorSubMenu.setManaged(visible);
     }
 
     private void setActiveButton(Button active) {

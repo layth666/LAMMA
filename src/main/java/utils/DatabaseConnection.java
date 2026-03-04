@@ -5,8 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    // Configuration de votre base de données
-    private static final String URL = "jdbc:mysql://localhost:3306/camping_sponsors_db";
+    // Configuration de votre base de données unifiée
+    // Nouvelle base : LAMMABD (fusion des anciennes bases)
+    private static final String URL = "jdbc:mysql://localhost:3306/LAMMABD";
     private static final String USER = "root";     // Votre utilisateur MySQL
     private static final String PASSWORD = "";     // Votre mot de passe MySQL
 
