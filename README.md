@@ -1,4 +1,4 @@
-# PI_DEV – Event Management Platform
+# LAMMA __ PI_DEV 3A10 ESPRIT SCOOL OF ENGINEERING
 
 ![Java](https://img.shields.io/badge/Java-17-orange)
 ![JavaFX](https://img.shields.io/badge/JavaFX-UI-blue)
