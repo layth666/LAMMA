@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.gestion.ui.repas.RepasListeController"
+            prefWidth="1200" prefHeight="800"
+            style="-fx-background-color: #f5f6fa;">
+
+    <top>
+        <VBox style="-fx-background-color: linear-gradient(to right, #2c3e50, #3498db);">
+            <padding>
+                <Insets top="24" right="32" bottom="24" left="32"/>
+            </padding>
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <Label text="🍽️" style="-fx-font-size: 28px;"/>
+                <Label text="Gestion des Plats (Repas)" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Espace Administrateur" style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 14px;"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="24" style="-fx-background-color: transparent;">
+            <padding>
+                <Insets top="28" right="32" bottom="28" left="32"/>
+            </padding>
+
+            <HBox spacing="12" alignment="CENTER_LEFT"
+                  style="-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 2);">
+                <padding>
+                    <Insets top="18" right="24" bottom="18" left="24"/>
+                </padding>
+                <Button text="➕ Nouveau Plat" onAction="#onNouveauRepas"
+                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;
+                               -fx-background-radius: 8; -fx-padding: 12 22; -fx-cursor: hand;"/>
+                <Button text="🔄 Actualiser" onAction="#onActualiser"
+                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;
+                               -fx-background-radius: 8; -fx-padding: 12 22; -fx-cursor: hand;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="searchField" promptText="🔍 Rechercher un plat..."
+                           style="-fx-background-radius: 8; -fx-padding: 10 16; -fx-font-size: 14px; -fx-border-color: #e0e0e0; -fx-border-radius: 8;"
+                           HBox.hgrow="SOMETIMES" maxWidth="380"/>
+            </HBox>
+
+            <HBox spacing="16" alignment="CENTER_LEFT"
+                  style="-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 2);">
+                <padding>
+                    <Insets top="16" right="24" bottom="16" left="24"/>
+                </padding>
+                <Label text="Filtres :" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                <ComboBox fx:id="filterRestaurantCombo" promptText="Tous les restaurants" maxWidth="220" style="-fx-background-radius: 6;"/>
+                <ComboBox fx:id="filterMenuCombo" promptText="Tous les menus" maxWidth="200" style="-fx-background-radius: 6;"/>
+                <ComboBox fx:id="filterCategorieCombo" promptText="Catégorie" maxWidth="160" style="-fx-background-radius: 6;"/>
+                <ComboBox fx:id="filterTypePlatCombo" promptText="Type" maxWidth="140" style="-fx-background-radius: 6;"/>
+                <ComboBox fx:id="filterDisponibleCombo" promptText="Disponibilité" maxWidth="140" style="-fx-background-radius: 6;"/>
+                <Label fx:id="countLabel" text="0 plats" style="-fx-font-size: 13px; -fx-text-fill: #666;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Réinitialiser" onAction="#onReinitialiserFiltres"
+                        style="-fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-border-color: #e74c3c; -fx-border-radius: 6; -fx-padding: 8 16; -fx-cursor: hand;"/>
+            </HBox>
+
+            <VBox VBox.vgrow="ALWAYS" spacing="14"
+                  style="-fx-background-color: white; -fx-background-radius: 12;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 2);">
+                <padding>
+                    <Insets top="22" right="24" bottom="22" left="24"/>
+                </padding>
+                <Label text="📋 Liste des Plats" style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #2c3e50;"/>
+
+                <ListView fx:id="listView" VBox.vgrow="ALWAYS"
+                          styleClass="modern-list-view" onMouseClicked="#onListClick">
+                    <placeholder>
+                        <VBox alignment="CENTER" spacing="12" style="-fx-padding: 48;">
+                            <Label text="🍽️" style="-fx-font-size: 48px;"/>
+                            <Label text="Aucun plat trouvé" style="-fx-font-size: 16px; -fx-text-fill: #7f8c8d;"/>
+                            <Label text="Ajoutez un nouveau plat ou modifiez les filtres" style="-fx-font-size: 13px; -fx-text-fill: #95a5a6;"/>
+                        </VBox>
+                    </placeholder>
+                </ListView>
+            </VBox>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox spacing="12" alignment="CENTER_LEFT"
+              style="-fx-background-color: #2c3e50;">
+            <padding>
+                <Insets top="14" right="32" bottom="14" left="32"/>
+            </padding>
+            <Label fx:id="statusLabel" text="Prêt" style="-fx-text-fill: white; -fx-font-size: 13px;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnVoirDetails" text="👁️ Détails" onAction="#onVoirDetails" disable="true"
+                    style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 9 18; -fx-cursor: hand; -fx-background-radius: 6;"/>
+            <Button fx:id="btnModifier" text="✏️ Modifier" onAction="#onModifier" disable="true"
+                    style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 9 18; -fx-cursor: hand; -fx-background-radius: 6;"/>
+            <Button fx:id="btnSupprimer" text="🗑️ Supprimer" onAction="#onSupprimer" disable="true"
+                    style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 9 18; -fx-cursor: hand; -fx-background-radius: 6;"/>
+        </HBox>
+    </bottom>
+</BorderPane>

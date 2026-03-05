@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.gestion.ui.utilisateur.MesParticipationsController"
+            fitToWidth="true" fitToHeight="true"
+            vbarPolicy="AS_NEEDED" hbarPolicy="NEVER">
+
+    <VBox spacing="20" prefWidth="1000">
+        <padding>
+            <Insets top="24" right="24" bottom="24" left="24"/>
+        </padding>
+
+        <!-- ══ Header ══════════════════════════════════════════════════ -->
+        <HBox spacing="16" alignment="CENTER_LEFT"
+              style="-fx-background-color: #1a3c5e; -fx-padding: 16 20; -fx-background-radius: 8;">
+            <Label text="👥 Mes Participations"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="statusLabel" text="Prêt"
+                   style="-fx-text-fill: #aad4f5; -fx-font-size: 12px;"/>
+        </HBox>
+
+        <!-- ══ Barre d'actions ══════════════════════════════════════════ -->
+        <HBox spacing="10" alignment="CENTER_LEFT"
+              style="-fx-background-color: #f8f9fa; -fx-padding: 12; -fx-background-radius: 6; -fx-border-color: #dee2e6; -fx-border-radius: 6;">
+            <Button text="➕ Créer une participation" onAction="#onCreerParticipation"
+                    style="-fx-background-color: #1890ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 10 20;"/>
+            <Button text="🔄 Actualiser" onAction="#onActualiser"
+                    style="-fx-background-color: #6c757d; -fx-text-fill: white; -fx-cursor: hand; -fx-padding: 10 16;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="Vos participations enregistrées dans LAMMA"
+                   style="-fx-font-size: 12px; -fx-text-fill: #6c757d; -fx-font-style: italic;"/>
+        </HBox>
+
+        <!-- ══ Info tarification ════════════════════════════════════════ -->
+        <HBox spacing="12" alignment="CENTER_LEFT"
+              style="-fx-background-color: #e8f4fd; -fx-padding: 12; -fx-background-radius: 6; -fx-border-color: #bee3f8; -fx-border-radius: 6;">
+            <Label text="ℹ️" style="-fx-font-size: 16px;"/>
+            <VBox spacing="2">
+                <Label text="Tarification automatique selon la composition de votre groupe :"
+                       style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: #1a3c5e;"/>
+                <Label text="• 1 adulte seul → Journée (25 €)   • 1 adulte + enfant(s) → Pass Famille (60 €)   • Chien → +8 €/chien   • Adhérent → -30%"
+                       style="-fx-font-size: 11px; -fx-text-fill: #444; -fx-wrap-text: true;"/>
+            </VBox>
+        </HBox>
+
+        <!-- ══ TableView ════════════════════════════════════════════════ -->
+        <VBox spacing="10" VBox.vgrow="ALWAYS">
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Liste de mes participations"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1a3c5e;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="countLabel" text="0 participation(s)" style="-fx-font-size: 12px; -fx-text-fill: #6c757d;"/>
+            </HBox>
+            
+            <ListView fx:id="listView" VBox.vgrow="ALWAYS" minHeight="350" prefHeight="400"
+                      styleClass="modern-list-view" stylesheets="@../../styles/card-view.css"
+                      onMouseClicked="#onListClick">
+                <placeholder>
+                    <VBox alignment="CENTER" spacing="12">
+                        <Label text="📭 Aucune participation trouvée"
+                               style="-fx-font-size: 14px; -fx-text-fill: #6c757d;"/>
+                        <Label text="Cliquez sur 'Créer une participation' pour vous inscrire à un événement."
+                               style="-fx-font-size: 11px; -fx-text-fill: #aaa; -fx-wrap-text: true;" alignment="CENTER"/>
+                    </VBox>
+                </placeholder>
+            </ListView>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

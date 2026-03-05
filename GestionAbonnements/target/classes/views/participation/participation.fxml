@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.gestion.ui.participation.ParticipationViewController"
+            fitToWidth="true" fitToHeight="true" styleClass="modern-scroll-pane"
+            vbarPolicy="AS_NEEDED" hbarPolicy="NEVER"
+            stylesheets="@../../styles/card-view.css">
+
+    <VBox spacing="20" styleClass="modern-panel" prefWidth="1000">
+        <padding>
+            <Insets top="24" right="24" bottom="24" left="24"/>
+        </padding>
+
+        <!-- Header -->
+        <HBox spacing="16" alignment="CENTER_LEFT">
+            <ImageView fitHeight="32" preserveRatio="true">
+                <image>
+                    <Image url="@/images/lamma-logo.png"/>
+                </image>
+            </ImageView>
+            <Label text="👥 Gestion des Participations" styleClass="modern-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="statusInfoLabel" text="Prêt" styleClass="status-info"/>
+        </HBox>
+
+        <!-- Barre d'actions -->
+        <HBox spacing="12" alignment="CENTER_LEFT" styleClass="action-bar">
+            <Button text="➕ Nouvelle" onAction="#onNouvelle" styleClass="btn-primary"/>
+            <Button text="🔄 Actualiser" onAction="#onActualiser" styleClass="btn-secondary"/>
+            <Button fx:id="btnModifier" text="✏️ Modifier" onAction="#onModifier" disable="true" styleClass="btn-warning"/>
+            <Button fx:id="btnSupprimer" text="🗑️ Supprimer" onAction="#onSupprimer" disable="true" styleClass="btn-danger"/>
+            <Button fx:id="btnConfirmer" text="✅ Confirmer" onAction="#onConfirmer" disable="true" styleClass="btn-success"/>
+            <Button fx:id="btnAnnulerPart" text="❌ Annuler Part." onAction="#onAnnulerParticipation" disable="true" styleClass="btn-danger"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="📊 Statistiques" onAction="#onStatistiques" styleClass="btn-info"/>
+        </HBox>
+
+        <!-- Filtres -->
+        <VBox spacing="12" styleClass="filter-section">
+            <Label text="🔍 Recherche et Filtres" styleClass="section-title"/>
+            <GridPane hgap="12" vgap="12">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="100" prefWidth="120"/>
+                    <ColumnConstraints minWidth="150" prefWidth="200" hgrow="ALWAYS"/>
+                    <ColumnConstraints minWidth="100" prefWidth="120"/>
+                    <ColumnConstraints minWidth="150" prefWidth="200" hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <Label text="Statut:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <ComboBox fx:id="filterStatut" prefWidth="200" promptText="Tous les statuts"
+                          onAction="#onFiltrer" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                <Label text="Type:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                <ComboBox fx:id="filterType" prefWidth="200" promptText="Tous les types"
+                          onAction="#onFiltrer" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+
+                <Label text="User ID:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <TextField fx:id="filterUserId" promptText="ID utilisateur"
+                           onKeyReleased="#onFiltrer" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                <Label text="Événement ID:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                <TextField fx:id="filterEvenementId" promptText="ID événement"
+                           onKeyReleased="#onFiltrer" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+
+                <Label text="Recherche:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                <TextField fx:id="searchField" promptText="Rechercher..."
+                           onKeyReleased="#onRechercher" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.columnSpan="3"/>
+            </GridPane>
+            <HBox spacing="8">
+                <Button text="🔍 Rechercher" onAction="#onRechercher" styleClass="btn-primary"/>
+                <Button text="❌ Réinitialiser" onAction="#onReinitialiserFiltres" styleClass="btn-secondary"/>
+            </HBox>
+        </VBox>
+
+        <!-- ListView -->
+        <VBox spacing="8" VBox.vgrow="ALWAYS">
+            <HBox spacing="8" alignment="CENTER_LEFT">
+                <Label text="📊 Liste des Participations" styleClass="section-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="countLabel" text="0 participation(s)" styleClass="count-label"/>
+            </HBox>
+
+            <ListView fx:id="listView" VBox.vgrow="ALWAYS" minHeight="350" prefHeight="420"
+                       styleClass="modern-list-view" onMouseClicked="#onListClick">
+                <placeholder>
+                    <VBox alignment="CENTER" spacing="12">
+                        <Label text="📭 Aucune donnée disponible" styleClass="placeholder-text"/>
+                        <Label text="Cliquez sur 'Actualiser' pour charger les données" styleClass="placeholder-hint"/>
+                    </VBox>
+                </placeholder>
+            </ListView>
+        </VBox>
+
+        <!-- Champs cachés -->
+        <VBox visible="false" managed="false">
+            <TextField fx:id="inputUserId"/>
+            <TextField fx:id="inputEvenementId"/>
+            <ComboBox fx:id="inputType"/>
+            <ComboBox fx:id="inputContexte"/>
+            <CheckBox fx:id="inputHebergement"/>
+            <TextField fx:id="inputHebergementNuits"/>
+            <Button fx:id="btnEnregistrer" onAction="#onEnregistrer"/>
+            <Button fx:id="btnModifierForm" onAction="#onModifier"/>
+            <Label fx:id="validationMessage"/>
+        </VBox>
+
+    </VBox>
+</ScrollPane>
